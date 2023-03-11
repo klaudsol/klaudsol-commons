@@ -19,6 +19,18 @@ Object.keys(_Discord).forEach(function (key) {
     }
   });
 });
+var _Cloudwatch = require("./lib/Cloudwatch");
+Object.keys(_Cloudwatch).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _Cloudwatch[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _Cloudwatch[key];
+    }
+  });
+});
 var tellMeTheMeaningOfLife = function tellMeTheMeaningOfLife() {
   console.log("Shiggidy Diggles");
   console.log("Oodle dooddle");
