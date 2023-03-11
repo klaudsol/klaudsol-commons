@@ -31,6 +31,18 @@ Object.keys(_Cloudwatch).forEach(function (key) {
     }
   });
 });
+var _SlackSay = require("./lib/SlackSay");
+Object.keys(_SlackSay).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
+  if (key in exports && exports[key] === _SlackSay[key]) return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _SlackSay[key];
+    }
+  });
+});
 var tellMeTheMeaningOfLife = function tellMeTheMeaningOfLife() {
   console.log("Shiggidy Diggles");
   console.log("Oodle dooddle");
