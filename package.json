@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./SlackSay": "./dist/lib/SlackSay",
-    "./Cloudwatch": "./dist/lib/Cloudwatch",
-    "./Discord": "./dist/lib/Discord"
+    "./SlackSay": "./dist/lib/SlackSay.js",
+    "./Cloudwatch": "./dist/lib/Cloudwatch.js",
+    "./Discord": "./dist/lib/Discord.js"
   },
   "scripts": {
     "build": "npx babel src --out-dir dist",
