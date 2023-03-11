@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alekhurst/barebones-npm-package.git"
+    "url": "git@github.com:klaudsol/klaudsol-commons.git"
   },
   "keywords": [
     "barebones",
@@ -28,12 +28,12 @@
     "boilerplate",
     "babel"
   ],
-  "author": "Alek Hurst",
+  "author": "Klaudsol Philippines, Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alekhurst/barebones-npm-package/issues"
+    "url": "git@github.com:klaudsol/klaudsol-commons.git"
   },
-  "homepage": "https://github.com/alekhurst/barebones-npm-package#readme",
+  "homepage": "https://klaudsol.com",
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
