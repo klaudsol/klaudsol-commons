@@ -1,9 +1,9 @@
 import { withIronSessionApiRoute, withIronSessionSsr } from 'iron-session/next';
-import { log } from '@/lib/Logger';
+import { log } from './Logger';
 import { slsFetch } from "@/components/Util";
-import Session from '@backend/models/core/Session';
-import { defaultErrorHandler } from '@/lib/ErrorHandler';
-import { assertUserIsLoggedIn } from '@/lib/Permissions';
+import Session from '../models/Session';
+import { defaultErrorHandler } from './ErrorHandler';
+import { assertUserIsLoggedIn } from './Permissions';
 
 export const sessionOptions = {
   password: process.env.SECRET_COOKIE_PASSWORD,

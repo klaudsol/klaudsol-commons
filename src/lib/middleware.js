@@ -2,8 +2,8 @@
 // because Amplify might not support it.
 import multer from "multer";
 import { verifyToken, isTokenExpired } from "@/lib/JWT";
-import InvalidTokenError from "@/components/errors/InvalidTokenError";
-import MissingHeaderError from "@/components/errors/MissingHeaderError";
+import InvalidTokenError from "../errors/InvalidTokenError";
+import MissingHeaderError from "../errors/MissingHeaderError";
 
 export const parseFormData = async (req, res) => {
   if (req.method !== "POST" && req.method !== "PUT") return;

@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import UnauthorizedError from "@/components/errors/UnauthorizedError";
 
 export const generateToken = ({ firstName, lastName }) => {
   // Let's reuse SECRET_COOKIE_PASSWORD instead of creating another one

@@ -1,12 +1,12 @@
 import { log } from '@/lib/Logger';
 import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN, BAD_REQUEST, INVALID_TOKEN } from '@/lib/HttpStatuses';
-import UnauthorizedError from '@/components/errors/UnauthorizedError';
-import AppNotEnabledError from '@/components/errors/AppNotEnabledError';
-import InsufficientPermissionsError from '@/components/errors/InsufficientPermissionsError';
-import SessionNotFound from '@/components/errors/SessionNotFound';
-import MissingHeaderError from '@/components/errors/MissingHeaderError';
-import InvalidTokenError from '@/components/errors/InvalidTokenError';
-import { serverSideLogout } from '@/lib/Session';
+import UnauthorizedError from '../errors/UnauthorizedError';
+import AppNotEnabledError from '../errors/AppNotEnabledError';
+import InsufficientPermissionsError from '../errors/InsufficientPermissionsError';
+import SessionNotFound from '../errors/SessionNotFound';
+import MissingHeaderError from '../errors/MissingHeaderError';
+import InvalidTokenError from '../errors/InvalidTokenError';
+import { serverSideLogout } from './Session';
 
 // CLIENT SIDE STUFF
 import RootContext from '@/components/contexts/RootContext';
