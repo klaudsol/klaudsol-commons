@@ -1,9 +1,9 @@
 import { withIronSessionApiRoute, withIronSessionSsr } from 'iron-session/next';
-import { log } from '../lib/Logger';
-import { slsFetch } from "../lib/Client";
-import Session from '../models/Session';
-import { defaultErrorHandler } from '../lib/ErrorHandler';
-import { assertUserIsLoggedIn } from '../lib/Permissions';
+import { log } from '@/lib/Logger';
+import { slsFetch } from "@/components/Util";
+import Session from '@backend/models/core/Session';
+import { defaultErrorHandler } from '@/lib/ErrorHandler';
+import { assertUserIsLoggedIn } from '@/lib/Permissions';
 
 export const sessionOptions = {
   password: process.env.SECRET_COOKIE_PASSWORD,
@@ -27,7 +27,7 @@ export function withSession (handler) {
 };
 
 export async function serverSideLogout(req) {
-  const session_token = await assertUserIsLoggedIn(req);
+  const session_token = assertUserIsLoggedIn(req);
   await Session.logout(session_token); 
   req.session.destroy();
 }

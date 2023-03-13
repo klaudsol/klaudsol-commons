@@ -1,15 +1,23 @@
-import { log } from '../lib/Logger';
-import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN } from '../lib/HttpStatuses';
-import UnauthorizedError from '../errors/UnauthorizedError';
-import AppNotEnabledError from '../errors/AppNotEnabledError';
-import InsufficientPermissionsError from '../errors/InsufficientPermissionsError';
-import SessionNotFound from '../errors/SessionNotFound';
+import { log } from '@/lib/Logger';
+import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN, BAD_REQUEST, INVALID_TOKEN } from '@/lib/HttpStatuses';
+import UnauthorizedError from '@/components/errors/UnauthorizedError';
+import AppNotEnabledError from '@/components/errors/AppNotEnabledError';
+import InsufficientPermissionsError from '@/components/errors/InsufficientPermissionsError';
+import SessionNotFound from '@/components/errors/SessionNotFound';
+import MissingHeaderError from '@/components/errors/MissingHeaderError';
+import InvalidTokenError from '@/components/errors/InvalidTokenError';
+import { serverSideLogout } from '@/lib/Session';
+
+// CLIENT SIDE STUFF
+import RootContext from '@/components/contexts/RootContext';
+import { SET_IS_TOKEN_EXPIRED } from '@/lib/actions';
+import { useContext } from 'react';
 
 export async function defaultErrorHandler(error, req, res) {
   
   await log(error.stack);
   
-  if(
+  if (
     error instanceof UnauthorizedError ||
     error instanceof SessionNotFound
     ) {
@@ -19,6 +27,20 @@ export async function defaultErrorHandler(error, req, res) {
     error instanceof InsufficientPermissionsError
   ) {
       res.status(FORBIDDEN).json({message: 'Forbidden.'});
+  } else if (
+    error instanceof MissingHeaderError
+  ) {
+      res.status(BAD_REQUEST).json({message: 'Bearer token is missing.'});
+  } else if (
+    error instanceof InvalidTokenError ||
+    error.name === 'JsonWebTokenError'
+  ) {
+      res.status(INVALID_TOKEN).json({ message: 'Invalid or expired token.' });
+  } else if (
+    error.name === 'TokenExpiredError'
+  ) {
+      await serverSideLogout(req);
+      res.status(INVALID_TOKEN).json({ message: 'Token expired. Please log in again.' });
   } else {
       /* Let's be conservative on our regex*/
       if (error.stack.match(/Communications\s+link\s+failure/gi)) {
@@ -31,3 +53,13 @@ export async function defaultErrorHandler(error, req, res) {
       }
   }
 } 
+
+export function useClientErrorHandler() {
+  const { state, dispatch } = useContext(RootContext);
+
+  return (err) => {
+      if(err.message === 'Token expired. Please log in again.') {
+        dispatch({ type: SET_IS_TOKEN_EXPIRED, payload: true });
+      }
+  }
+}
