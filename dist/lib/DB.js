@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.sha256 = exports.sanitizeData = exports.fromInsertAurora = exports.fromDeleteAurora = exports.fromAurora = exports.fieldsForUpdate = exports.fieldsForSelect = exports.fieldsForInsert = exports.fieldParametersForInsert = exports.executeStatementParamsForUpdate = exports.executeStatementParamsForInsert = exports["default"] = exports.AURORA_TYPE = void 0;
 var _awsSdk = _interopRequireDefault(require("aws-sdk"));
 var _es6Promisify = require("es6-promisify");
-var _GlobalConstants = _interopRequireDefault(require("@/components/GlobalConstants"));
+var _GlobalConstants = _interopRequireDefault(require("../lib/GlobalConstants"));
 var _crypto = _interopRequireDefault(require("crypto"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }

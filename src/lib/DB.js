@@ -1,6 +1,6 @@
 import AWS from 'aws-sdk';
 import {promisify} from 'es6-promisify';
-import GlobalConstants  from "@/components/GlobalConstants";
+import GlobalConstants  from "../lib/GlobalConstants";
 import crypto from 'crypto';
 
 const AURORA_AWS_ACCESS_KEY_ID = process.env.AURORA_AWS_ACCESS_KEY_ID;
