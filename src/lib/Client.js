@@ -1,3 +1,5 @@
+import { COMMUNICATION_LINKS_FAILURE } from "../lib/HttpStatuses";
+
 export const slsFetch = async (url, params, extra) => {
   const { retry = 0, unauthorized = null } = extra ?? {};
   const response = await fetch(url, params);
