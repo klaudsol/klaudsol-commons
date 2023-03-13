@@ -4,6 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.constructAPIHandler = constructAPIHandler;
 exports.createAPIHandler = createAPIHandler;
 exports.handleRequests = handleRequests;
 exports.setCORSHeaders = exports.parseFormData = void 0;
@@ -19,8 +20,8 @@ var setCORSHeaders = function setCORSHeaders(_ref) {
   if (url) response.setHeader("Access-Control-Allow-Origin", url);
 };
 
-// Transfer to middleware in v2.0.0. For now we need
-// this to be backwards compatible
+// Transfer to middleware when Klaudsol CMS is v2.0.0.
+// For now we need this to be backwards compatible
 exports.setCORSHeaders = setCORSHeaders;
 var parseFormData = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
@@ -63,101 +64,177 @@ var parseFormData = /*#__PURE__*/function () {
   };
 }();
 exports.parseFormData = parseFormData;
-function createAPIHandler(_x3, _x4, _x5) {
-  return _createAPIHandler.apply(this, arguments);
+function createAPIHandler() {
+  var methods = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            _context2.t0 = req.method;
+            _context2.next = _context2.t0 === "GET" ? 4 : _context2.t0 === "POST" ? 9 : _context2.t0 === "DELETE" ? 14 : _context2.t0 === "PUT" ? 19 : 24;
+            break;
+          case 4:
+            if (!methods.get) {
+              _context2.next = 8;
+              break;
+            }
+            _context2.next = 7;
+            return methods.get(req, res);
+          case 7:
+            return _context2.abrupt("return", _context2.sent);
+          case 8:
+            throw new Error("Unsupported method: ".concat(req.method));
+          case 9:
+            if (!methods.post) {
+              _context2.next = 13;
+              break;
+            }
+            _context2.next = 12;
+            return methods.post(req, res);
+          case 12:
+            return _context2.abrupt("return", _context2.sent);
+          case 13:
+            throw new Error("Unsupported method: ".concat(req.method));
+          case 14:
+            if (!methods.del) {
+              _context2.next = 18;
+              break;
+            }
+            _context2.next = 17;
+            return methods.del(req, res);
+          case 17:
+            return _context2.abrupt("return", _context2.sent);
+          case 18:
+            throw new Error("Unsupported method: ".concat(req.method));
+          case 19:
+            if (!methods.put) {
+              _context2.next = 23;
+              break;
+            }
+            _context2.next = 22;
+            return methods.put(req, res);
+          case 22:
+            return _context2.abrupt("return", _context2.sent);
+          case 23:
+            throw new Error("Unsupported method: ".concat(req.method));
+          case 24:
+            throw new Error("Unsupported method: ".concat(req.method));
+          case 25:
+            _context2.next = 31;
+            break;
+          case 27:
+            _context2.prev = 27;
+            _context2.t1 = _context2["catch"](0);
+            _context2.next = 31;
+            return (0, _ErrorHandler.defaultErrorHandler)(_context2.t1, req, res);
+          case 31:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 27]]);
+    }));
+    return function (_x3, _x4) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
 }
-function _createAPIHandler() {
-  _createAPIHandler = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(methods, req, res) {
-    return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
+function constructAPIHandler(_x5, _x6, _x7) {
+  return _constructAPIHandler.apply(this, arguments);
+}
+function _constructAPIHandler() {
+  _constructAPIHandler = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(methods, req, res) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
         case 0:
-          _context3.t0 = req.method;
-          _context3.next = _context3.t0 === "GET" ? 3 : _context3.t0 === "POST" ? 8 : _context3.t0 === "DELETE" ? 13 : _context3.t0 === "PUT" ? 18 : 23;
+          _context4.t0 = req.method;
+          _context4.next = _context4.t0 === "GET" ? 3 : _context4.t0 === "POST" ? 8 : _context4.t0 === "DELETE" ? 13 : _context4.t0 === "PUT" ? 18 : 23;
           break;
         case 3:
           if (!methods.get) {
-            _context3.next = 7;
+            _context4.next = 7;
             break;
           }
-          _context3.next = 6;
+          _context4.next = 6;
           return methods.get(req, res);
         case 6:
-          return _context3.abrupt("return", _context3.sent);
+          return _context4.abrupt("return", _context4.sent);
         case 7:
           throw new Error("Unsupported method: ".concat(req.method));
         case 8:
           if (!methods.post) {
-            _context3.next = 12;
+            _context4.next = 12;
             break;
           }
-          _context3.next = 11;
+          _context4.next = 11;
           return methods.post(req, res);
         case 11:
-          return _context3.abrupt("return", _context3.sent);
+          return _context4.abrupt("return", _context4.sent);
         case 12:
           throw new Error("Unsupported method: ".concat(req.method));
         case 13:
           if (!methods.del) {
-            _context3.next = 17;
+            _context4.next = 17;
             break;
           }
-          _context3.next = 16;
+          _context4.next = 16;
           return methods.del(req, res);
         case 16:
-          return _context3.abrupt("return", _context3.sent);
+          return _context4.abrupt("return", _context4.sent);
         case 17:
           throw new Error("Unsupported method: ".concat(req.method));
         case 18:
           if (!methods.put) {
-            _context3.next = 22;
+            _context4.next = 22;
             break;
           }
-          _context3.next = 21;
+          _context4.next = 21;
           return methods.put(req, res);
         case 21:
-          return _context3.abrupt("return", _context3.sent);
+          return _context4.abrupt("return", _context4.sent);
         case 22:
           throw new Error("Unsupported method: ".concat(req.method));
         case 23:
           throw new Error("Unsupported method: ".concat(req.method));
         case 24:
         case "end":
-          return _context3.stop();
+          return _context4.stop();
       }
-    }, _callee3);
+    }, _callee4);
   }));
-  return _createAPIHandler.apply(this, arguments);
+  return _constructAPIHandler.apply(this, arguments);
 }
 function handleRequests(methods) {
   return /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
       var _parseFormData, parsedReq, parsedRes;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
+            _context3.prev = 0;
+            _context3.next = 3;
             return (0, _Middleware["default"])(req, res);
           case 3:
             _parseFormData = parseFormData(req, res), parsedReq = _parseFormData.req, parsedRes = _parseFormData.res;
-            _context2.next = 6;
-            return createAPIHandler(methods, parsedReq, parsedRes);
+            _context3.next = 6;
+            return constructAPIHandler(methods, parsedReq, parsedRes);
           case 6:
-            _context2.next = 12;
+            _context3.next = 12;
             break;
           case 8:
-            _context2.prev = 8;
-            _context2.t0 = _context2["catch"](0);
-            _context2.next = 12;
-            return (0, _ErrorHandler.defaultErrorHandler)(_context2.t0, req, res);
+            _context3.prev = 8;
+            _context3.t0 = _context3["catch"](0);
+            _context3.next = 12;
+            return (0, _ErrorHandler.defaultErrorHandler)(_context3.t0, req, res);
           case 12:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
-      }, _callee2, null, [[0, 8]]);
+      }, _callee3, null, [[0, 8]]);
     }));
-    return function (_x6, _x7) {
-      return _ref3.apply(this, arguments);
+    return function (_x8, _x9) {
+      return _ref4.apply(this, arguments);
     };
   }();
 }

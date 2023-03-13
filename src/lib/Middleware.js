@@ -5,7 +5,7 @@ import { verifyToken } from "../lib/JWT";
 import InvalidTokenError from "../errors/InvalidTokenError";
 import MissingHeaderError from "../errors/MissingHeaderError";
 
-// Uncomment if KlaudSol CMS is in v2.0.0
+// Uncomment when KlaudSol CMS is in v2.0.0
 /* export const parseFormData = async (req, res) => { */
 /*   if (req.method !== "POST" && req.method !== "PUT") return; */
 /**/
