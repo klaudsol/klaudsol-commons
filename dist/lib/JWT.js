@@ -1,40 +1,46 @@
-import jwt from "jsonwebtoken";
-import UnauthorizedError from "@/components/errors/UnauthorizedError";
+"use strict";
 
-export const generateToken = ({ firstName, lastName }) => {
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.verifyToken = exports.setToken = exports.getToken = exports.getAuthToken = exports.generateToken = exports.clearToken = void 0;
+var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
+var _UnauthorizedError = _interopRequireDefault(require("@/components/errors/UnauthorizedError"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+var generateToken = function generateToken(_ref) {
+  var firstName = _ref.firstName,
+    lastName = _ref.lastName;
   // Let's reuse SECRET_COOKIE_PASSWORD instead of creating another one
-  const token = jwt.sign(
-    { firstName, lastName },
-    process.env.SECRET_COOKIE_PASSWORD,
-    { expiresIn: 14400 }
-  );
-
+  var token = _jsonwebtoken["default"].sign({
+    firstName: firstName,
+    lastName: lastName
+  }, process.env.SECRET_COOKIE_PASSWORD, {
+    expiresIn: 14400
+  });
   return token;
 };
-
-export const verifyToken = (token) => {
-  const decodedToken = jwt.verify(token, process.env.SECRET_COOKIE_PASSWORD);
-
+exports.generateToken = generateToken;
+var verifyToken = function verifyToken(token) {
+  var decodedToken = _jsonwebtoken["default"].verify(token, process.env.SECRET_COOKIE_PASSWORD);
   return decodedToken;
 };
-
-export const setToken = (token) => {
+exports.verifyToken = verifyToken;
+var setToken = function setToken(token) {
   localStorage.setItem("token", token);
 };
-
-export const getToken = () => {
-  const user = localStorage.getItem("token");
+exports.setToken = setToken;
+var getToken = function getToken() {
+  var user = localStorage.getItem("token");
   if (!user) return null;
-
   return user;
 };
-
-export const clearToken = () => {
+exports.getToken = getToken;
+var clearToken = function clearToken() {
   localStorage.clear();
 };
-
-export const getAuthToken = () => {
-  const token = getToken();
-
-  return `Bearer ${token}`;
+exports.clearToken = clearToken;
+var getAuthToken = function getAuthToken() {
+  var token = getToken();
+  return "Bearer ".concat(token);
 };
+exports.getAuthToken = getAuthToken;
