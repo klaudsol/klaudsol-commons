@@ -15,12 +15,10 @@ export const generateToken = ({ firstName, lastName }) => {
 
 export const verifyToken = (token) => {
   const error = (err, decoded) => {
-    if (err) {
-      if (err.name === "JsonWebTokenError") throw new JsonWebTokenError();
-      if (err.name === "TokenExpiredError") throw new TokenExpireError();
+    if (err.name === "JsonWebTokenError") throw new JsonWebTokenError();
+    if (err.name === "TokenExpiredError") throw new TokenExpireError();
 
-      throw err;
-    }
+    throw err;
   };
 
   const decodedToken = jwt.verify(

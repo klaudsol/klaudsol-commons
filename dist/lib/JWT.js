@@ -23,11 +23,9 @@ var generateToken = function generateToken(_ref) {
 exports.generateToken = generateToken;
 var verifyToken = function verifyToken(token) {
   var error = function error(err, decoded) {
-    if (err) {
-      if (err.name === "JsonWebTokenError") throw new _JsonWebTokenError["default"]();
-      if (err.name === "TokenExpiredError") throw new TokenExpireError();
-      throw err;
-    }
+    if (err.name === "JsonWebTokenError") throw new _JsonWebTokenError["default"]();
+    if (err.name === "TokenExpiredError") throw new TokenExpireError();
+    throw err;
   };
   var decodedToken = _jsonwebtoken["default"].verify(token, process.env.SECRET_COOKIE_PASSWORD, error);
   return decodedToken;
