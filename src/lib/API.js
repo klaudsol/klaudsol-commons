@@ -1,4 +1,4 @@
-import middleware from "./middleware";
+import middleware from "./Middleware";
 import { defaultErrorHandler } from "./ErrorHandler";
 
 export const setCORSHeaders = ({ response, url }) => {

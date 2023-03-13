@@ -1,7 +1,7 @@
 // We are not using NextJS's native middleware featuer
 // because Amplify might not support it.
 import multer from "multer";
-import { verifyToken, isTokenExpired } from "@/lib/JWT";
+import { verifyToken } from "./JWT";
 import InvalidTokenError from "../errors/InvalidTokenError";
 import MissingHeaderError from "../errors/MissingHeaderError";
 

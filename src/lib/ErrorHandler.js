@@ -1,5 +1,5 @@
-import { log } from '@/lib/Logger';
-import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN, BAD_REQUEST, INVALID_TOKEN } from '@/lib/HttpStatuses';
+import { log } from './Logger';
+import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN, BAD_REQUEST, INVALID_TOKEN } from './HttpStatuses';
 import UnauthorizedError from '../errors/UnauthorizedError';
 import AppNotEnabledError from '../errors/AppNotEnabledError';
 import InsufficientPermissionsError from '../errors/InsufficientPermissionsError';
@@ -7,11 +7,6 @@ import SessionNotFound from '../errors/SessionNotFound';
 import MissingHeaderError from '../errors/MissingHeaderError';
 import InvalidTokenError from '../errors/InvalidTokenError';
 import { serverSideLogout } from './Session';
-
-// CLIENT SIDE STUFF
-import RootContext from '@/components/contexts/RootContext';
-import { SET_IS_TOKEN_EXPIRED } from '@/lib/actions';
-import { useContext } from 'react';
 
 export async function defaultErrorHandler(error, req, res) {
   
@@ -54,12 +49,3 @@ export async function defaultErrorHandler(error, req, res) {
   }
 } 
 
-export function useClientErrorHandler() {
-  const { state, dispatch } = useContext(RootContext);
-
-  return (err) => {
-      if(err.message === 'Token expired. Please log in again.') {
-        dispatch({ type: SET_IS_TOKEN_EXPIRED, payload: true });
-      }
-  }
-}

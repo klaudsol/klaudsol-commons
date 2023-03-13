@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.verifyToken = exports.setToken = exports.getToken = exports.getAuthToken = exports.generateToken = exports.clearToken = void 0;
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
-var _UnauthorizedError = _interopRequireDefault(require("@/components/errors/UnauthorizedError"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 var generateToken = function generateToken(_ref) {
   var firstName = _ref.firstName,
