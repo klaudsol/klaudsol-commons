@@ -8,7 +8,7 @@ export const setCORSHeaders = ({ response, url }) => {
 // Transfer to middleware when Klaudsol CMS is v2.0.0.
 // For now we need this to be backwards compatible
 export const parseFormData = async (req, res) => {
-  if (req.method !== "POST" && req.method !== "PUT") return;
+  if (req.method !== "POST" && req.method !== "PUT") return { req, res };
 
   const storage = multer.memoryStorage();
   const multerSetup = multer({ storage });
@@ -74,8 +74,9 @@ export function handleRequests(methods) {
   return async (req, res) => {
     try {
       await middleware(req, res);
-      const { req: parsedReq, res: parsedRes } = parseFormData(req, res);
-      await constructAPIHandler(methods, parsedReq, parsedRes);
+      // parsedRes will crash the program for some reson
+      const { req: parsedReq } = await parseFormData(req);
+      await constructAPIHandler(methods, parsedReq, res);
     } catch (err) {
       await defaultErrorHandler(err, req, res);
     }

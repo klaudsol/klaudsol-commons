@@ -33,7 +33,10 @@ var parseFormData = /*#__PURE__*/function () {
             _context.next = 2;
             break;
           }
-          return _context.abrupt("return");
+          return _context.abrupt("return", {
+            req: req,
+            res: res
+          });
         case 2:
           storage = multer.memoryStorage();
           multerSetup = multer({
@@ -208,7 +211,7 @@ function _constructAPIHandler() {
 function handleRequests(methods) {
   return /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
-      var _parseFormData, parsedReq, parsedRes;
+      var _yield$parseFormData, parsedReq;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
@@ -216,22 +219,26 @@ function handleRequests(methods) {
             _context3.next = 3;
             return (0, _Middleware["default"])(req, res);
           case 3:
-            _parseFormData = parseFormData(req, res), parsedReq = _parseFormData.req, parsedRes = _parseFormData.res;
-            _context3.next = 6;
-            return constructAPIHandler(methods, parsedReq, parsedRes);
-          case 6:
-            _context3.next = 12;
+            _context3.next = 5;
+            return parseFormData(req);
+          case 5:
+            _yield$parseFormData = _context3.sent;
+            parsedReq = _yield$parseFormData.req;
+            _context3.next = 9;
+            return constructAPIHandler(methods, parsedReq, res);
+          case 9:
+            _context3.next = 15;
             break;
-          case 8:
-            _context3.prev = 8;
+          case 11:
+            _context3.prev = 11;
             _context3.t0 = _context3["catch"](0);
-            _context3.next = 12;
+            _context3.next = 15;
             return (0, _ErrorHandler.defaultErrorHandler)(_context3.t0, req, res);
-          case 12:
+          case 15:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 8]]);
+      }, _callee3, null, [[0, 11]]);
     }));
     return function (_x8, _x9) {
       return _ref4.apply(this, arguments);
