@@ -1,3 +1,4 @@
+import multer from "multer";
 import middleware from "../lib/Middleware";
 import { defaultErrorHandler } from "../lib/ErrorHandler";
 

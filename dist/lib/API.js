@@ -8,6 +8,7 @@ exports.constructAPIHandler = constructAPIHandler;
 exports.createAPIHandler = createAPIHandler;
 exports.handleRequests = handleRequests;
 exports.setCORSHeaders = exports.parseFormData = void 0;
+var _multer = _interopRequireDefault(require("multer"));
 var _Middleware = _interopRequireDefault(require("../lib/Middleware"));
 var _ErrorHandler = require("../lib/ErrorHandler");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -38,8 +39,8 @@ var parseFormData = /*#__PURE__*/function () {
             res: res
           });
         case 2:
-          storage = multer.memoryStorage();
-          multerSetup = multer({
+          storage = _multer["default"].memoryStorage();
+          multerSetup = (0, _multer["default"])({
             storage: storage
           });
           upload = multerSetup.any();
