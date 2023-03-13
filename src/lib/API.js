@@ -5,6 +5,27 @@ export const setCORSHeaders = ({ response, url }) => {
   if (url) response.setHeader("Access-Control-Allow-Origin", url);
 };
 
+// Transfer to middleware in v2.0.0. For now we need
+// this to be backwards compatible
+export const parseFormData = async (req, res) => {
+  if (req.method !== "POST" && req.method !== "PUT") return;
+
+  const storage = multer.memoryStorage();
+  const multerSetup = multer({ storage });
+  const upload = multerSetup.any();
+
+  await new Promise((resolve, reject) => {
+    upload(req, res, (result) => {
+      if (result instanceof Error) return reject(result);
+      return resolve(result);
+    });
+  });
+
+  req.body = JSON.parse(JSON.stringify(req.body));
+
+  return { req, res };
+};
+
 export async function createAPIHandler(methods, req, res) {
   switch (req.method) {
     case "GET":
@@ -28,7 +49,8 @@ export function handleRequests(methods) {
   return async (req, res) => {
     try {
       await middleware(req, res);
-      await createAPIHandler(methods, req, res);
+      const { req: parsedReq, res: parsedRes } = parseFormData(req, res);
+      await createAPIHandler(methods, parsedReq, parsedRes);
     } catch (err) {
       await defaultErrorHandler(err, req, res);
     }
