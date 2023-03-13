@@ -6,6 +6,8 @@ import InsufficientPermissionsError from '../errors/InsufficientPermissionsError
 import SessionNotFound from '../errors/SessionNotFound';
 import MissingHeaderError from '../errors/MissingHeaderError';
 import InvalidTokenError from '../errors/InvalidTokenError';
+import TokenExpiredError from '../errors/TokenExpiredError';
+import JsonWebTokenError from '../errors/JsonWebTokenError';
 import { serverSideLogout } from './Session';
 
 export async function defaultErrorHandler(error, req, res) {
@@ -28,11 +30,11 @@ export async function defaultErrorHandler(error, req, res) {
       res.status(BAD_REQUEST).json({message: 'Bearer token is missing.'});
   } else if (
     error instanceof InvalidTokenError ||
-    error.name === 'JsonWebTokenError'
+    error instanceof JsonWebTokenError
   ) {
       res.status(INVALID_TOKEN).json({ message: 'Invalid or expired token.' });
   } else if (
-    error.name === 'TokenExpiredError'
+    error instanceof TokenExpiredError
   ) {
       await serverSideLogout(req);
       res.status(INVALID_TOKEN).json({ message: 'Token expired. Please log in again.' });

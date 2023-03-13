@@ -46,12 +46,15 @@ function _serverSideLogout() {
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          session_token = (0, _Permissions.assertUserIsLoggedIn)(req);
-          _context2.next = 3;
+          _context2.next = 2;
+          return (0, _Permissions.assertUserIsLoggedIn)(req);
+        case 2:
+          session_token = _context2.sent;
+          _context2.next = 5;
           return _Session["default"].logout(session_token);
-        case 3:
+        case 5:
           req.session.destroy();
-        case 4:
+        case 6:
         case "end":
           return _context2.stop();
       }

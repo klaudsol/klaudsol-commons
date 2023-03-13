@@ -12,6 +12,8 @@ var _InsufficientPermissionsError = _interopRequireDefault(require("../errors/In
 var _SessionNotFound = _interopRequireDefault(require("../errors/SessionNotFound"));
 var _MissingHeaderError = _interopRequireDefault(require("../errors/MissingHeaderError"));
 var _InvalidTokenError = _interopRequireDefault(require("../errors/InvalidTokenError"));
+var _TokenExpiredError = _interopRequireDefault(require("../errors/TokenExpiredError"));
+var _JsonWebTokenError = _interopRequireDefault(require("../errors/JsonWebTokenError"));
 var _Session = require("./Session");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -59,7 +61,7 @@ function _defaultErrorHandler() {
           _context.next = 25;
           break;
         case 14:
-          if (!(error instanceof _InvalidTokenError["default"] || error.name === 'JsonWebTokenError')) {
+          if (!(error instanceof _InvalidTokenError["default"] || error instanceof _JsonWebTokenError["default"])) {
             _context.next = 18;
             break;
           }
@@ -69,7 +71,7 @@ function _defaultErrorHandler() {
           _context.next = 25;
           break;
         case 18:
-          if (!(error.name === 'TokenExpiredError')) {
+          if (!(error instanceof _TokenExpiredError["default"])) {
             _context.next = 24;
             break;
           }

@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.verifyToken = exports.setToken = exports.getToken = exports.getAuthToken = exports.generateToken = exports.clearToken = void 0;
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
+var _TokenExpiredError = _interopRequireDefault(require("../errors/TokenExpiredError"));
+var _JsonWebTokenError = _interopRequireDefault(require("../errors/JsonWebTokenError"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 var generateToken = function generateToken(_ref) {
   var firstName = _ref.firstName,
@@ -20,7 +22,14 @@ var generateToken = function generateToken(_ref) {
 };
 exports.generateToken = generateToken;
 var verifyToken = function verifyToken(token) {
-  var decodedToken = _jsonwebtoken["default"].verify(token, process.env.SECRET_COOKIE_PASSWORD);
+  var error = function error(err, decoded) {
+    if (err) {
+      if (err.name === "JsonWebTokenError") throw new _JsonWebTokenError["default"]();
+      if (err.name === "TokenExpiredError") throw new TokenExpireError();
+      throw err;
+    }
+  };
+  var decodedToken = _jsonwebtoken["default"].verify(token, process.env.SECRET_COOKIE_PASSWORD, error);
   return decodedToken;
 };
 exports.verifyToken = verifyToken;
