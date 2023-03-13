@@ -1,6 +1,6 @@
 import { withIronSessionApiRoute, withIronSessionSsr } from 'iron-session/next';
 import { log } from '../lib/Logger';
-import { slsFetch } from "@/components/Util";
+import { slsFetch } from "../lib/Client";
 import Session from '../models/Session';
 import { defaultErrorHandler } from '../lib/ErrorHandler';
 import { assertUserIsLoggedIn } from '../lib/Permissions';
