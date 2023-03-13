@@ -5,9 +5,9 @@
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./SlackSay": "./dist/lib/SlackSay.js",
-    "./Cloudwatch": "./dist/lib/Cloudwatch.js",
-    "./Discord": "./dist/lib/Discord.js"
+    "./errors/*": "./dist/errors/*.js",
+    "./lib/*": "./dist/lib/*.js",
+    "./models/*": "./dist/models/*.js"
   },
   "scripts": {
     "build": "npx babel src --out-dir dist",
@@ -41,6 +41,8 @@
   },
   "dependencies": {
     "aws-sdk": "^2.1333.0",
-    "es6-promisify": "^7.0.0"
+    "es6-promisify": "^7.0.0",
+    "iron-session": "^6.3.1",
+    "multer": "^1.4.5-lts.1"
   }
 }
