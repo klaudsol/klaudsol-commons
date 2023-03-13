@@ -1,5 +1,5 @@
-import { log } from './Logger';
-import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN, BAD_REQUEST, INVALID_TOKEN } from './HttpStatuses';
+import { log } from '../lib/Logger';
+import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN, BAD_REQUEST, INVALID_TOKEN } from '../lib/HttpStatuses';
 import UnauthorizedError from '../errors/UnauthorizedError';
 import AppNotEnabledError from '../errors/AppNotEnabledError';
 import InsufficientPermissionsError from '../errors/InsufficientPermissionsError';
@@ -8,7 +8,7 @@ import MissingHeaderError from '../errors/MissingHeaderError';
 import InvalidTokenError from '../errors/InvalidTokenError';
 import TokenExpiredError from '../errors/TokenExpiredError';
 import JsonWebTokenError from '../errors/JsonWebTokenError';
-import { serverSideLogout } from './Session';
+import { serverSideLogout } from '../lib/Session';
 
 export async function defaultErrorHandler(error, req, res) {
   

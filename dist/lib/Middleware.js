@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parseFormData = exports["default"] = void 0;
 var _multer = _interopRequireDefault(require("multer"));
-var _JWT = require("./JWT");
+var _JWT = require("../lib/JWT");
 var _InvalidTokenError = _interopRequireDefault(require("../errors/InvalidTokenError"));
 var _MissingHeaderError = _interopRequireDefault(require("../errors/MissingHeaderError"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }

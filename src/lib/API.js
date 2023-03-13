@@ -1,5 +1,5 @@
-import middleware from "./Middleware";
-import { defaultErrorHandler } from "./ErrorHandler";
+import middleware from "../lib/Middleware";
+import { defaultErrorHandler } from "../lib/ErrorHandler";
 
 export const setCORSHeaders = ({ response, url }) => {
   if (url) response.setHeader("Access-Control-Allow-Origin", url);
