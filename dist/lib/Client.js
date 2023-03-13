@@ -52,7 +52,7 @@ var slsFetch = /*#__PURE__*/function () {
           _context.next = 32;
           break;
         case 19:
-          if (!(response.status === UNAUTHORIZED)) {
+          if (!(response.status === _HttpStatuses.UNAUTHORIZED)) {
             _context.next = 24;
             break;
           }
