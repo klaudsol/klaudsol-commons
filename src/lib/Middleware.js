@@ -25,6 +25,13 @@ import MissingHeaderError from "../errors/MissingHeaderError";
 
 const BEARER_LENGTH = 7;
 
+const tokenValidator = async (req, res) => {
+  const token = req.token;
+
+  if (!token) throw new MissingHeaderError();
+  if (!token.startsWith("Bearer")) throw new InvalidTokenError();
+};
+
 const tokenExtractor = async (req, res) => {
   req.token = req.token.substring(BEARER_LENGTH);
 };
@@ -33,13 +40,6 @@ const tokenVerifier = async (req, res) => {
   const token = req.token;
 
   verifyToken(token);
-};
-
-const tokenValidator = async (req, res) => {
-  const token = req.token;
-
-  if (!token) throw new MissingHeaderError();
-  if (!token.startsWith("Bearer")) throw new InvalidTokenError();
 };
 
 const checkToken = async (req, res) => {
