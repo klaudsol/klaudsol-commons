@@ -9,19 +9,21 @@ var _TokenExpiredError = _interopRequireDefault(require("../errors/TokenExpiredE
 var _JsonWebTokenError = _interopRequireDefault(require("../errors/JsonWebTokenError"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 var generateToken = function generateToken(_ref) {
+  var _process$env$KS_SECRE;
   var firstName = _ref.firstName,
     lastName = _ref.lastName;
   // Let's reuse SECRET_COOKIE_PASSWORD instead of creating another one
   var token = _jsonwebtoken["default"].sign({
     firstName: firstName,
     lastName: lastName
-  }, process.env.SECRET_COOKIE_PASSWORD, {
+  }, (_process$env$KS_SECRE = process.env.KS_SECRET_COOKIE_PASSWORD) !== null && _process$env$KS_SECRE !== void 0 ? _process$env$KS_SECRE : process.env.SECRET_COOKIE_PASSWORD, {
     expiresIn: 14400
   });
   return token;
 };
 exports.generateToken = generateToken;
 var verifyToken = function verifyToken(token) {
+  var _process$env$KS_SECRE2;
   var error = function error(err, decoded) {
     if (err) {
       if (err.name === "JsonWebTokenError") throw new _JsonWebTokenError["default"]();
@@ -29,7 +31,7 @@ var verifyToken = function verifyToken(token) {
       throw err;
     }
   };
-  var decodedToken = _jsonwebtoken["default"].verify(token, process.env.SECRET_COOKIE_PASSWORD, error);
+  var decodedToken = _jsonwebtoken["default"].verify(token, (_process$env$KS_SECRE2 = process.env.KS_SECRET_COOKIE_PASSWORD) !== null && _process$env$KS_SECRE2 !== void 0 ? _process$env$KS_SECRE2 : process.env_SECRET_COOKIE_PASSWORD, error);
   return decodedToken;
 };
 exports.verifyToken = verifyToken;
