@@ -6,7 +6,7 @@ export const generateToken = ({ firstName, lastName }) => {
   // Let's reuse SECRET_COOKIE_PASSWORD instead of creating another one
   const token = jwt.sign(
     { firstName, lastName },
-    process.env.SECRET_COOKIE_PASSWORD,
+    process.env.KS_SECRET_COOKIE_PASSWORD ?? process.env.SECRET_COOKIE_PASSWORD,
     { expiresIn: 14400 }
   );
 
@@ -25,7 +25,7 @@ export const verifyToken = (token) => {
 
   const decodedToken = jwt.verify(
     token,
-    process.env.SECRET_COOKIE_PASSWORD,
+    process.env.KS_SECRET_COOKIE_PASSWORD ?? process.env_SECRET_COOKIE_PASSWORD,
     error
   );
 

@@ -1,11 +1,11 @@
-// We are not using NextJS's native middleware featuer
+// We are not using NextJS's native middleware feature
 // because Amplify might not support it.
 import multer from "multer";
 import { verifyToken } from "../lib/JWT";
 import InvalidTokenError from "../errors/InvalidTokenError";
 import MissingHeaderError from "../errors/MissingHeaderError";
 
-// Uncomment when KlaudSol CMS is in v2.0.0
+// Uncomment when @klaudsol/commons is in v2.0.0
 /* export const parseFormData = async (req, res) => { */
 /*   if (req.method !== "POST" && req.method !== "PUT") return; */
 /**/
@@ -23,8 +23,10 @@ import MissingHeaderError from "../errors/MissingHeaderError";
 /*   req.body = JSON.parse(JSON.stringify(req.body)); */
 /* }; */
 
+const BEARER_LENGTH = 7;
+
 const tokenExtractor = async (req, res) => {
-  req.token = req.token.substring(7);
+  req.token = req.token.substring(BEARER_LENGTH);
 };
 
 const tokenVerifier = async (req, res) => {
@@ -54,7 +56,7 @@ const checkToken = async (req, res) => {
 
 const middleware = async (req, res) => {
   await checkToken(req, res);
-  // Uncomment if KlaudSol CMS is in v2.0.0
+  // Uncomment when @klaudsol/commons is in v2.0.0
   /* await parseFormData(req, res); */
 };
 

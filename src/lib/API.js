@@ -6,7 +6,7 @@ export const setCORSHeaders = ({ response, url }) => {
   if (url) response.setHeader("Access-Control-Allow-Origin", url);
 };
 
-// Transfer to middleware when Klaudsol CMS is v2.0.0.
+// Transfer to middleware when `@klaudsol/commons` is v2.0.0.
 // For now we need this to be backwards compatible
 export const parseFormData = async (req, res) => {
   if (req.method !== "POST" && req.method !== "PUT") return { req, res };
