@@ -33,15 +33,23 @@ class Cognito {
       if (authResult?.ChallengeName === "NEW_PASSWORD_REQUIRED") {
         return {
           session_token: authResult.Session,
-          user: { firstName: "", lastName: "", forcePasswordChange: true },
+          // note: this session token is only used for responding challenges and can only acquire if a challenge exists.
+          user: {
+            firstName: authResult.userAttributes?.find(attr => attr.Name === "given_name")?.Value || "",
+            lastName: authResult.userAttributes?.find(attr => attr.Name === "family_name")?.Value || "",
+            roles: [], // decode accessToken using JWT library to get the user's groups belong
+            capabilities: authResult.userAttributes?.find(attr => attr.Name === "custom:capabilities")?.Value.split(",") || [],
+            forcePasswordChange: true,
+          },
         };
       } else if (authResult?.ChallengeName) {
         throw UnauthorizedError("");
+        // throw error if any challenge exists other except for "NEW_PASSWORD_REQUIRED"
+        // as we dont want the operation to continue because it will only return incomplete data which only meant for responding challenges
       }
       access_token = authResult?.AuthenticationResult.AccessToken;
       refresh_token = authResult?.AuthenticationResult.RefreshToken;
 
-      // get user data using access token
       const tokenParams = {
         AccessToken: access_token,
       };
@@ -51,6 +59,9 @@ class Cognito {
       res.setHeader("Set-Cookie", [
         `refreshToken=${refresh_token}; Path=/; HttpOnly; SameSite=strict; Max-Age=86400`,
       ]);
+   
+      // store the refreshToken in the cookie
+      // we might extract this somewhere in our code using parse from library "cookie" to refresh our accessToken
       
       return {
         access_token,
@@ -73,8 +84,9 @@ class Cognito {
     }
   }
   
-  static async updatePassword({ email, session, oldPassword, newPassword }) {
+  static async updatePassword({ email, session, oldPassword, newPassword, forcePasswordChange }) {
     try {
+      
       if (!oldPassword || !newPassword)
         throw new UnauthorizedError("Passwords are required.");
 
@@ -93,7 +105,7 @@ class Cognito {
 
       const result = await cognito.respondToAuthChallenge(params).promise();
 
-      if (Object.values(result.ChallengeName)) {
+      if (result?.ChallengeName) {
         throw new UnauthorizedError();
       }
 
@@ -115,50 +127,50 @@ class Cognito {
 
   static async assert( accessToken , req) {
     try {
+
+      if(req.session.cache.forcePasswordChange) return;
+        
+     // If a new logged in user in cognito has challenge "NEW_PASSWORD_REQUIRED"
+     // the user will only receive sessionToken exclusively for responding challenges.
+     // at this state, our accessToken is empty so we cannot pass the assert.
+      
       var cognito = new CognitoIdentityServiceProvider();
       const params = {
         AccessToken: accessToken
       };
       
-      await cognito.getUser(params).promise();
+      const userData = await cognito.getUser(params).promise(); 
       return true;
       // the token is yet to expire.
     } catch (error) {
-      if (error.code === "NotAuthorizedException" && error.message === "Invalid Access Token") {
+       throw error;
+      // uncomment to automate token refreshment when using assert()
+      // or handle the renewal of token somewhere.
 
-        const cookies = parse(req.headers.cookie || "");
-        const refreshToken = cookies.refreshToken;
+      // if (error.code === "NotAuthorizedException" && error.message === "Invalid Access Token") {
 
-        const params = {
-          AuthFlow: "REFRESH_TOKEN_AUTH",
-          ClientId,
-          AuthParameters: {
-            REFRESH_TOKEN: refreshToken,
-          },
-        };
+      //   const cookies = parse(req.headers.cookie || "");
+      //   const refreshToken = cookies.refreshToken;
+
+      //   const params = {
+      //     AuthFlow: "REFRESH_TOKEN_AUTH",
+      //     ClientId,
+      //     AuthParameters: {
+      //       REFRESH_TOKEN: refreshToken,
+      //     },
+      //   };
         
-        let access_token;
-        const authResult = await cognito.initiateAuth(params).promise();
-        access_token = authResult.AuthenticationResult.AccessToken;
+      //   let access_token;
+      //   const authResult = await cognito.initiateAuth(params).promise();
+      //   access_token = authResult.AuthenticationResult.AccessToken;
 
-        // automated token refreshment
-
-        req.session.tokens.access_token = access_token;
-      
+      //   req.session.tokens.access_token = access_token;
         
-        // note: this is temporary for aws cognito testing
-        // as we might handle the renewal of accessToken here
-        // (automated: detects if accessToken is valid and let the user pass, else set a new accessToken in the cache if refresh token is still valid)
-
-
-        // or through separated api that only returns a new token
-        // 
-        
-      } else {
-        throw error;
-        // if the refreshToken is invalid, force logout the user.
-        // handle the logic later
-      }
+      // } else {
+      //   throw error;
+      //   // if the refreshToken is invalid, force logout the user.
+      //   // handle the logic later
+      // }
     }
   };
   
@@ -172,6 +184,7 @@ class Cognito {
       await cognito.globalSignOut(params).promise();
     } catch (error) {
       throw error;
+      // throw expiredTokenError here
     }
   }
   

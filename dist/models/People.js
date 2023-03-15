@@ -287,11 +287,11 @@ var People = /*#__PURE__*/function () {
     key: "updatePassword",
     value: function () {
       var _updatePassword = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(_ref2) {
-        var email, session, oldPassword, newPassword;
+        var email, session, oldPassword, newPassword, forcePasswordChange;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
-              email = _ref2.email, session = _ref2.session, oldPassword = _ref2.oldPassword, newPassword = _ref2.newPassword;
+              email = _ref2.email, session = _ref2.session, oldPassword = _ref2.oldPassword, newPassword = _ref2.newPassword, forcePasswordChange = _ref2.forcePasswordChange;
               _context4.prev = 1;
               _context4.t0 = process.env.USER_MANAGER;
               _context4.next = _context4.t0 === "COGNITO" ? 5 : _context4.t0 === "AURORA" ? 8 : 11;
@@ -302,7 +302,8 @@ var People = /*#__PURE__*/function () {
                 email: email,
                 session: session,
                 oldPassword: oldPassword,
-                newPassword: newPassword
+                newPassword: newPassword,
+                forcePasswordChange: forcePasswordChange
               });
             case 7:
               return _context4.abrupt("return", _context4.sent);

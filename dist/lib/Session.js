@@ -47,7 +47,7 @@ function _serverSideLogout() {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
           _context2.next = 2;
-          return (0, _Permissions.assertUserIsLoggedIn)(req);
+          return (0, _Permissions.assert)(req);
         case 2:
           session_token = _context2.sent;
           _context2.next = 5;

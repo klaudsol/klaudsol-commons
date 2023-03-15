@@ -51,8 +51,9 @@ class Session {
 
   static async assert(conditions, token, req) {
   
-    if (!token) return;
-    // return if no tokens are found, which means user is not logged in. 
+    if (!token){
+      throw new UnauthorizedError();
+    }
 
     try {
       switch (process.env.USER_MANAGER) {
@@ -71,14 +72,14 @@ class Session {
    
   }
 
-  static async logout(tokens) {
+  static async logout(token) {
     try {
       switch (process.env.USER_MANAGER) {
         case "COGNITO":
-         return await Cognito.logout(tokens);
+         return await Cognito.logout(token);
 
         case "AURORA":
-          return await Aurora.logout(tokens);
+          return await Aurora.logout(token);
  
         default:
           throw new Error();

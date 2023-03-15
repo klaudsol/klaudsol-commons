@@ -144,11 +144,11 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   }
 
   //A password changer needs a method of its own for security purposes
-  static async updatePassword({ email, session, oldPassword, newPassword }) {
+  static async updatePassword({ email, session, oldPassword, newPassword, forcePasswordChange }) {
     try {
       switch (process.env.USER_MANAGER) {
         case "COGNITO":
-         return await Cognito.updatePassword({ email, session, oldPassword, newPassword });
+         return await Cognito.updatePassword({ email, session, oldPassword, newPassword, forcePasswordChange });
 
         case "AURORA":
           return await Aurora.updatePassword({ session, oldPassword, newPassword });

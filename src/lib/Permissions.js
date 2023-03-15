@@ -29,27 +29,17 @@ import InsufficientPermissionsError from '../errors/InsufficientPermissionsError
 import Capability from '../models/Capability';
 import Session from '../models/Session';
 
-
-/* Deprecated.
- * Use assert instead.
- *
- **/
 export function assertUserIsLoggedIn(req) {
-  let session_token;
-  let access_token;
-  if (process.env.USER_MANAGER === "AURORA" && 
-     (session_token = req.session?.tokens?.session_token)) {
-
-    return session_token; 
-
-  } else if(process.env.USER_MANAGER === "COGNITO" && 
-   (access_token = req.session?.tokens?.access_token)){
-    
-    return access_token;
+   
+  if(process.env.USER_MANAGER === "AURORA"){
+    return req.session?.session_token;
   }
-  else {
-    throw new UnauthorizedError();                  
-  };    
+  else if(process.env.USER_MANAGER === "COGNITO"){
+    return req.session?.cache?.access_token;
+ }
+ else{
+    throw new UnauthorizedError();
+ }
 }
 
 export function assertAppIsEnabled(req, appName) {
@@ -72,11 +62,17 @@ export function assertUserHasPermission(req, permissionName) {
 export function getToken(req) {
 
   if(process.env.USER_MANAGER === "AURORA"){
-       return req.session?.tokens?.session_token;
+       return req.session?.session_token;
   }
   else if(process.env.USER_MANAGER === "COGNITO"){
-       return req.session?.tokens?.access_token;
-    
+      
+    if(req.session.cache.forcePasswordChange){
+      return req.session?.session_token; 
+    }
+    else{
+      req.session.cache.access_token;
+    }
+    // read line #133 in Cognito.js 
   }  
 };
 
@@ -85,18 +81,23 @@ export function getToken(req) {
  */
 
 export async function assert(conditions, req) {
-  
+
     const token = getToken(req);
     await Session.assert(conditions, token, req);
-    
+
 };
 
 export async function assertUserCan(capabilities, req){
     let currentCapabilities;
-    const session_token = req.session?.tokens?.session_token;
+    let token;
 
-    if(session_token){
-        currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token);
+    const condition = process.env.USER_MANAGER === "AURORA"  ? 
+                      (token = req?.session?.session_token)  : 
+                      process.env.USER_MANAGER === "COGNITO" && 
+                      (token = req?.session?.cache?.access_token) 
+
+    if(condition){
+        currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(token);
     } else{
         // If we can't find the user's ID, we can assume they are a guest.
         currentCapabilities =  await Capability.getCapabilitiesByGuest();

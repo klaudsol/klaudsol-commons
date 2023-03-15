@@ -120,7 +120,7 @@ var Session = /*#__PURE__*/function () {
                 _context2.next = 2;
                 break;
               }
-              return _context2.abrupt("return");
+              throw new _UnauthorizedError["default"]();
             case 2:
               _context2.prev = 2;
               _context2.t0 = process.env.USER_MANAGER;
@@ -159,7 +159,7 @@ var Session = /*#__PURE__*/function () {
   }, {
     key: "logout",
     value: function () {
-      var _logout = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(tokens) {
+      var _logout = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(token) {
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
@@ -169,12 +169,12 @@ var Session = /*#__PURE__*/function () {
               break;
             case 4:
               _context3.next = 6;
-              return _Cognito["default"].logout(tokens);
+              return _Cognito["default"].logout(token);
             case 6:
               return _context3.abrupt("return", _context3.sent);
             case 7:
               _context3.next = 9;
-              return _Aurora["default"].logout(tokens);
+              return _Aurora["default"].logout(token);
             case 9:
               return _context3.abrupt("return", _context3.sent);
             case 10:

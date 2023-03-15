@@ -34,7 +34,7 @@ var Cognito = /*#__PURE__*/function () {
     key: "login",
     value: function () {
       var _login = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(_ref) {
-        var email, password, res, _userDataResult$UserA, _userDataResult$UserA2, _userDataResult$UserA3, access_token, refresh_token, cognito, params, authResult, tokenParams, userDataResult;
+        var email, password, res, _userDataResult$UserA, _userDataResult$UserA2, _userDataResult$UserA3, access_token, refresh_token, cognito, params, authResult, _authResult$userAttri, _authResult$userAttri2, _authResult$userAttri3, _authResult$userAttri4, _authResult$userAttri5, _authResult$userAttri6, tokenParams, userDataResult;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
@@ -60,9 +60,19 @@ var Cognito = /*#__PURE__*/function () {
               }
               return _context.abrupt("return", {
                 session_token: authResult.Session,
+                // note: this session token is only used for responding challenges and can only acquire if a challenge exists.
                 user: {
-                  firstName: "",
-                  lastName: "",
+                  firstName: ((_authResult$userAttri = authResult.userAttributes) === null || _authResult$userAttri === void 0 ? void 0 : (_authResult$userAttri2 = _authResult$userAttri.find(function (attr) {
+                    return attr.Name === "given_name";
+                  })) === null || _authResult$userAttri2 === void 0 ? void 0 : _authResult$userAttri2.Value) || "",
+                  lastName: ((_authResult$userAttri3 = authResult.userAttributes) === null || _authResult$userAttri3 === void 0 ? void 0 : (_authResult$userAttri4 = _authResult$userAttri3.find(function (attr) {
+                    return attr.Name === "family_name";
+                  })) === null || _authResult$userAttri4 === void 0 ? void 0 : _authResult$userAttri4.Value) || "",
+                  roles: [],
+                  // decode accessToken using JWT library to get the user's groups belong
+                  capabilities: ((_authResult$userAttri5 = authResult.userAttributes) === null || _authResult$userAttri5 === void 0 ? void 0 : (_authResult$userAttri6 = _authResult$userAttri5.find(function (attr) {
+                    return attr.Name === "custom:capabilities";
+                  })) === null || _authResult$userAttri6 === void 0 ? void 0 : _authResult$userAttri6.Value.split(",")) || [],
                   forcePasswordChange: true
                 }
               });
@@ -75,8 +85,6 @@ var Cognito = /*#__PURE__*/function () {
             case 13:
               access_token = authResult === null || authResult === void 0 ? void 0 : authResult.AuthenticationResult.AccessToken;
               refresh_token = authResult === null || authResult === void 0 ? void 0 : authResult.AuthenticationResult.RefreshToken;
-
-              // get user data using access token
               tokenParams = {
                 AccessToken: access_token
               };
@@ -85,6 +93,9 @@ var Cognito = /*#__PURE__*/function () {
             case 18:
               userDataResult = _context.sent;
               res.setHeader("Set-Cookie", ["refreshToken=".concat(refresh_token, "; Path=/; HttpOnly; SameSite=strict; Max-Age=86400")]);
+
+              // store the refreshToken in the cookie
+              // we might extract this somewhere in our code using parse from library "cookie" to refresh our accessToken
               return _context.abrupt("return", {
                 access_token: access_token,
                 user: {
@@ -132,11 +143,11 @@ var Cognito = /*#__PURE__*/function () {
     key: "updatePassword",
     value: function () {
       var _updatePassword = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_ref2) {
-        var email, session, oldPassword, newPassword, cognito, params, result;
+        var email, session, oldPassword, newPassword, forcePasswordChange, cognito, params, result;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              email = _ref2.email, session = _ref2.session, oldPassword = _ref2.oldPassword, newPassword = _ref2.newPassword;
+              email = _ref2.email, session = _ref2.session, oldPassword = _ref2.oldPassword, newPassword = _ref2.newPassword, forcePasswordChange = _ref2.forcePasswordChange;
               _context2.prev = 1;
               if (!(!oldPassword || !newPassword)) {
                 _context2.next = 4;
@@ -159,7 +170,7 @@ var Cognito = /*#__PURE__*/function () {
               return cognito.respondToAuthChallenge(params).promise();
             case 8:
               result = _context2.sent;
-              if (!Object.values(result.ChallengeName)) {
+              if (!(result !== null && result !== void 0 && result.ChallengeName)) {
                 _context2.next = 11;
                 break;
               }
@@ -197,60 +208,38 @@ var Cognito = /*#__PURE__*/function () {
     key: "assert",
     value: function () {
       var _assert = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(accessToken, req) {
-        var cognito, params, cookies, refreshToken, _params, access_token, authResult;
+        var cognito, params, userData;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
               _context3.prev = 0;
+              if (!req.session.cache.forcePasswordChange) {
+                _context3.next = 3;
+                break;
+              }
+              return _context3.abrupt("return");
+            case 3:
+              // If a new logged in user in cognito has challenge "NEW_PASSWORD_REQUIRED"
+              // the user will only receive sessionToken exclusively for responding challenges.
+              // at this state, our accessToken is empty so we cannot pass the assert.
               cognito = new _awsSdk.CognitoIdentityServiceProvider();
               params = {
                 AccessToken: accessToken
               };
-              _context3.next = 5;
+              _context3.next = 7;
               return cognito.getUser(params).promise();
-            case 5:
+            case 7:
+              userData = _context3.sent;
               return _context3.abrupt("return", true);
-            case 8:
-              _context3.prev = 8;
+            case 11:
+              _context3.prev = 11;
               _context3.t0 = _context3["catch"](0);
-              if (!(_context3.t0.code === "NotAuthorizedException" && _context3.t0.message === "Invalid Access Token")) {
-                _context3.next = 21;
-                break;
-              }
-              cookies = (0, _cookie.parse)(req.headers.cookie || "");
-              refreshToken = cookies.refreshToken;
-              _params = {
-                AuthFlow: "REFRESH_TOKEN_AUTH",
-                ClientId: ClientId,
-                AuthParameters: {
-                  REFRESH_TOKEN: refreshToken
-                }
-              };
-              _context3.next = 16;
-              return cognito.initiateAuth(_params).promise();
-            case 16:
-              authResult = _context3.sent;
-              access_token = authResult.AuthenticationResult.AccessToken;
-
-              // automated token refreshment
-
-              req.session.tokens.access_token = access_token;
-
-              // note: this is temporary for aws cognito testing
-              // as we might handle the renewal of accessToken here
-              // (automated: detects if accessToken is valid and let the user pass, else set a new accessToken in the cache if refresh token is still valid)
-
-              // or through separated api that only returns a new token
-              // 
-              _context3.next = 22;
-              break;
-            case 21:
               throw _context3.t0;
-            case 22:
+            case 14:
             case "end":
               return _context3.stop();
           }
-        }, _callee3, null, [[0, 8]]);
+        }, _callee3, null, [[0, 11]]);
       }));
       function assert(_x3, _x4) {
         return _assert.apply(this, arguments);
