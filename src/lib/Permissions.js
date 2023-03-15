@@ -36,9 +36,18 @@ import Session from '../models/Session';
  **/
 export function assertUserIsLoggedIn(req) {
   let session_token;
-  if (session_token = req.session?.session_token) {
+  let access_token;
+  if (process.env.USER_MANAGER === "AURORA" && 
+     (session_token = req.session?.tokens?.session_token)) {
+
     return session_token; 
-  } else {
+
+  } else if(process.env.USER_MANAGER === "COGNITO" && 
+   (access_token = req.session?.tokens?.access_token)){
+    
+    return access_token;
+  }
+  else {
     throw new UnauthorizedError();                  
   };    
 }
@@ -60,8 +69,15 @@ export function assertUserHasPermission(req, permissionName) {
  * 
  */
  
-export function getSessionToken(req) {
-  return req.session?.session_token;   
+export function getToken(req) {
+
+  if(process.env.USER_MANAGER === "AURORA"){
+       return req.session?.tokens?.session_token;
+  }
+  else if(process.env.USER_MANAGER === "COGNITO"){
+       return req.session?.tokens?.access_token;
+    
+  }  
 };
 
 /* 
@@ -70,14 +86,14 @@ export function getSessionToken(req) {
 
 export async function assert(conditions, req) {
   
-    const sessionToken = getSessionToken(req);
-    await Session.assert(conditions, sessionToken);
-  
+    const token = getToken(req);
+    await Session.assert(conditions, token, req);
+    
 };
 
 export async function assertUserCan(capabilities, req){
     let currentCapabilities;
-    const session_token = req.session?.session_token;
+    const session_token = req.session?.tokens?.session_token;
 
     if(session_token){
         currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token);

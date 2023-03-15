@@ -8,7 +8,7 @@ exports.assertAppIsEnabled = assertAppIsEnabled;
 exports.assertUserCan = assertUserCan;
 exports.assertUserHasPermission = assertUserHasPermission;
 exports.assertUserIsLoggedIn = assertUserIsLoggedIn;
-exports.getSessionToken = getSessionToken;
+exports.getToken = getToken;
 var _UnauthorizedError = _interopRequireDefault(require("../errors/UnauthorizedError"));
 var _InsufficientPermissionsError = _interopRequireDefault(require("../errors/InsufficientPermissionsError"));
 var _Capability = _interopRequireDefault(require("../models/Capability"));
@@ -23,10 +23,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
  *
  **/
 function assertUserIsLoggedIn(req) {
-  var _req$session;
+  var _req$session, _req$session$tokens, _req$session2, _req$session2$tokens;
   var session_token;
-  if (session_token = (_req$session = req.session) === null || _req$session === void 0 ? void 0 : _req$session.session_token) {
+  var access_token;
+  if (process.env.USER_MANAGER === "AURORA" && (session_token = (_req$session = req.session) === null || _req$session === void 0 ? void 0 : (_req$session$tokens = _req$session.tokens) === null || _req$session$tokens === void 0 ? void 0 : _req$session$tokens.session_token)) {
     return session_token;
+  } else if (process.env.USER_MANAGER === "COGNITO" && (access_token = (_req$session2 = req.session) === null || _req$session2 === void 0 ? void 0 : (_req$session2$tokens = _req$session2.tokens) === null || _req$session2$tokens === void 0 ? void 0 : _req$session2$tokens.access_token)) {
+    return access_token;
   } else {
     throw new _UnauthorizedError["default"]();
   }
@@ -48,9 +51,14 @@ function assertUserHasPermission(req, permissionName) {
  * 
  */
 
-function getSessionToken(req) {
-  var _req$session2;
-  return (_req$session2 = req.session) === null || _req$session2 === void 0 ? void 0 : _req$session2.session_token;
+function getToken(req) {
+  if (process.env.USER_MANAGER === "AURORA") {
+    var _req$session3, _req$session3$tokens;
+    return (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : (_req$session3$tokens = _req$session3.tokens) === null || _req$session3$tokens === void 0 ? void 0 : _req$session3$tokens.session_token;
+  } else if (process.env.USER_MANAGER === "COGNITO") {
+    var _req$session4, _req$session4$tokens;
+    return (_req$session4 = req.session) === null || _req$session4 === void 0 ? void 0 : (_req$session4$tokens = _req$session4.tokens) === null || _req$session4$tokens === void 0 ? void 0 : _req$session4$tokens.access_token;
+  }
 }
 ;
 
@@ -62,13 +70,13 @@ function assert(_x, _x2) {
 }
 function _assert() {
   _assert = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(conditions, req) {
-    var sessionToken;
+    var token;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          sessionToken = getSessionToken(req);
+          token = getToken(req);
           _context.next = 3;
-          return _Session["default"].assert(conditions, sessionToken);
+          return _Session["default"].assert(conditions, token, req);
         case 3:
         case "end":
           return _context.stop();
@@ -83,12 +91,12 @@ function assertUserCan(_x3, _x4) {
 }
 function _assertUserCan() {
   _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req) {
-    var _req$session3;
+    var _req$session5, _req$session5$tokens;
     var currentCapabilities, session_token;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          session_token = (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token;
+          session_token = (_req$session5 = req.session) === null || _req$session5 === void 0 ? void 0 : (_req$session5$tokens = _req$session5.tokens) === null || _req$session5$tokens === void 0 ? void 0 : _req$session5$tokens.session_token;
           if (!session_token) {
             _context2.next = 7;
             break;

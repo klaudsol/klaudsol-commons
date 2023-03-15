@@ -1,25 +1,25 @@
 import DB from "../lib/DB";
 import InsufficientPermissionsError from "../errors/InsufficientPermissionsError";
+import Aurora from "../lib/Aurora";
+import Cognito from "../lib/Cognito";
+
 
 export default class Capability {
-  static async getCapabilitiesByLoggedInUser(session_token) {
-    const db = new DB();
+  static async getCapabilitiesByLoggedInUser(token) {
+    try {
+      switch (process.env.USER_MANAGER) {
+        case "COGNITO":
+         return await Cognito.getCapabilitiesByLoggedInUser(token);
 
-    const sql = `SELECT DISTINCT capabilities.name from people_groups 
-    LEFT JOIN groups ON groups.id = people_groups.group_id
-    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
-    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
-    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token) AND capabilities.name IS NOT NULL`;
-
-    const rawCapabilites = await db.executeStatement(sql, [
-      { name: "session_token", value: { stringValue: session_token } },
-    ]);
-
-    const userCapabilities = rawCapabilites.records.map(
-      ([{ stringValue: capability }]) => capability
-    );
-
-    return userCapabilities;
+        case "AURORA":
+          return await Aurora.getCapabilitiesByLoggedInUser(token);
+ 
+        default:
+          throw new Error();
+      } 
+    } catch (error) {
+      throw error; //throw error after logging so that the application handles the error
+    }
   }
 
   static async getCapabilitiesByGuest() {
