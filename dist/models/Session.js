@@ -128,7 +128,7 @@ var Session = /*#__PURE__*/function () {
               break;
             case 6:
               _context2.next = 8;
-              return _Cognito["default"].assert(token, req);
+              return _Cognito["default"].assert(req);
             case 8:
               return _context2.abrupt("return", _context2.sent);
             case 9:

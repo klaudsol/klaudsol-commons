@@ -35,7 +35,12 @@ export function assertUserIsLoggedIn(req) {
     return req.session?.session_token;
   }
   else if(process.env.USER_MANAGER === "COGNITO"){
-    return req.session?.cache?.access_token;
+    
+   return req.session.cache.forcePasswordChange ?
+          req.session.session_token :
+          req.session.cache.access_token;
+
+    // see line #131 in Cognito.js
  }
  else{
     throw new UnauthorizedError();
@@ -60,20 +65,8 @@ export function assertUserHasPermission(req, permissionName) {
  */
  
 export function getToken(req) {
-
-  if(process.env.USER_MANAGER === "AURORA"){
-       return req.session?.session_token;
-  }
-  else if(process.env.USER_MANAGER === "COGNITO"){
-      
-    if(req.session.cache.forcePasswordChange){
-      return req.session?.session_token; 
-    }
-    else{
-      req.session.cache.access_token;
-    }
-    // see line #133 in Cognito.js 
-  }  
+      return req.session?.session_token;
+ 
 };
 
 /* 

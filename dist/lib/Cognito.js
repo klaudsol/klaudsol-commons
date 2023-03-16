@@ -26,6 +26,7 @@ _awsSdk["default"].config.update({
   region: process.env.AURORA_AWS_REGION
 });
 var ClientId = process.env.COGNITO_CLIENT_ID;
+var UserPoolId = process.env.USER_POOL_ID;
 var Cognito = /*#__PURE__*/function () {
   function Cognito() {
     _classCallCheck(this, Cognito);
@@ -60,8 +61,9 @@ var Cognito = /*#__PURE__*/function () {
               }
               return _context.abrupt("return", {
                 session_token: authResult.Session,
-                // note: this session token is only used for responding challenges and can only acquire if a challenge exists.
+                // note: The session token is exclusively intended for responding to challenges and can only be obtained if a challenge exists.
                 user: {
+                  username: authResult.ChallengeParameters.USER_ID_FOR_SRP,
                   firstName: ((_authResult$userAttri = authResult.userAttributes) === null || _authResult$userAttri === void 0 ? void 0 : (_authResult$userAttri2 = _authResult$userAttri.find(function (attr) {
                     return attr.Name === "given_name";
                   })) === null || _authResult$userAttri2 === void 0 ? void 0 : _authResult$userAttri2.Value) || "",
@@ -94,14 +96,15 @@ var Cognito = /*#__PURE__*/function () {
               userDataResult = _context.sent;
               res.setHeader("Set-Cookie", ["refreshToken=".concat(refresh_token, "; Path=/; HttpOnly; SameSite=strict; Max-Age=86400")]);
 
-              // store the refreshToken in the cookie
-              // we might extract this somewhere in our code using parse from library "cookie" to refresh our accessToken
+              // We should store the refreshToken in a cookie and then use the 'parse' function from the 'cookie' 
+              // library to extract it at a later stage in our code. This will allow us to refresh our accessToken.
               return _context.abrupt("return", {
                 access_token: access_token,
                 user: {
+                  username: userDataResult.Username,
                   firstName: ((_userDataResult$UserA = userDataResult.UserAttributes.find(function (attr) {
                     return attr.Name === "given_name";
-                  })) === null || _userDataResult$UserA === void 0 ? void 0 : _userDataResult$UserA.Value) || userDataResult.Username,
+                  })) === null || _userDataResult$UserA === void 0 ? void 0 : _userDataResult$UserA.Value) || "",
                   lastName: ((_userDataResult$UserA2 = userDataResult.UserAttributes.find(function (attr) {
                     return attr.Name === "family_name";
                   })) === null || _userDataResult$UserA2 === void 0 ? void 0 : _userDataResult$UserA2.Value) || "",
@@ -207,41 +210,60 @@ var Cognito = /*#__PURE__*/function () {
   }, {
     key: "assert",
     value: function () {
-      var _assert = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(accessToken, req) {
-        var cognito, params, userData;
+      var _assert = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req) {
+        var cognito, sessionToken, username, params, accessToken, _params;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.prev = 0;
+              cognito = new _awsSdk.CognitoIdentityServiceProvider();
+              _context3.prev = 1;
               if (!req.session.cache.forcePasswordChange) {
-                _context3.next = 3;
+                _context3.next = 11;
                 break;
               }
-              return _context3.abrupt("return");
-            case 3:
-              // If a new logged in user in cognito has challenge "NEW_PASSWORD_REQUIRED"
-              // the user will only receive sessionToken exclusively for responding challenges.
-              // at this state, our accessToken is empty so we cannot pass the assert.
-              cognito = new _awsSdk.CognitoIdentityServiceProvider();
+              sessionToken = req.session.session_token;
+              username = req.session.cache.username; // If a newly logged-in user in Cognito has a challenge status of 'NEW_PASSWORD_REQUIRED', 
+              // they will only receive a sessionToken that is exclusively intended for responding to challenges. 
+              // At this stage, we only have the sessionToken we obtained in the challenge for assertion.
+              // in this case, use authflow ADMIN_NO_SRP_AUTH to verify if the sessionToken is still valid.
+              // assert using session_token
               params = {
-                AccessToken: accessToken
+                AuthFlow: 'ADMIN_NO_SRP_AUTH',
+                UserPoolId: UserPoolId,
+                ClientId: ClientId,
+                AuthParameters: {
+                  USERNAME: username,
+                  SESSION: sessionToken
+                }
               };
-              _context3.next = 7;
-              return cognito.getUser(params).promise();
-            case 7:
-              userData = _context3.sent;
+              _context3.next = 8;
+              return cognito.adminInitiateAuth(params).promise();
+            case 8:
               return _context3.abrupt("return", true);
             case 11:
-              _context3.prev = 11;
-              _context3.t0 = _context3["catch"](0);
+              // assert using access_token
+              accessToken = req.session.cache.access_token;
+              _params = {
+                AccessToken: accessToken
+              };
+              _context3.next = 15;
+              return cognito.getUser(_params).promise();
+            case 15:
+              return _context3.abrupt("return", true);
+            case 16:
+              _context3.next = 21;
+              break;
+            case 18:
+              _context3.prev = 18;
+              _context3.t0 = _context3["catch"](1);
               throw _context3.t0;
-            case 14:
+            case 21:
             case "end":
               return _context3.stop();
           }
-        }, _callee3, null, [[0, 11]]);
+        }, _callee3, null, [[1, 18]]);
       }));
-      function assert(_x3, _x4) {
+      function assert(_x3) {
         return _assert.apply(this, arguments);
       }
       return assert;
@@ -249,15 +271,19 @@ var Cognito = /*#__PURE__*/function () {
   }, {
     key: "logout",
     value: function () {
-      var _logout = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(access_token) {
+      var _logout = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(token) {
         var cognito, params;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
           while (1) switch (_context4.prev = _context4.next) {
             case 0:
               _context4.prev = 0;
+              // If a newly logged-in user in Cognito has a challenge status of 'NEW_PASSWORD_REQUIRED', 
+              // they will only receive a sessionToken that is exclusively intended for responding to challenges. 
+              // At this stage, we are using the sessionToken we obtained in the challenge to logout the user if the forcePasswordChange is true.
+              // else accessToken.
               cognito = new _awsSdk.CognitoIdentityServiceProvider();
               params = {
-                AccessToken: access_token
+                AccessToken: token
               };
               _context4.next = 5;
               return cognito.globalSignOut(params).promise();
@@ -274,7 +300,7 @@ var Cognito = /*#__PURE__*/function () {
           }
         }, _callee4, null, [[0, 7]]);
       }));
-      function logout(_x5) {
+      function logout(_x4) {
         return _logout.apply(this, arguments);
       }
       return logout;
@@ -316,7 +342,7 @@ var Cognito = /*#__PURE__*/function () {
           }
         }, _callee5, null, [[0, 10]]);
       }));
-      function getCapabilitiesByLoggedInUser(_x6) {
+      function getCapabilitiesByLoggedInUser(_x5) {
         return _getCapabilitiesByLoggedInUser.apply(this, arguments);
       }
       return getCapabilitiesByLoggedInUser;

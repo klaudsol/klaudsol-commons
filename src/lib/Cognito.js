@@ -10,6 +10,7 @@ AWS.config.update({
   region: process.env.AURORA_AWS_REGION,
 });
 const ClientId = process.env.COGNITO_CLIENT_ID;
+const UserPoolId = process.env.USER_POOL_ID;
 
 class Cognito {
   static async login({ email, password, res }) {
@@ -35,6 +36,7 @@ class Cognito {
           session_token: authResult.Session,
           // note: The session token is exclusively intended for responding to challenges and can only be obtained if a challenge exists.
           user: {
+            username: authResult.ChallengeParameters.USER_ID_FOR_SRP,
             firstName: authResult.userAttributes?.find(attr => attr.Name === "given_name")?.Value || "",
             lastName: authResult.userAttributes?.find(attr => attr.Name === "family_name")?.Value || "",
             roles: [], // decode accessToken using JWT library to get the user's groups belong
@@ -66,7 +68,8 @@ class Cognito {
       return {
         access_token,
         user: {
-          firstName: userDataResult.UserAttributes.find(attr => attr.Name === "given_name")?.Value || userDataResult.Username,
+          username: userDataResult.Username,
+          firstName: userDataResult.UserAttributes.find(attr => attr.Name === "given_name")?.Value || "",
           lastName: userDataResult.UserAttributes.find(attr => attr.Name === "family_name")?.Value || "",
           roles: [], 
           capabilities: userDataResult.UserAttributes.find(attr => attr.Name === "custom:capabilities")?.Value.split(",") || [],
@@ -125,22 +128,49 @@ class Cognito {
     }
   }
 
-  static async assert( accessToken , req) {
+  static async assert(req) {
+    const cognito = new CognitoIdentityServiceProvider();
     try {
-
-      if(req.session.cache.forcePasswordChange) return;
-        
+      if(req.session.cache.forcePasswordChange){
+       const sessionToken = req.session.session_token;
+       const username = req.session.cache.username;
+       
       // If a newly logged-in user in Cognito has a challenge status of 'NEW_PASSWORD_REQUIRED', 
       // they will only receive a sessionToken that is exclusively intended for responding to challenges. 
-      // At this stage, our accessToken will be empty, so we cannot pass the assertion.
-      
-      var cognito = new CognitoIdentityServiceProvider();
+      // At this stage, we only have the sessionToken we obtained in the challenge for assertion.
+      // in this case, use authflow ADMIN_NO_SRP_AUTH to verify if the sessionToken is still valid.
+
+      // assert using session_token
+
+      const params = {
+        AuthFlow: 'ADMIN_NO_SRP_AUTH',
+        UserPoolId,
+        ClientId,
+        AuthParameters: {
+          USERNAME: username,
+          SESSION: sessionToken
+        }
+      };
+
+      await cognito.adminInitiateAuth(params).promise();
+
+      return true
+      }
+      else{
+
+      // assert using access_token
+
+      const accessToken = req.session.cache.access_token;
+                
       const params = {
         AccessToken: accessToken
       };
       
-      const userData = await cognito.getUser(params).promise(); 
+      await cognito.getUser(params).promise();
+
       return true;
+      }
+
       // the token is yet to expire.
     } catch (error) {
        throw error;
@@ -175,11 +205,16 @@ class Cognito {
   };
   
 
-  static async logout( access_token ) {
+  static async logout( token ) {
     try {
+      // If a newly logged-in user in Cognito has a challenge status of 'NEW_PASSWORD_REQUIRED', 
+      // they will only receive a sessionToken that is exclusively intended for responding to challenges. 
+      // At this stage, we are using the sessionToken we obtained in the challenge to logout the user if the forcePasswordChange is true.
+      // else accessToken.
+
       const cognito = new CognitoIdentityServiceProvider();
       const params = {
-        AccessToken: access_token,
+        AccessToken: token,
       };
       await cognito.globalSignOut(params).promise();
     } catch (error) {

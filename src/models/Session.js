@@ -58,7 +58,7 @@ class Session {
     try {
       switch (process.env.USER_MANAGER) {
         case "COGNITO":
-         return await Cognito.assert(token, req);
+         return await Cognito.assert(req);
 
         case "AURORA":
           return await Aurora.assert(conditions, token);

@@ -23,8 +23,9 @@ function assertUserIsLoggedIn(req) {
     var _req$session;
     return (_req$session = req.session) === null || _req$session === void 0 ? void 0 : _req$session.session_token;
   } else if (process.env.USER_MANAGER === "COGNITO") {
-    var _req$session2, _req$session2$cache;
-    return (_req$session2 = req.session) === null || _req$session2 === void 0 ? void 0 : (_req$session2$cache = _req$session2.cache) === null || _req$session2$cache === void 0 ? void 0 : _req$session2$cache.access_token;
+    return req.session.cache.forcePasswordChange ? req.session.session_token : req.session.cache.access_token;
+
+    // see line #131 in Cognito.js
   } else {
     throw new _UnauthorizedError["default"]();
   }
@@ -46,20 +47,9 @@ function assertUserHasPermission(req, permissionName) {
  */
 
 function getToken(req) {
-  if (process.env.USER_MANAGER === "AURORA") {
-    var _req$session3;
-    return (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token;
-  } else if (process.env.USER_MANAGER === "COGNITO") {
-    if (req.session.cache.forcePasswordChange) {
-      var _req$session4;
-      return (_req$session4 = req.session) === null || _req$session4 === void 0 ? void 0 : _req$session4.session_token;
-    } else {
-      req.session.cache.access_token;
-    }
-    // read line #133 in Cognito.js 
-  }
+  var _req$session2;
+  return (_req$session2 = req.session) === null || _req$session2 === void 0 ? void 0 : _req$session2.session_token;
 }
-
 ;
 
 /* 
@@ -91,12 +81,12 @@ function assertUserCan(_x3, _x4) {
 }
 function _assertUserCan() {
   _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req) {
-    var _req$session5, _req$session6, _req$session6$cache;
+    var _req$session3, _req$session4, _req$session4$cache;
     var currentCapabilities, token, condition;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          condition = process.env.USER_MANAGER === "AURORA" ? token = req === null || req === void 0 ? void 0 : (_req$session5 = req.session) === null || _req$session5 === void 0 ? void 0 : _req$session5.session_token : process.env.USER_MANAGER === "COGNITO" && (token = req === null || req === void 0 ? void 0 : (_req$session6 = req.session) === null || _req$session6 === void 0 ? void 0 : (_req$session6$cache = _req$session6.cache) === null || _req$session6$cache === void 0 ? void 0 : _req$session6$cache.access_token);
+          condition = process.env.USER_MANAGER === "AURORA" ? token = req === null || req === void 0 ? void 0 : (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token : process.env.USER_MANAGER === "COGNITO" && (token = req === null || req === void 0 ? void 0 : (_req$session4 = req.session) === null || _req$session4 === void 0 ? void 0 : (_req$session4$cache = _req$session4.cache) === null || _req$session4$cache === void 0 ? void 0 : _req$session4$cache.access_token);
           if (!condition) {
             _context2.next = 7;
             break;
