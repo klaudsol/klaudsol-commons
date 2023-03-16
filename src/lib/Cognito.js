@@ -33,7 +33,7 @@ class Cognito {
       if (authResult?.ChallengeName === "NEW_PASSWORD_REQUIRED") {
         return {
           session_token: authResult.Session,
-          // note: this session token is only used for responding challenges and can only acquire if a challenge exists.
+          // note: The session token is exclusively intended for responding to challenges and can only be obtained if a challenge exists.
           user: {
             firstName: authResult.userAttributes?.find(attr => attr.Name === "given_name")?.Value || "",
             lastName: authResult.userAttributes?.find(attr => attr.Name === "family_name")?.Value || "",
@@ -44,8 +44,8 @@ class Cognito {
         };
       } else if (authResult?.ChallengeName) {
         throw UnauthorizedError("");
-        // throw error if any challenge exists other except for "NEW_PASSWORD_REQUIRED"
-        // as we dont want the operation to continue because it will only return incomplete data which only meant for responding challenges
+        // We should throw an error if any challenge exists, except for 'NEW_PASSWORD_REQUIRED,'
+        // as continuing with the operation would only result in incomplete data that is intended solely for responding to challenges.
       }
       access_token = authResult?.AuthenticationResult.AccessToken;
       refresh_token = authResult?.AuthenticationResult.RefreshToken;
@@ -60,8 +60,8 @@ class Cognito {
         `refreshToken=${refresh_token}; Path=/; HttpOnly; SameSite=strict; Max-Age=86400`,
       ]);
    
-      // store the refreshToken in the cookie
-      // we might extract this somewhere in our code using parse from library "cookie" to refresh our accessToken
+      // We should store the refreshToken in a cookie and then use the 'parse' function from the 'cookie' 
+      // library to extract it at a later stage in our code. This will allow us to refresh our accessToken.
       
       return {
         access_token,
@@ -130,9 +130,9 @@ class Cognito {
 
       if(req.session.cache.forcePasswordChange) return;
         
-     // If a new logged in user in cognito has challenge "NEW_PASSWORD_REQUIRED"
-     // the user will only receive sessionToken exclusively for responding challenges.
-     // at this state, our accessToken is empty so we cannot pass the assert.
+      // If a newly logged-in user in Cognito has a challenge status of 'NEW_PASSWORD_REQUIRED', 
+      // they will only receive a sessionToken that is exclusively intended for responding to challenges. 
+      // At this stage, our accessToken will be empty, so we cannot pass the assertion.
       
       var cognito = new CognitoIdentityServiceProvider();
       const params = {

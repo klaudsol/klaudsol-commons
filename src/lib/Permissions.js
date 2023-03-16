@@ -72,7 +72,7 @@ export function getToken(req) {
     else{
       req.session.cache.access_token;
     }
-    // read line #133 in Cognito.js 
+    // see line #133 in Cognito.js 
   }  
 };
 
