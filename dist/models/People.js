@@ -172,7 +172,7 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 24:
-              defaultEntityTypeSQL = "SELECT entity_types.slug from entity_types LIMIT 1";
+              defaultEntityTypeSQL = "SELECT entity_types.slug FROM entity_types ORDER BY id ASC LIMIT 1";
               _context.next = 27;
               return db.executeStatement(defaultEntityTypeSQL, []);
             case 27:
