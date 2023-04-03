@@ -1,63 +1,35 @@
 // We are not using NextJS's native middleware feature
 // because Amplify might not support it.
-import multer from "multer";
+//
+import { getCookie } from 'cookies-next';
 import { verifyToken } from "../lib/JWT";
-import InvalidTokenError from "../errors/InvalidTokenError";
 import MissingHeaderError from "../errors/MissingHeaderError";
 
-// Uncomment when @klaudsol/commons is in v2.0.0
-/* export const parseFormData = async (req, res) => { */
-/*   if (req.method !== "POST" && req.method !== "PUT") return; */
-/**/
-/*   const storage = multer.memoryStorage(); */
-/*   const multerSetup = multer({ storage }); */
-/*   const upload = multerSetup.any(); */
-/**/
-/*   await new Promise((resolve, reject) => { */
-/*     upload(req, res, (result) => { */
-/*       if (result instanceof Error) return reject(result); */
-/*       return resolve(result); */
-/*     }); */
-/*   }); */
-/**/
-/*   req.body = JSON.parse(JSON.stringify(req.body)); */
-/* }; */
-
-const BEARER_LENGTH = 7;
-
 const tokenValidator = async (req, res) => {
-  const token = req.token;
+  const { token } = req;
 
   if (!token) throw new MissingHeaderError();
-  if (!token.startsWith("Bearer")) throw new InvalidTokenError();
-};
-
-const tokenExtractor = async (req, res) => {
-  req.token = req.token.substring(BEARER_LENGTH);
 };
 
 const tokenVerifier = async (req, res) => {
-  const token = req.token;
+  const { token } = req;
 
   verifyToken(token);
 };
 
 const checkToken = async (req, res) => {
-  const header = req.headers.authorization;
+  const token = getCookie('token', { req, res });
 
-  if (req.method === "GET" && !header) return;
+  if (req.method === "GET" && !token) return;
 
-  req.token = header;
+  req.token = token;
 
   await tokenValidator(req, res);
-  await tokenExtractor(req, res);
   await tokenVerifier(req, res);
 };
 
 const middleware = async (req, res) => {
   await checkToken(req, res);
-  // Uncomment when @klaudsol/commons is in v2.0.0
-  /* await parseFormData(req, res); */
 };
 
 export default middleware;
