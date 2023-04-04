@@ -17,7 +17,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var setCORSHeaders = function setCORSHeaders(_ref) {
   var response = _ref.response,
     url = _ref.url;
-  if (url) response.setHeader("Access-Control-Allow-Origin", url);
+  if (url) {
+    response.setHeader("Access-Control-Allow-Origin", url);
+    response.setHeader("Access-Control-Allow-Credentials", true);
+  }
 };
 exports.setCORSHeaders = setCORSHeaders;
 function createAPIHandler() {

@@ -2,7 +2,11 @@ import middleware from "../lib/Middleware";
 import { defaultErrorHandler } from "../lib/ErrorHandler";
 
 export const setCORSHeaders = ({ response, url }) => {
-  if (url) response.setHeader("Access-Control-Allow-Origin", url);
+  if (url) {
+    response.setHeader("Access-Control-Allow-Origin", url);
+    response.setHeader("Access-Control-Allow-Credentials", true);
+  }
+  
 };
 
 export function createAPIHandler(methods = {}) {
