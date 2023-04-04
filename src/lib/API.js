@@ -10,6 +10,21 @@ export const setCORSHeaders = ({ response, url }) => {
   }
 };
 
+export const parseFormData = async (req, res) => {
+  const storage = multer.memoryStorage();
+  const multerSetup = multer({ storage });
+  const upload = multerSetup.any();
+
+  await new Promise((resolve, reject) => {
+    upload(req, res, (result) => {
+      if (result instanceof Error) return reject(result);
+      return resolve(result);
+    });
+  });
+
+  return { req, res };
+}
+
 export function createAPIHandler(methods = {}) {
   return async (req, res) => {
     try {
