@@ -43,7 +43,8 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       
       const db = new DB();
       const sql = `SELECT id, salt, first_name, last_name, force_password_change FROM people 
-        WHERE (email = :email OR username = :email) AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 LIMIT 1;`;
+        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 LIMIT 1;`; 
+        
       const data = await db.executeStatement(sql, [
         {name: 'email', value:{stringValue: email}},
         {name: 'password', value:{stringValue: password}}

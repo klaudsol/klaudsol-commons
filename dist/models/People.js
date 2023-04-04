@@ -104,7 +104,7 @@ var People = /*#__PURE__*/function () {
             case 0:
               _context.prev = 0;
               db = new _DB["default"]();
-              sql = "SELECT id, salt, first_name, last_name, force_password_change FROM people \n        WHERE (email = :email OR username = :email) AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 LIMIT 1;";
+              sql = "SELECT id, salt, first_name, last_name, force_password_change FROM people \n        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 LIMIT 1;";
               _context.next = 5;
               return db.executeStatement(sql, [{
                 name: 'email',
