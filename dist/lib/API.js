@@ -4,8 +4,11 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.constructAPIHandler = constructAPIHandler;
 exports.createAPIHandler = createAPIHandler;
+exports.handleRequests = handleRequests;
 exports.setCORSHeaders = exports.parseFormData = void 0;
+var _Middleware = _interopRequireDefault(require("../lib/Middleware"));
 var _multer = _interopRequireDefault(require("multer"));
 var _ErrorHandler = require("../lib/ErrorHandler");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
@@ -15,8 +18,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 var setCORSHeaders = function setCORSHeaders(_ref) {
   var response = _ref.response,
     url = _ref.url;
-  if (url) response.setHeader("Access-Control-Allow-Origin", url);
+  if (url) {
+    response.setHeader('Access-Control-Allow-Origin', url);
+    response.setHeader('Access-Control-Allow-Headers', 'content-type,authorization');
+    response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
+    response.setHeader('Access-Control-Allow-Credentials', true);
+  }
 };
+
+//DEPRECATED. Please use S3 pre-signed URL's instead.
 exports.setCORSHeaders = setCORSHeaders;
 var parseFormData = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(req, res) {
@@ -125,6 +135,102 @@ function createAPIHandler() {
     }));
     return function (_x3, _x4) {
       return _ref3.apply(this, arguments);
+    };
+  }();
+}
+function constructAPIHandler(_x5, _x6, _x7) {
+  return _constructAPIHandler.apply(this, arguments);
+}
+function _constructAPIHandler() {
+  _constructAPIHandler = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(methods, req, res) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+      while (1) switch (_context4.prev = _context4.next) {
+        case 0:
+          _context4.t0 = req.method;
+          _context4.next = _context4.t0 === "GET" ? 3 : _context4.t0 === "POST" ? 8 : _context4.t0 === "DELETE" ? 13 : _context4.t0 === "PUT" ? 18 : 23;
+          break;
+        case 3:
+          if (!methods.get) {
+            _context4.next = 7;
+            break;
+          }
+          _context4.next = 6;
+          return methods.get(req, res);
+        case 6:
+          return _context4.abrupt("return", _context4.sent);
+        case 7:
+          throw new Error("Unsupported method: ".concat(req.method));
+        case 8:
+          if (!methods.post) {
+            _context4.next = 12;
+            break;
+          }
+          _context4.next = 11;
+          return methods.post(req, res);
+        case 11:
+          return _context4.abrupt("return", _context4.sent);
+        case 12:
+          throw new Error("Unsupported method: ".concat(req.method));
+        case 13:
+          if (!methods.del) {
+            _context4.next = 17;
+            break;
+          }
+          _context4.next = 16;
+          return methods.del(req, res);
+        case 16:
+          return _context4.abrupt("return", _context4.sent);
+        case 17:
+          throw new Error("Unsupported method: ".concat(req.method));
+        case 18:
+          if (!methods.put) {
+            _context4.next = 22;
+            break;
+          }
+          _context4.next = 21;
+          return methods.put(req, res);
+        case 21:
+          return _context4.abrupt("return", _context4.sent);
+        case 22:
+          throw new Error("Unsupported method: ".concat(req.method));
+        case 23:
+          throw new Error("Unsupported method: ".concat(req.method));
+        case 24:
+        case "end":
+          return _context4.stop();
+      }
+    }, _callee4);
+  }));
+  return _constructAPIHandler.apply(this, arguments);
+}
+function handleRequests(methods) {
+  return /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) switch (_context3.prev = _context3.next) {
+          case 0:
+            _context3.prev = 0;
+            _context3.next = 3;
+            return (0, _Middleware["default"])(req, res);
+          case 3:
+            _context3.next = 5;
+            return constructAPIHandler(methods, req, res);
+          case 5:
+            _context3.next = 11;
+            break;
+          case 7:
+            _context3.prev = 7;
+            _context3.t0 = _context3["catch"](0);
+            _context3.next = 11;
+            return (0, _ErrorHandler.defaultErrorHandler)(_context3.t0, req, res);
+          case 11:
+          case "end":
+            return _context3.stop();
+        }
+      }, _callee3, null, [[0, 7]]);
+    }));
+    return function (_x8, _x9) {
+      return _ref4.apply(this, arguments);
     };
   }();
 }
