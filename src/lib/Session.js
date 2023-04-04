@@ -6,7 +6,7 @@ import { defaultErrorHandler } from '../lib/ErrorHandler';
 import { assertUserIsLoggedIn } from '../lib/Permissions';
 
 export const sessionOptions = {
-  password: process.env.SECRET_COOKIE_PASSWORD,
+  password: process.env.KS_SECRET_COOKIE_PASSWORD ?? process.env.SECRET_COOKIE_PASSWORD,
   cookieName: 'klaudsol-cms',
   // secure: true should be used in production (HTTPS) but can't be used in development (HTTP)
   cookieOptions: {
