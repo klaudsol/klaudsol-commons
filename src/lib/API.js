@@ -3,10 +3,11 @@ import { defaultErrorHandler } from "../lib/ErrorHandler";
 
 export const setCORSHeaders = ({ response, url }) => {
   if (url) {
-    response.setHeader("Access-Control-Allow-Origin", url);
-    response.setHeader("Access-Control-Allow-Credentials", true);
+    response.setHeader('Access-Control-Allow-Origin', url);
+    response.setHeader('Access-Control-Allow-Headers', 'content-type,authorization');
+    response.setHeader('Access-Control-Allow-Methods', 'POST');
+    response.setHeader('Access-Control-Allow-Credentials', true);
   }
-  
 };
 
 export function createAPIHandler(methods = {}) {
