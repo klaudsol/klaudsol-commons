@@ -1,15 +1,17 @@
 import middleware from "../lib/Middleware";
+import multer from "multer";
 import { defaultErrorHandler } from "../lib/ErrorHandler";
 
 export const setCORSHeaders = ({ response, url }) => {
   if (url) {
     response.setHeader('Access-Control-Allow-Origin', url);
     response.setHeader('Access-Control-Allow-Headers', 'content-type,authorization');
-    response.setHeader('Access-Control-Allow-Methods', 'POST');
+    response.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, DELETE, PUT');
     response.setHeader('Access-Control-Allow-Credentials', true);
   }
 };
 
+//DEPRECATED. Please use S3 pre-signed URL's instead.
 export const parseFormData = async (req, res) => {
   const storage = multer.memoryStorage();
   const multerSetup = multer({ storage });
