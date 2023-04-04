@@ -23,9 +23,9 @@ SOFTWARE.
 
 **/
 
-import { slackSay } from './SlackSay';
-import {cloudwatchLog} from './Cloudwatch';
-import {discordSay} from './Discord';
+import { slackSay } from '../lib/SlackSay';
+import {cloudwatchLog} from '../lib/Cloudwatch';
+import {discordSay} from '../lib/Discord';
 export async function log(message) {
 
   console.error(message);

@@ -1,15 +1,20 @@
 import { log } from '../lib/Logger';
-import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN } from '../lib/HttpStatuses';
+import { COMMUNICATION_LINKS_FAILURE, UNAUTHORIZED, INTERNAL_SERVER_ERROR, FORBIDDEN, BAD_REQUEST, INVALID_TOKEN } from '../lib/HttpStatuses';
 import UnauthorizedError from '../errors/UnauthorizedError';
 import AppNotEnabledError from '../errors/AppNotEnabledError';
 import InsufficientPermissionsError from '../errors/InsufficientPermissionsError';
 import SessionNotFound from '../errors/SessionNotFound';
+import MissingHeaderError from '../errors/MissingHeaderError';
+import InvalidTokenError from '../errors/InvalidTokenError';
+import TokenExpiredError from '../errors/TokenExpiredError';
+import JsonWebTokenError from '../errors/JsonWebTokenError';
+import { serverSideLogout } from '../lib/Session';
 
 export async function defaultErrorHandler(error, req, res) {
   
   await log(error.stack);
   
-  if(
+  if (
     error instanceof UnauthorizedError ||
     error instanceof SessionNotFound
     ) {
@@ -19,6 +24,20 @@ export async function defaultErrorHandler(error, req, res) {
     error instanceof InsufficientPermissionsError
   ) {
       res.status(FORBIDDEN).json({message: 'Forbidden.'});
+  } else if (
+    error instanceof MissingHeaderError
+  ) {
+      res.status(BAD_REQUEST).json({message: 'Bearer token is missing.'});
+  } else if (
+    error instanceof InvalidTokenError ||
+    error instanceof JsonWebTokenError
+  ) {
+      res.status(INVALID_TOKEN).json({ message: 'Invalid or expired token.' });
+  } else if (
+    error instanceof TokenExpiredError
+  ) {
+      await serverSideLogout(req);
+      res.status(INVALID_TOKEN).json({ message: 'Token expired. Please log in again.' });
   } else {
       /* Let's be conservative on our regex*/
       if (error.stack.match(/Communications\s+link\s+failure/gi)) {
@@ -31,3 +50,4 @@ export async function defaultErrorHandler(error, req, res) {
       }
   }
 } 
+
