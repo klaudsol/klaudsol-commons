@@ -69,11 +69,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
       WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL`;
 
-      const rolesSQL = `SELECT DISTINCT groups.name from people_groups 
-      LEFT JOIN groups ON groups.id = people_groups.group_id
-      LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
-      LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
-      WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL`;
+      const rolesSQL = `SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id`;
       
       // separate SQL for capabilities and roles so we dont have to filter duplicated values.
       const rawCapabilities = await db.executeStatement(capabilitiesSQL, [
@@ -85,7 +81,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       ]);
 
       const capabilities = rawCapabilities.records.map(([{ stringValue: capability }])=> capability);
-      const roles = rawRoles.records.map(([{ stringValue: roles }])=> roles);
+      const roles = rawRoles.records.map(([{ stringValue: role }])=> role);
      
       const session_token = sha256(`${userId}${userSalt}${Date.now()}`);
       

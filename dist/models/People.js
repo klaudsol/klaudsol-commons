@@ -128,7 +128,7 @@ var People = /*#__PURE__*/function () {
               user = data.records[0];
               _user = _slicedToArray(user, 5), userId = _user[0].longValue, userSalt = _user[1].stringValue, firstName = _user[2].stringValue, lastName = _user[3].stringValue, forcePasswordChange = _user[4].booleanValue;
               capabilitiesSQL = "SELECT DISTINCT capabilities.name from people_groups \n      LEFT JOIN groups ON groups.id = people_groups.group_id\n      LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n      LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n      WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL";
-              rolesSQL = "SELECT DISTINCT groups.name from people_groups \n      LEFT JOIN groups ON groups.id = people_groups.group_id\n      LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n      LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n      WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL"; // separate SQL for capabilities and roles so we dont have to filter duplicated values.
+              rolesSQL = "SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id"; // separate SQL for capabilities and roles so we dont have to filter duplicated values.
               _context.next = 14;
               return db.executeStatement(capabilitiesSQL, [{
                 name: 'people_id',
@@ -154,8 +154,8 @@ var People = /*#__PURE__*/function () {
               });
               roles = rawRoles.records.map(function (_ref3) {
                 var _ref4 = _slicedToArray(_ref3, 1),
-                  roles = _ref4[0].stringValue;
-                return roles;
+                  role = _ref4[0].stringValue;
+                return role;
               });
               session_token = (0, _DB.sha256)("".concat(userId).concat(userSalt).concat(Date.now()));
               sessionSql = "INSERT INTO sessions (`people_id`, `session`, `session_expiry`)  \n        VALUES(:id, :session, DATE_ADD(NOW(), INTERVAL 744 HOUR))";
