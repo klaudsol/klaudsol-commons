@@ -29,6 +29,8 @@ const checkToken = async (req, res) => {
 };
 
 const middleware = async (req, res) => {
+  if (req.method === 'OPTIONS') return;
+
   await checkToken(req, res);
 };
 

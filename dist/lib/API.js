@@ -147,7 +147,7 @@ function _constructAPIHandler() {
       while (1) switch (_context4.prev = _context4.next) {
         case 0:
           _context4.t0 = req.method;
-          _context4.next = _context4.t0 === "GET" ? 3 : _context4.t0 === "POST" ? 8 : _context4.t0 === "DELETE" ? 13 : _context4.t0 === "PUT" ? 18 : 23;
+          _context4.next = _context4.t0 === "GET" ? 3 : _context4.t0 === "POST" ? 8 : _context4.t0 === "DELETE" ? 13 : _context4.t0 === "PUT" ? 18 : _context4.t0 === "OPTIONS" ? 23 : 24;
           break;
         case 3:
           if (!methods.get) {
@@ -194,8 +194,10 @@ function _constructAPIHandler() {
         case 22:
           throw new Error("Unsupported method: ".concat(req.method));
         case 23:
-          throw new Error("Unsupported method: ".concat(req.method));
+          return _context4.abrupt("return", res.status(200).json({}));
         case 24:
+          throw new Error("Unsupported method: ".concat(req.method));
+        case 25:
         case "end":
           return _context4.stop();
       }
@@ -206,28 +208,33 @@ function _constructAPIHandler() {
 function handleRequests(methods) {
   return /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(req, res) {
+      var _process$env$KS_FRONT;
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) switch (_context3.prev = _context3.next) {
           case 0:
-            _context3.prev = 0;
-            _context3.next = 3;
+            setCORSHeaders({
+              response: res,
+              url: (_process$env$KS_FRONT = process.env.KS_FRONTEND_URL) !== null && _process$env$KS_FRONT !== void 0 ? _process$env$KS_FRONT : process.env.FRONTEND_URL
+            });
+            _context3.prev = 1;
+            _context3.next = 4;
             return (0, _Middleware["default"])(req, res);
-          case 3:
-            _context3.next = 5;
+          case 4:
+            _context3.next = 6;
             return constructAPIHandler(methods, req, res);
-          case 5:
-            _context3.next = 11;
+          case 6:
+            _context3.next = 12;
             break;
-          case 7:
-            _context3.prev = 7;
-            _context3.t0 = _context3["catch"](0);
-            _context3.next = 11;
+          case 8:
+            _context3.prev = 8;
+            _context3.t0 = _context3["catch"](1);
+            _context3.next = 12;
             return (0, _ErrorHandler.defaultErrorHandler)(_context3.t0, req, res);
-          case 11:
+          case 12:
           case "end":
             return _context3.stop();
         }
-      }, _callee3, null, [[0, 7]]);
+      }, _callee3, null, [[1, 8]]);
     }));
     return function (_x8, _x9) {
       return _ref4.apply(this, arguments);

@@ -66,6 +66,8 @@ export async function constructAPIHandler(methods, req, res) {
     case "PUT":
       if (methods.put) return await methods.put(req, res);
       throw new Error(`Unsupported method: ${req.method}`);
+    case "OPTIONS":
+      return res.status(200).json({});
     default:
       throw new Error(`Unsupported method: ${req.method}`);
   }
@@ -73,6 +75,8 @@ export async function constructAPIHandler(methods, req, res) {
 
 export function handleRequests(methods) {
   return async (req, res) => {
+    setCORSHeaders({ response: res, url: process.env.KS_FRONTEND_URL ?? process.env.FRONTEND_URL });
+
     try {
       await middleware(req, res);
       await constructAPIHandler(methods, req, res);
