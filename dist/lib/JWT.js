@@ -9,16 +9,10 @@ var _TokenExpiredError = _interopRequireDefault(require("../errors/TokenExpiredE
 var _JsonWebTokenError = _interopRequireDefault(require("../errors/JsonWebTokenError"));
 var _process$env$KS_SECRE;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+// Let's reuse SECRET_COOKIE_PASSWORD instead of creating another one
 var SECRET = (_process$env$KS_SECRE = process.env.KS_SECRET_COOKIE_PASSWORD) !== null && _process$env$KS_SECRE !== void 0 ? _process$env$KS_SECRE : process.env.SECRET_COOKIE_PASSWORD;
-var generateToken = function generateToken(_ref) {
-  var firstName = _ref.firstName,
-    lastName = _ref.lastName;
-  // Let's reuse SECRET_COOKIE_PASSWORD instead of creating another one
-
-  var token = _jsonwebtoken["default"].sign({
-    firstName: firstName,
-    lastName: lastName
-  }, SECRET, {
+var generateToken = function generateToken(tokenValues) {
+  var token = _jsonwebtoken["default"].sign(tokenValues, SECRET, {
     expiresIn: 14400
   });
   return token;
