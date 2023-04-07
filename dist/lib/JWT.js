@@ -20,7 +20,7 @@ var generateToken = function generateToken(tokenValues) {
 exports.generateToken = generateToken;
 var verifyToken = function verifyToken(token) {
   var error = function error(err, decoded) {
-    if (!err) return;
+    if (!err) return decoded;
     if (err.name === "JsonWebTokenError") throw new _JsonWebTokenError["default"]();
     if (err.name === "TokenExpiredError") throw new _TokenExpiredError["default"]();
     throw err;

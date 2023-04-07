@@ -17,7 +17,7 @@ export const generateToken = (tokenValues) => {
 
 export const verifyToken = (token) => {
     const error = (err, decoded) => {
-        if (!err) return;
+        if (!err) return decoded;
 
         if (err.name === "JsonWebTokenError") throw new JsonWebTokenError();
         if (err.name === "TokenExpiredError") throw new TokenExpiredError();
