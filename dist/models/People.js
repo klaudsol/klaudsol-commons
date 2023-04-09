@@ -259,40 +259,13 @@ var People = /*#__PURE__*/function () {
     key: "updateUserInfo",
     value: function () {
       var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(_ref5) {
-        var id, first_name, last_name, email, oldPassword, newPassword, sme_timezone_id, db, encryptedPasswordPhrase, updateSql, checkPasswordSql, sqlPass, executeStatementParam, data;
+        var id, firstName, lastName, email, db, updateSql, executeStatementParam, data;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              id = _ref5.id, first_name = _ref5.first_name, last_name = _ref5.last_name, email = _ref5.email, oldPassword = _ref5.oldPassword, newPassword = _ref5.newPassword, sme_timezone_id = _ref5.sme_timezone_id;
+              id = _ref5.id, firstName = _ref5.firstName, lastName = _ref5.lastName, email = _ref5.email;
               db = new _DB["default"]();
-              encryptedPasswordPhrase = newPassword ? 'encrypted_password = sha2(CONCAT(:newPassword, salt), 256),' : '';
-              updateSql = "UPDATE sme_people set first_name = :first_name, last_name = :last_name, email = :email, ".concat(encryptedPasswordPhrase, " sme_timezone_id = :sme_timezone_id WHERE id = :id");
-              checkPasswordSql = "SELECT * FROM sme_people \n                                where id = :id AND encrypted_password = sha2(CONCAT(:oldPassword, salt), 256) LIMIT 1"; // !oldPassword/!newPassword is not working.
-              // Validations for updating password
-              if (!(oldPassword || newPassword)) {
-                _context3.next = 11;
-                break;
-              }
-              _context3.next = 8;
-              return db.executeStatement(checkPasswordSql, [{
-                name: 'id',
-                value: {
-                  longValue: id
-                }
-              }, {
-                name: 'oldPassword',
-                value: {
-                  stringValue: oldPassword
-                }
-              }]);
-            case 8:
-              sqlPass = _context3.sent;
-              if (!(sqlPass.records.length === 0)) {
-                _context3.next = 11;
-                break;
-              }
-              throw new _RecordNotFound["default"]("Incorrect password");
-            case 11:
+              updateSql = "UPDATE people SET first_name = :first_name, last_name = :last_name, email = :email WHERE id = :id";
               executeStatementParam = {
                 id: {
                   name: 'id',
@@ -303,13 +276,13 @@ var People = /*#__PURE__*/function () {
                 first_name: {
                   name: 'first_name',
                   value: {
-                    stringValue: first_name
+                    stringValue: firstName
                   }
                 },
                 last_name: {
                   name: 'last_name',
                   value: {
-                    stringValue: last_name
+                    stringValue: lastName
                   }
                 },
                 email: {
@@ -317,27 +290,14 @@ var People = /*#__PURE__*/function () {
                   value: {
                     stringValue: email
                   }
-                },
-                newPassword: {
-                  name: 'newPassword',
-                  value: {
-                    stringValue: newPassword
-                  }
-                },
-                sme_timezone_id: {
-                  name: 'sme_timezone_id',
-                  value: {
-                    longValue: sme_timezone_id
-                  }
                 }
               };
-              if (!newPassword) delete executeStatementParam.newPassword;
-              _context3.next = 15;
+              _context3.next = 6;
               return db.executeStatement(updateSql, Object.values(executeStatementParam));
-            case 15:
+            case 6:
               data = _context3.sent;
               return _context3.abrupt("return", true);
-            case 17:
+            case 8:
             case "end":
               return _context3.stop();
           }

@@ -136,39 +136,20 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
 
 
   //TODO: Remove password change here.
-  static async updateUserInfo({id, first_name, last_name, email, oldPassword, newPassword, sme_timezone_id}){
+  static async updateUserInfo({ id, firstName, lastName, email }){
     const db = new DB();
-      const encryptedPasswordPhrase =  newPassword ? 'encrypted_password = sha2(CONCAT(:newPassword, salt), 256),' : '';
-      const updateSql =  `UPDATE sme_people set first_name = :first_name, last_name = :last_name, email = :email, ${encryptedPasswordPhrase} sme_timezone_id = :sme_timezone_id WHERE id = :id`;
-      const checkPasswordSql = `SELECT * FROM sme_people 
-                                where id = :id AND encrypted_password = sha2(CONCAT(:oldPassword, salt), 256) LIMIT 1`;
-      
-      // !oldPassword/!newPassword is not working.
-      // Validations for updating password
-      if (oldPassword || newPassword){
-        const sqlPass = await db.executeStatement(checkPasswordSql, [
-          {name: 'id', value: {longValue: id}},
-          {name: 'oldPassword', value:{stringValue: oldPassword}}
-        ]);
-        if (sqlPass.records.length === 0) {
-          throw new RecordNotFound("Incorrect password");
-        }
-      }
+      const updateSql =  `UPDATE people SET first_name = :first_name, last_name = :last_name, email = :email WHERE id = :id`;
 
       const executeStatementParam = {
         id: {name: 'id', value: {longValue: id}},
-        first_name: {name: 'first_name', value: {stringValue: first_name}},
-        last_name: {name: 'last_name', value: {stringValue: last_name}},
+        first_name: {name: 'first_name', value: {stringValue: firstName}},
+        last_name: {name: 'last_name', value: {stringValue: lastName}},
         email: {name: 'email', value: {stringValue: email}},
-        newPassword: {name: 'newPassword', value: {stringValue: newPassword}},
-        sme_timezone_id: {name: 'sme_timezone_id', value: {longValue: sme_timezone_id}}
       }
 
-      if(!newPassword) delete executeStatementParam.newPassword;
-
       const data = await db.executeStatement(updateSql, Object.values(executeStatementParam)); 
+
       return true;
-      
   }
 
   //A password changer needs a method of its own for security purposes
