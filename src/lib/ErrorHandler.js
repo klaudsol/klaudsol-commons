@@ -37,9 +37,7 @@ export async function defaultErrorHandler(error, req, res) {
   } else if (
     error instanceof TokenExpiredError
   ) {
-      console.log('I AM HERE 1')
       await serverSideLogout(req);
-      console.log('I AM HERE 2')
       res.status(INVALID_TOKEN).json({ message: 'Token expired. Please log in again.' });
   } else if (
     error instanceof InsufficientDataError

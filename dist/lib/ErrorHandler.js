@@ -39,7 +39,7 @@ function _defaultErrorHandler() {
           res.status(_HttpStatuses.UNAUTHORIZED).json({
             message: 'Authentication required.'
           });
-          _context.next = 27;
+          _context.next = 25;
           break;
         case 6:
           if (!(error instanceof _AppNotEnabledError["default"] || error instanceof _InsufficientPermissionsError["default"])) {
@@ -49,7 +49,7 @@ function _defaultErrorHandler() {
           res.status(_HttpStatuses.FORBIDDEN).json({
             message: 'Forbidden.'
           });
-          _context.next = 27;
+          _context.next = 25;
           break;
         case 10:
           if (!(error instanceof _MissingHeaderError["default"])) {
@@ -59,7 +59,7 @@ function _defaultErrorHandler() {
           res.status(_HttpStatuses.BAD_REQUEST).json({
             message: 'Bearer token is missing.'
           });
-          _context.next = 27;
+          _context.next = 25;
           break;
         case 14:
           if (!(error instanceof _InvalidTokenError["default"] || error instanceof _JsonWebTokenError["default"])) {
@@ -69,24 +69,22 @@ function _defaultErrorHandler() {
           res.status(_HttpStatuses.INVALID_TOKEN).json({
             message: 'Invalid or expired token.'
           });
-          _context.next = 27;
+          _context.next = 25;
           break;
         case 18:
           if (!(error instanceof _TokenExpiredError["default"])) {
-            _context.next = 26;
+            _context.next = 24;
             break;
           }
-          console.log('I AM HERE 1');
-          _context.next = 22;
+          _context.next = 21;
           return (0, _Session.serverSideLogout)(req);
-        case 22:
-          console.log('I AM HERE 2');
+        case 21:
           res.status(_HttpStatuses.INVALID_TOKEN).json({
             message: 'Token expired. Please log in again.'
           });
-          _context.next = 27;
+          _context.next = 25;
           break;
-        case 26:
+        case 24:
           if (error instanceof _InsufficientDataError["default"]) {
             res.status(_HttpStatuses.UNPROCESSABLE_ENTITY).json({
               message: error.message
@@ -106,7 +104,7 @@ function _defaultErrorHandler() {
               });
             }
           }
-        case 27:
+        case 25:
         case "end":
           return _context.stop();
       }
