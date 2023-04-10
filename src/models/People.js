@@ -132,9 +132,9 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   static async findByColumn(column, value) {
     const db = new DB();
 
-    const sql = `SELECT * FROM people WHERE :column = ':value'`
+    // dynamic columns wont work for some reason
+    const sql = `SELECT * FROM people WHERE ${column} = ':value'`
     const params = [
-       { name: 'column', value: { stringValue: column } },
        { name: 'value', value: { stringValue: value } },
     ];
 

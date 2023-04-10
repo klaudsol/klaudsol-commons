@@ -280,14 +280,9 @@ var People = /*#__PURE__*/function () {
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              db = new _DB["default"]();
-              sql = "SELECT * FROM people WHERE :column = ':value'";
+              db = new _DB["default"](); // dynamic columns wont work for some reason
+              sql = "SELECT * FROM people WHERE ".concat(column, " = ':value'");
               params = [{
-                name: 'column',
-                value: {
-                  stringValue: column
-                }
-              }, {
                 name: 'value',
                 value: {
                   stringValue: value
