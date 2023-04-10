@@ -30,7 +30,7 @@ const checkToken = async (req, res) => {
   const { authorization } = req.headers;
 
   if (req.method === "GET" && !authorization) return;
-  if (req.method === "POST" && req.url === '/api/admin/users') return; // For signups
+  if (req.method === "POST" && !authorization && req.url === '/api/admin/users') return; // For signups
 
   req.token = authorization;
 

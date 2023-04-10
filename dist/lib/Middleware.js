@@ -89,7 +89,7 @@ var checkToken = /*#__PURE__*/function () {
           }
           return _context4.abrupt("return");
         case 3:
-          if (!(req.method === "POST" && req.url === '/api/admin/users')) {
+          if (!(req.method === "POST" && !authorization && req.url === '/api/admin/users')) {
             _context4.next = 5;
             break;
           }

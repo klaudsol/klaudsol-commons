@@ -15,6 +15,7 @@ var _InvalidTokenError = _interopRequireDefault(require("../errors/InvalidTokenE
 var _TokenExpiredError = _interopRequireDefault(require("../errors/TokenExpiredError"));
 var _JsonWebTokenError = _interopRequireDefault(require("../errors/JsonWebTokenError"));
 var _InsufficientDataError = _interopRequireDefault(require("../errors/InsufficientDataError"));
+var _UserAlreadyExists = _interopRequireDefault(require("../errors/UserAlreadyExists"));
 var _Session = require("../lib/Session");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -88,6 +89,10 @@ function _defaultErrorHandler() {
           if (error instanceof _InsufficientDataError["default"]) {
             res.status(_HttpStatuses.BAD_REQUEST).json({
               message: error.message
+            });
+          } else if (error instanceof _UserAlreadyExists["default"]) {
+            res.status(_HttpStatuses.BAD_REQUEST).json({
+              message: 'User already exists.'
             });
           } else {
             /* Let's be conservative on our regex*/

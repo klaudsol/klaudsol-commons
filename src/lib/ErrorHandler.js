@@ -9,6 +9,7 @@ import InvalidTokenError from '../errors/InvalidTokenError';
 import TokenExpiredError from '../errors/TokenExpiredError';
 import JsonWebTokenError from '../errors/JsonWebTokenError';
 import InsufficientDataError from '../errors/InsufficientDataError';
+import UserAlreadyExists from '../errors/UserAlreadyExists';
 import { serverSideLogout } from '../lib/Session';
 
 export async function defaultErrorHandler(error, req, res) {
@@ -43,6 +44,10 @@ export async function defaultErrorHandler(error, req, res) {
     error instanceof InsufficientDataError
   ) {
       res.status(BAD_REQUEST).json({ message: error.message });
+  } else if (
+    error instanceof UserAlreadyExists
+  ) {
+      res.status(BAD_REQUEST).json({ message: 'User already exists.' });
   } else {
       /* Let's be conservative on our regex*/
       if (error.stack.match(/Communications\s+link\s+failure/gi)) {
