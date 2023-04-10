@@ -254,7 +254,7 @@ var People = /*#__PURE__*/function () {
         return _displayCurrentUser.apply(this, arguments);
       }
       return displayCurrentUser;
-    }() //TODO: Remove password change here.
+    }()
   }, {
     key: "updateUserInfo",
     value: function () {

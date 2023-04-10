@@ -135,7 +135,6 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   }
 
 
-  //TODO: Remove password change here.
   static async updateUserInfo({ id, firstName, lastName, email }){
     const db = new DB();
       const updateSql =  `UPDATE people SET first_name = :first_name, last_name = :last_name, email = :email WHERE id = :id`;
