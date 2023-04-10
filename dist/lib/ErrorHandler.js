@@ -14,7 +14,7 @@ var _MissingHeaderError = _interopRequireDefault(require("../errors/MissingHeade
 var _InvalidTokenError = _interopRequireDefault(require("../errors/InvalidTokenError"));
 var _TokenExpiredError = _interopRequireDefault(require("../errors/TokenExpiredError"));
 var _JsonWebTokenError = _interopRequireDefault(require("../errors/JsonWebTokenError"));
-var _UnableToUpdateError = _interopRequireDefault(require("../errors/UnableToUpdateError"));
+var _InsufficientDataError = _interopRequireDefault(require("../errors/InsufficientDataError"));
 var _Session = require("../lib/Session");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
@@ -26,7 +26,6 @@ function defaultErrorHandler(_x, _x2, _x3) {
 }
 function _defaultErrorHandler() {
   _defaultErrorHandler = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(error, req, res) {
-    var _error$message;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -88,9 +87,9 @@ function _defaultErrorHandler() {
           _context.next = 27;
           break;
         case 26:
-          if (error instanceof _UnableToUpdateError["default"]) {
+          if (error instanceof _InsufficientDataError["default"]) {
             res.status(_HttpStatuses.UNPROCESSABLE_ENTITY).json({
-              message: (_error$message = error.message) !== null && _error$message !== void 0 ? _error$message : 'Unable to update values.'
+              message: error.message
             });
           } else {
             /* Let's be conservative on our regex*/

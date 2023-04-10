@@ -259,7 +259,7 @@ var People = /*#__PURE__*/function () {
     key: "updateUserInfo",
     value: function () {
       var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(_ref5) {
-        var id, firstName, lastName, email, db, updateSql, executeStatementParam, data;
+        var id, firstName, lastName, email, db, updateSql, executeStatementParam;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
@@ -295,9 +295,8 @@ var People = /*#__PURE__*/function () {
               _context3.next = 6;
               return db.executeStatement(updateSql, Object.values(executeStatementParam));
             case 6:
-              data = _context3.sent;
               return _context3.abrupt("return", true);
-            case 8:
+            case 7:
             case "end":
               return _context3.stop();
           }

@@ -20,12 +20,12 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-var UnableToUpdate = /*#__PURE__*/function (_Error) {
-  _inherits(UnableToUpdate, _Error);
-  var _super = _createSuper(UnableToUpdate);
-  function UnableToUpdate() {
+var InsufficientDataError = /*#__PURE__*/function (_Error) {
+  _inherits(InsufficientDataError, _Error);
+  var _super = _createSuper(InsufficientDataError);
+  function InsufficientDataError() {
     var _this;
-    _classCallCheck(this, UnableToUpdate);
+    _classCallCheck(this, InsufficientDataError);
     for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
       params[_key] = arguments[_key];
     }
@@ -34,13 +34,13 @@ var UnableToUpdate = /*#__PURE__*/function (_Error) {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(_assertThisInitialized(_this), UnableToUpdate);
+      Error.captureStackTrace(_assertThisInitialized(_this), InsufficientDataError);
     }
     var message = params[0];
-    _this.name = 'UnableToUpdate';
-    _this.message = message !== null && message !== void 0 ? message : 'Unable to update.';
+    _this.name = 'InsufficientDataError';
+    _this.message = message !== null && message !== void 0 ? message : 'Insufficient data.';
     return _this;
   }
-  return _createClass(UnableToUpdate);
+  return _createClass(InsufficientDataError);
 }( /*#__PURE__*/_wrapNativeSuper(Error));
-exports["default"] = UnableToUpdate;
+exports["default"] = InsufficientDataError;

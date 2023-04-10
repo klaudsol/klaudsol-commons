@@ -8,7 +8,7 @@ import MissingHeaderError from '../errors/MissingHeaderError';
 import InvalidTokenError from '../errors/InvalidTokenError';
 import TokenExpiredError from '../errors/TokenExpiredError';
 import JsonWebTokenError from '../errors/JsonWebTokenError';
-import UnableToUpdateError from '../errors/UnableToUpdateError';
+import InsufficientDataError from '../errors/InsufficientDataError';
 import { serverSideLogout } from '../lib/Session';
 
 export async function defaultErrorHandler(error, req, res) {
@@ -42,9 +42,9 @@ export async function defaultErrorHandler(error, req, res) {
       console.log('I AM HERE 2')
       res.status(INVALID_TOKEN).json({ message: 'Token expired. Please log in again.' });
   } else if (
-    error instanceof UnableToUpdateError
+    error instanceof InsufficientDataError
   ) {
-      res.status(UNPROCESSABLE_ENTITY).json({ message: error.message ?? 'Unable to update values.' });
+      res.status(UNPROCESSABLE_ENTITY).json({ message: error.message });
   } else {
       /* Let's be conservative on our regex*/
       if (error.stack.match(/Communications\s+link\s+failure/gi)) {

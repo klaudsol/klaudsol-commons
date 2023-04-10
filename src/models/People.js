@@ -147,7 +147,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         email: {name: 'email', value: {stringValue: email}},
       }
 
-      const data = await db.executeStatement(updateSql, Object.values(executeStatementParam)); 
+      await db.executeStatement(updateSql, Object.values(executeStatementParam)); 
 
       return true;
   }
