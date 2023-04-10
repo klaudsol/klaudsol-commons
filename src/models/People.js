@@ -133,15 +133,13 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     const db = new DB();
 
     // dynamic columns wont work for some reason
-    const sql = `SELECT * FROM people WHERE ${column} = ':value'`
+    const sql = `SELECT * FROM people WHERE ${column} = :value`;
     const params = [
-       { name: 'value', value: { stringValue: value } },
+        { name: 'value', value: { stringValue: value } }
     ];
 
-    const data = await db.exectuteStatement(sql, params);
+    const data = await db.executeStatement(sql, params);
 
-    console.log(data.records[0])
-    
     return data.records[0];
   }
 

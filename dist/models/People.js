@@ -281,7 +281,7 @@ var People = /*#__PURE__*/function () {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
               db = new _DB["default"](); // dynamic columns wont work for some reason
-              sql = "SELECT * FROM people WHERE ".concat(column, " = ':value'");
+              sql = "SELECT * FROM people WHERE ".concat(column, " = :value");
               params = [{
                 name: 'value',
                 value: {
@@ -289,12 +289,11 @@ var People = /*#__PURE__*/function () {
                 }
               }];
               _context3.next = 5;
-              return db.exectuteStatement(sql, params);
+              return db.executeStatement(sql, params);
             case 5:
               data = _context3.sent;
-              console.log(data.records[0]);
               return _context3.abrupt("return", data.records[0]);
-            case 8:
+            case 7:
             case "end":
               return _context3.stop();
           }
