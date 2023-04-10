@@ -108,6 +108,27 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     
   }
 
+  static async createUser({ firstName, lastName, loginEnabled, email, password, forcePasswordChange }) {
+    const db = new DB();
+    const salt = await generateRandVals(5);
+
+    const sql = `INSERT INTO people (first_name, last_name, role, login_enabled, email, encrypted_password, salt, created_at, force_password_change)
+                 VALUES (:first_name, :last_name, 'deprecated', :login_enabled, :email, SHA2(CONCAT(:password, :salt), 256), :salt, NOW(), :force_password_change)`;
+    const params = [
+       { name: 'first_name', value: { stringValue: firstName } },
+       { name: 'last_name', value: { stringValue: lastName } },
+       { name: 'login_enabled', value: { stringValue: loginEnabled } },
+       { name: 'email', value: { stringValue: email } },
+       { name: 'password', value: { stringValue: password } },
+       { name: 'salt', value: { stringValue: salt } },
+       { name: 'force_password_change', value: { stringValue: forcePasswordChange } }
+    ];
+
+    await db.exectuteStatement(sql, params);
+    
+    return true;
+  }
+
   static async displayCurrentUser(session) { // return User's information
     const db = new DB();
     const session_data = await Session.getSession(session); // gets people_id and sme_tenant_id based on session
