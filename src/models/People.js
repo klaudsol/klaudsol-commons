@@ -117,16 +117,32 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     const params = [
        { name: 'first_name', value: { stringValue: firstName } },
        { name: 'last_name', value: { stringValue: lastName } },
-       { name: 'login_enabled', value: { stringValue: loginEnabled } },
+       { name: 'login_enabled', value: { booleanValue: loginEnabled } },
        { name: 'email', value: { stringValue: email } },
        { name: 'password', value: { stringValue: password } },
        { name: 'salt', value: { stringValue: salt } },
-       { name: 'force_password_change', value: { stringValue: forcePasswordChange } }
+       { name: 'force_password_change', value: { booleanValue: forcePasswordChange } }
     ];
 
     await db.exectuteStatement(sql, params);
     
     return true;
+  }
+
+  static async findByColumn(column, value) {
+    const db = new DB();
+
+    const sql = `SELECT * FROM people WHERE :column = ':value'`
+    const params = [
+       { name: 'column', value: { stringValue: column } },
+       { name: 'value', value: { stringValue: value } },
+    ];
+
+    const data = await db.exectuteStatement(sql, params);
+
+    console.log(data.records[0])
+    
+    return data.records[0];
   }
 
   static async displayCurrentUser(session) { // return User's information

@@ -42,7 +42,7 @@ export async function defaultErrorHandler(error, req, res) {
   } else if (
     error instanceof InsufficientDataError
   ) {
-      res.status(UNPROCESSABLE_ENTITY).json({ message: error.message });
+      res.status(BAD_REQUEST).json({ message: error.message });
   } else {
       /* Let's be conservative on our regex*/
       if (error.stack.match(/Communications\s+link\s+failure/gi)) {

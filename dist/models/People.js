@@ -234,7 +234,7 @@ var People = /*#__PURE__*/function () {
               }, {
                 name: 'login_enabled',
                 value: {
-                  stringValue: loginEnabled
+                  booleanValue: loginEnabled
                 }
               }, {
                 name: 'email',
@@ -254,7 +254,7 @@ var People = /*#__PURE__*/function () {
               }, {
                 name: 'force_password_change',
                 value: {
-                  stringValue: forcePasswordChange
+                  booleanValue: forcePasswordChange
                 }
               }];
               _context2.next = 9;
@@ -273,23 +273,61 @@ var People = /*#__PURE__*/function () {
       return createUser;
     }()
   }, {
-    key: "displayCurrentUser",
+    key: "findByColumn",
     value: function () {
-      var _displayCurrentUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(session) {
-        var db, session_data, people_id, sql, data;
+      var _findByColumn = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(column, value) {
+        var db, sql, params, data;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
+              db = new _DB["default"]();
+              sql = "SELECT * FROM people WHERE :column = ':value'";
+              params = [{
+                name: 'column',
+                value: {
+                  stringValue: column
+                }
+              }, {
+                name: 'value',
+                value: {
+                  stringValue: value
+                }
+              }];
+              _context3.next = 5;
+              return db.exectuteStatement(sql, params);
+            case 5:
+              data = _context3.sent;
+              console.log(data.records[0]);
+              return _context3.abrupt("return", data.records[0]);
+            case 8:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }));
+      function findByColumn(_x4, _x5) {
+        return _findByColumn.apply(this, arguments);
+      }
+      return findByColumn;
+    }()
+  }, {
+    key: "displayCurrentUser",
+    value: function () {
+      var _displayCurrentUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(session) {
+        var db, session_data, people_id, sql, data;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
               // return User's information
               db = new _DB["default"]();
-              _context3.next = 3;
+              _context4.next = 3;
               return _Session["default"].getSession(session);
             case 3:
-              session_data = _context3.sent;
+              session_data = _context4.sent;
               // gets people_id and sme_tenant_id based on session
               people_id = session_data.people_id;
               sql = "select sme_people.id, sme_people.first_name, sme_people.last_name, sme_people.company_position, \n                  sme_people.login_enabled, sme_people.email, sme_people.created_at, sme_people.sme_timezone_id, \n                  sme_people.sme_tenant_id, sme_timezones.timezones_country, sme_timezones.timezones_offset\n                  FROM sme_people \n                  LEFT JOIN sme_timezones \n                  ON sme_people.sme_timezone_id = sme_timezones.id\n                  WHERE sme_people.id = :people_id AND\n                  sme_people.sme_tenant_id = :sme_tenant_id\n                  LIMIT 1";
-              _context3.next = 8;
+              _context4.next = 8;
               return db.executeStatement(sql, [{
                 name: 'people_id',
                 value: {
@@ -302,21 +340,21 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 8:
-              data = _context3.sent;
+              data = _context4.sent;
               if (!(data.records.length === 0)) {
-                _context3.next = 11;
+                _context4.next = 11;
                 break;
               }
-              return _context3.abrupt("return", null);
+              return _context4.abrupt("return", null);
             case 11:
-              return _context3.abrupt("return", new People((0, _DB.fromAurora)(data.records[0], People.fields())));
+              return _context4.abrupt("return", new People((0, _DB.fromAurora)(data.records[0], People.fields())));
             case 12:
             case "end":
-              return _context3.stop();
+              return _context4.stop();
           }
-        }, _callee3);
+        }, _callee4);
       }));
-      function displayCurrentUser(_x4) {
+      function displayCurrentUser(_x6) {
         return _displayCurrentUser.apply(this, arguments);
       }
       return displayCurrentUser;
@@ -324,10 +362,10 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "updateUserInfo",
     value: function () {
-      var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(_ref6) {
+      var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(_ref6) {
         var id, firstName, lastName, email, db, updateSql, executeStatementParam;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-          while (1) switch (_context4.prev = _context4.next) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
             case 0:
               id = _ref6.id, firstName = _ref6.firstName, lastName = _ref6.lastName, email = _ref6.email;
               db = new _DB["default"]();
@@ -358,17 +396,17 @@ var People = /*#__PURE__*/function () {
                   }
                 }
               };
-              _context4.next = 6;
+              _context5.next = 6;
               return db.executeStatement(updateSql, Object.values(executeStatementParam));
             case 6:
-              return _context4.abrupt("return", true);
+              return _context5.abrupt("return", true);
             case 7:
             case "end":
-              return _context4.stop();
+              return _context5.stop();
           }
-        }, _callee4);
+        }, _callee5);
       }));
-      function updateUserInfo(_x5) {
+      function updateUserInfo(_x7) {
         return _updateUserInfo.apply(this, arguments);
       }
       return updateUserInfo;
@@ -376,21 +414,21 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "updatePassword",
     value: function () {
-      var _updatePassword = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(_ref7) {
+      var _updatePassword = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(_ref7) {
         var id, oldPassword, newPassword, db, checkPasswordSql, sqlPass, updateSql, salt, executeStatementParam, data;
-        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
-          while (1) switch (_context5.prev = _context5.next) {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
             case 0:
               id = _ref7.id, oldPassword = _ref7.oldPassword, newPassword = _ref7.newPassword;
               if (!(!oldPassword || !newPassword)) {
-                _context5.next = 3;
+                _context6.next = 3;
                 break;
               }
               throw new Error('Passwords are required.');
             case 3:
               db = new _DB["default"](); //Check if the provided oldPassword is correct.
               checkPasswordSql = "SELECT id FROM people \n                              WHERE id = :id AND encrypted_password = sha2(CONCAT(:oldPassword, salt), 256) AND login_enabled = 1  LIMIT 1";
-              _context5.next = 7;
+              _context6.next = 7;
               return db.executeStatement(checkPasswordSql, [{
                 name: 'id',
                 value: {
@@ -403,18 +441,18 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 7:
-              sqlPass = _context5.sent;
+              sqlPass = _context6.sent;
               if (!(sqlPass.records.length === 0)) {
-                _context5.next = 10;
+                _context6.next = 10;
                 break;
               }
               throw new _RecordNotFound["default"]("Incorrect password");
             case 10:
               updateSql = "\n    UPDATE people  \n    SET\n      encrypted_password = sha2(CONCAT(:newPassword, :salt), 256),\n      force_password_change = :force_password_change,\n      salt = :salt\n    WHERE id = :id";
-              _context5.next = 13;
+              _context6.next = 13;
               return (0, _Math.generateRandVals)(5);
             case 13:
-              salt = _context5.sent;
+              salt = _context6.sent;
               executeStatementParam = [{
                 name: 'id',
                 value: {
@@ -436,18 +474,18 @@ var People = /*#__PURE__*/function () {
                   stringValue: salt
                 }
               }];
-              _context5.next = 17;
+              _context6.next = 17;
               return db.executeStatement(updateSql, executeStatementParam);
             case 17:
-              data = _context5.sent;
-              return _context5.abrupt("return", false);
+              data = _context6.sent;
+              return _context6.abrupt("return", false);
             case 19:
             case "end":
-              return _context5.stop();
+              return _context6.stop();
           }
-        }, _callee5);
+        }, _callee6);
       }));
-      function updatePassword(_x6) {
+      function updatePassword(_x8) {
         return _updatePassword.apply(this, arguments);
       }
       return updatePassword;
@@ -455,15 +493,15 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "isSessionAlive",
     value: function () {
-      var _isSessionAlive = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6(session_token) {
+      var _isSessionAlive = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(session_token) {
         var db, sql, data;
-        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
-          while (1) switch (_context6.prev = _context6.next) {
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) switch (_context7.prev = _context7.next) {
             case 0:
               db = new _DB["default"]();
               sql = "SELECT sme_sessions.session FROM sme_sessions JOIN people ON sme_sessions.people_id = sme_people.id WHERE \n      sme_sessions.session = :session AND\n      sme_sessions.session_expiry >= NOW() AND\n      sme_people.login_enabled = 1 \n    ";
-              _context6.prev = 2;
-              _context6.next = 5;
+              _context7.prev = 2;
+              _context7.next = 5;
               return db.executeStatement(sql, [{
                 name: 'session',
                 value: {
@@ -471,20 +509,20 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 5:
-              data = _context6.sent;
-              return _context6.abrupt("return", data.records.length > 0);
+              data = _context7.sent;
+              return _context7.abrupt("return", data.records.length > 0);
             case 9:
-              _context6.prev = 9;
-              _context6.t0 = _context6["catch"](2);
-              console.error(_context6.t0);
-              return _context6.abrupt("return", false);
+              _context7.prev = 9;
+              _context7.t0 = _context7["catch"](2);
+              console.error(_context7.t0);
+              return _context7.abrupt("return", false);
             case 13:
             case "end":
-              return _context6.stop();
+              return _context7.stop();
           }
-        }, _callee6, null, [[2, 9]]);
+        }, _callee7, null, [[2, 9]]);
       }));
-      function isSessionAlive(_x7) {
+      function isSessionAlive(_x9) {
         return _isSessionAlive.apply(this, arguments);
       }
       return isSessionAlive;
@@ -492,19 +530,19 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "findBySession",
     value: function () {
-      var _findBySession = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7(session) {
+      var _findBySession = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(session) {
         var _person_raw, db, fields, sql, data, person_raw, SME_TENANTS_HOMEPAGE, sme_tenants_homepage, person;
-        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
-          while (1) switch (_context7.prev = _context7.next) {
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+          while (1) switch (_context8.prev = _context8.next) {
             case 0:
-              _context7.prev = 0;
+              _context8.prev = 0;
               db = new _DB["default"](); //TODO: We need to think on how to do joins elegantly.
               //Is it time to use an ORM? Is it worth the effort?
               fields = [].concat(_toConsumableArray(Object.keys(People.fields()).map(function (key) {
                 return "sme_people.".concat(key);
               })), ['sme_tenants.homepage']);
               sql = "SELECT ".concat(fields.join(','), " FROM sme_sessions \n        JOIN sme_people ON sme_sessions.people_id = sme_people.id \n        JOIN sme_tenants ON sme_sessions.sme_tenant_id = sme_tenants.id\n        WHERE \n        sme_sessions.session = :session AND\n        sme_sessions.session_expiry >= NOW() AND\n        sme_people.login_enabled = 1 \n        LIMIT 1\n      ");
-              _context7.next = 6;
+              _context8.next = 6;
               return db.executeStatement(sql, [{
                 name: 'session',
                 value: {
@@ -512,7 +550,7 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 6:
-              data = _context7.sent;
+              data = _context8.sent;
               person_raw = data.records[0]; //fields not in the people table, as it is a join. How to do this elegantly?
               SME_TENANTS_HOMEPAGE = 0;
               sme_tenants_homepage = (_person_raw = person_raw[Object.keys(People.fields()).length + SME_TENANTS_HOMEPAGE]) === null || _person_raw === void 0 ? void 0 : _person_raw.stringValue;
@@ -520,19 +558,19 @@ var People = /*#__PURE__*/function () {
               person.tenant = {
                 homepage: sme_tenants_homepage
               };
-              return _context7.abrupt("return", person);
+              return _context8.abrupt("return", person);
             case 15:
-              _context7.prev = 15;
-              _context7.t0 = _context7["catch"](0);
-              (0, _Logger.log)(_context7.t0.stack);
-              return _context7.abrupt("return", false);
+              _context8.prev = 15;
+              _context8.t0 = _context8["catch"](0);
+              (0, _Logger.log)(_context8.t0.stack);
+              return _context8.abrupt("return", false);
             case 19:
             case "end":
-              return _context7.stop();
+              return _context8.stop();
           }
-        }, _callee7, null, [[0, 15]]);
+        }, _callee8, null, [[0, 15]]);
       }));
-      function findBySession(_x8) {
+      function findBySession(_x10) {
         return _findBySession.apply(this, arguments);
       }
       return findBySession;
@@ -540,17 +578,17 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "all",
     value: function () {
-      var _all = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8(session) {
+      var _all = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(session) {
         var db, fields, sql, data, peopleRaw, people;
-        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
-          while (1) switch (_context8.prev = _context8.next) {
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+          while (1) switch (_context9.prev = _context9.next) {
             case 0:
               db = new _DB["default"]();
               fields = _toConsumableArray(Object.keys(People.fields()).map(function (key) {
                 return "sme_people.".concat(key);
               }));
               sql = "SELECT ".concat(fields.join(','), " FROM sme_people_tenants\n        LEFT JOIN sme_people ON sme_people_tenants.sme_people_id = sme_people.id \n        LEFT JOIN sme_sessions ON sme_people_tenants.sme_tenant_id = sme_sessions.sme_tenant_id\n        WHERE \n          sme_sessions.session = :session AND\n          sme_sessions.session_expiry >= NOW()\n        ORDER BY first_name ASC\n      ");
-              _context8.next = 5;
+              _context9.next = 5;
               return db.executeStatement(sql, [{
                 name: 'session',
                 value: {
@@ -558,19 +596,19 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 5:
-              data = _context8.sent;
+              data = _context9.sent;
               peopleRaw = data.records;
               people = peopleRaw.map(function (person) {
                 return new People((0, _DB.fromAurora)(person, People.fields()));
               });
-              return _context8.abrupt("return", people);
+              return _context9.abrupt("return", people);
             case 9:
             case "end":
-              return _context8.stop();
+              return _context9.stop();
           }
-        }, _callee8);
+        }, _callee9);
       }));
-      function all(_x9) {
+      function all(_x11) {
         return _all.apply(this, arguments);
       }
       return all;
@@ -604,17 +642,17 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "displayPeopleProfessional",
     value: function () {
-      var _displayPeopleProfessional = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(session) {
+      var _displayPeopleProfessional = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(session) {
         var db, session_data, sme_tenant_id, sql, executeStatementParam, data, peopleRaw, people;
-        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
-          while (1) switch (_context9.prev = _context9.next) {
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+          while (1) switch (_context10.prev = _context10.next) {
             case 0:
               // returns array of Timesheet Table
               db = new _DB["default"]();
-              _context9.next = 3;
+              _context10.next = 3;
               return _Session["default"].getSession(session);
             case 3:
-              session_data = _context9.sent;
+              session_data = _context10.sent;
               // gets people_id and sme_tenant_id based on session
               sme_tenant_id = session_data.sme_tenant_id;
               sql = "select sme_people_id, payment_to, code, rate from sme_people_professional \n                 WHERE sme_tenant_id = :sme_tenant_id";
@@ -624,28 +662,28 @@ var People = /*#__PURE__*/function () {
                   longValue: sme_tenant_id
                 }
               }];
-              _context9.next = 9;
+              _context10.next = 9;
               return db.executeStatement(sql, executeStatementParam);
             case 9:
-              data = _context9.sent;
+              data = _context10.sent;
               if (!(data.records.length === 0)) {
-                _context9.next = 12;
+                _context10.next = 12;
                 break;
               }
-              return _context9.abrupt("return", null);
+              return _context10.abrupt("return", null);
             case 12:
               peopleRaw = data.records;
               people = peopleRaw.map(function (person) {
                 return new People((0, _DB.fromAurora)(person, People.peopleProfessionalFields()));
               });
-              return _context9.abrupt("return", people);
+              return _context10.abrupt("return", people);
             case 15:
             case "end":
-              return _context9.stop();
+              return _context10.stop();
           }
-        }, _callee9);
+        }, _callee10);
       }));
-      function displayPeopleProfessional(_x10) {
+      function displayPeopleProfessional(_x12) {
         return _displayPeopleProfessional.apply(this, arguments);
       }
       return displayPeopleProfessional;

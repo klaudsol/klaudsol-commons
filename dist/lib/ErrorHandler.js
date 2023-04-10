@@ -86,7 +86,7 @@ function _defaultErrorHandler() {
           break;
         case 24:
           if (error instanceof _InsufficientDataError["default"]) {
-            res.status(_HttpStatuses.UNPROCESSABLE_ENTITY).json({
+            res.status(_HttpStatuses.BAD_REQUEST).json({
               message: error.message
             });
           } else {

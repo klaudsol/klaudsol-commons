@@ -89,16 +89,24 @@ var checkToken = /*#__PURE__*/function () {
           }
           return _context4.abrupt("return");
         case 3:
+          if (!(req.method === "POST" && req.url === '/api/admin/users')) {
+            _context4.next = 5;
+            break;
+          }
+          return _context4.abrupt("return");
+        case 5:
+          // For signups
+
           req.token = authorization;
-          _context4.next = 6;
-          return tokenValidator(req, res);
-        case 6:
           _context4.next = 8;
-          return tokenExtractor(req, res);
+          return tokenValidator(req, res);
         case 8:
           _context4.next = 10;
-          return tokenVerifier(req, res);
+          return tokenExtractor(req, res);
         case 10:
+          _context4.next = 12;
+          return tokenVerifier(req, res);
+        case 12:
         case "end":
           return _context4.stop();
       }
