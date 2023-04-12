@@ -43,6 +43,11 @@ export function createAPIHandler(methods = {}) {
         case "PUT":
           if (methods.put) return await methods.put(req, res);
           throw new Error(`Unsupported method: ${req.method}`);
+        case "PATCH":
+          if (methods.patch) return await methods.patch(req, res);
+          throw new Error(`Unsupported method: ${req.method}`);
+        case "OPTIONS":
+          return res.status(200).json({});
         default:
           throw new Error(`Unsupported method: ${req.method}`);
       }
@@ -65,6 +70,9 @@ export async function constructAPIHandler(methods, req, res) {
       throw new Error(`Unsupported method: ${req.method}`);
     case "PUT":
       if (methods.put) return await methods.put(req, res);
+      throw new Error(`Unsupported method: ${req.method}`);
+    case "PATCH":
+      if (methods.patch) return await methods.patch(req, res);
       throw new Error(`Unsupported method: ${req.method}`);
     case "OPTIONS":
       return res.status(200).json({});

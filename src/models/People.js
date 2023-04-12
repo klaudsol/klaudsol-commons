@@ -129,6 +129,56 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     return true;
   }
 
+  static async get({ id }) {
+    const db = new DB();
+
+    const sql = `SELECT first_name, last_name, login_enabled, force_password_change, email, created_at FROM people WHERE id = :id`;
+    const params = [ { name: 'id', value: { longValue: id } } ];
+
+    const data = await db.executeStatement(sql, params);
+    const record = data.records.map(
+        ([
+            { stringValue: firstName },
+            { stringValue: lastName },
+            { booleanValue: loginEnabled },
+            { booleanValue: forcePasswordChange },
+            { stringValue: email },
+            { stringValue: createdAt },
+        ]) => ({ firstName, lastName, loginEnabled, forcePasswordChange, email, createdAt }));
+
+    return record;
+  }
+
+  static async getAll({ approved, pending } = {}) {
+    const db = new DB();
+
+    let filter;
+    if (approved && pending) {
+        filter = '';
+    } else if (approved) {
+        filter = `WHERE login_enabled = true`;
+    } else if (pending) {
+        filter = `WHERE login_enabled = false`;
+    } else {
+        filter = ''; 
+    };
+
+    const sql = `SELECT id, CONCAT(first_name, " ", last_name) AS full_name, login_enabled, email, created_at 
+                 FROM people ${filter}`;
+
+    const data = await db.executeStatement(sql);
+    const records = data.records.map(
+        ([
+            { longValue: id },
+            { stringValue: name },
+            { booleanValue: loginEnabled },
+            { stringValue: email },
+            { stringValue: createdAt },
+        ]) => ({ id, name, loginEnabled, email, createdAt }));
+
+    return records;
+  }
+
   static async findByColumn(column, value) {
     const db = new DB();
 
@@ -141,6 +191,26 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     const data = await db.executeStatement(sql, params);
 
     return data.records[0];
+  }
+
+  static async approve({ id }) {
+    const db = new DB();
+    const sql = `UPDATE people SET login_enabled = true WHERE id = :id`;
+    const params = [ { name: 'id', value: { longValue: id } } ];
+
+    await db.executeStatement(sql, params);
+
+    return true;
+  }
+
+  static async delete({ id }) {
+    const db = new DB();
+    const sql = `DELETE FROM people WHERE id = :id`;
+    const params = [ { name: 'id', value: { longValue: id } } ];
+
+    await db.executeStatement(sql, params);
+
+    return true;
   }
 
   static async displayCurrentUser(session) { // return User's information
@@ -170,20 +240,30 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   }
 
 
-  static async updateUserInfo({ id, firstName, lastName, email }){
+  static async updateUserInfo({ id, firstName, lastName, email, loginEnabled, forcePasswordChange }){
     const db = new DB();
-      const updateSql =  `UPDATE people SET first_name = :first_name, last_name = :last_name, email = :email WHERE id = :id`;
+    const updateSql =  `UPDATE people 
+                        SET 
+                            first_name = :first_name, 
+                            last_name = :last_name, 
+                            email = :email,
+                            login_enabled = :login_enabled,
+                            force_password_change = :force_password_change
+                        WHERE 
+                            id = :id`;
 
-      const executeStatementParam = {
+    const executeStatementParam = {
         id: {name: 'id', value: {longValue: id}},
         first_name: {name: 'first_name', value: {stringValue: firstName}},
         last_name: {name: 'last_name', value: {stringValue: lastName}},
         email: {name: 'email', value: {stringValue: email}},
-      }
+        login_enabled: {name: 'login_enabled', value: {booleanValue: loginEnabled}},
+        force_password_change: {name: 'force_password_change', value: {booleanValue: forcePasswordChange}},
+    }
 
-      await db.executeStatement(updateSql, Object.values(executeStatementParam)); 
+    await db.executeStatement(updateSql, Object.values(executeStatementParam)); 
 
-      return true;
+    return true;
   }
 
   //A password changer needs a method of its own for security purposes

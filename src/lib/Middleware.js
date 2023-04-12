@@ -29,7 +29,8 @@ const tokenVerifier = async (req, res) => {
 const checkToken = async (req, res) => {
   const { authorization } = req.headers;
 
-  if (req.method === "GET" && !authorization) return;
+  // We need the data to be public, except for the data of the users.
+  if (req.method === "GET" && !authorization && req.url !== `/api/admin/users`) return;
   if (req.method === "POST" && !authorization && req.url === '/api/admin/users') return; // For signups
 
   req.token = authorization;
@@ -42,7 +43,7 @@ const checkToken = async (req, res) => {
 const middleware = async (req, res) => {
   if (req.method === 'OPTIONS') return;
 
-  await checkToken(req, res);
+  // await checkToken(req, res);
 };
 
 export default middleware;

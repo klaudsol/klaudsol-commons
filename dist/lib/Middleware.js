@@ -82,8 +82,8 @@ var checkToken = /*#__PURE__*/function () {
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
         case 0:
-          authorization = req.headers.authorization;
-          if (!(req.method === "GET" && !authorization)) {
+          authorization = req.headers.authorization; // We need the data to be public, except for the data of the users.
+          if (!(req.method === "GET" && !authorization && req.url !== "/api/admin/users")) {
             _context4.next = 3;
             break;
           }
@@ -127,9 +127,6 @@ var middleware = /*#__PURE__*/function () {
           }
           return _context5.abrupt("return");
         case 2:
-          _context5.next = 4;
-          return checkToken(req, res);
-        case 4:
         case "end":
           return _context5.stop();
       }
