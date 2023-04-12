@@ -44,9 +44,8 @@ export const createConfigObject = (region, accesKeyId, secretAccessKey) => {
   }
 }
 
-export const sendEmail = async (region, accesKeyId, secretAccessKey, sendEmailCommand) => {
+export const sendEmail = async (configObject, sendEmailCommand) => {
   try {
-    const configObject = createConfigObject(region, accesKeyId, secretAccessKey)
     const sesClient = new SESv2Client(configObject);
     await sesClient.send(sendEmailCommand);
   } catch (err) {
