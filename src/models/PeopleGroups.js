@@ -29,4 +29,15 @@ export default class PeopleGroups {
 
     return true;
   }
+
+  static async delete({ id }) {
+    const db = new DB();
+
+    const sql = `DELETE FROM people_groups WHERE people_id = :id`;
+    const params = [{ name: 'id', value: { longValue: id } }]
+
+    await db.executeStatement(sql, params);
+
+    return true;
+  }
 }

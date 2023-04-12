@@ -97,6 +97,38 @@ var PeopleGroups = /*#__PURE__*/function () {
       }
       return disconnect;
     }()
+  }, {
+    key: "delete",
+    value: function () {
+      var _delete2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(_ref3) {
+        var id, db, sql, params;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              id = _ref3.id;
+              db = new _DB["default"]();
+              sql = "DELETE FROM people_groups WHERE people_id = :id";
+              params = [{
+                name: 'id',
+                value: {
+                  longValue: id
+                }
+              }];
+              _context3.next = 6;
+              return db.executeStatement(sql, params);
+            case 6:
+              return _context3.abrupt("return", true);
+            case 7:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }));
+      function _delete(_x3) {
+        return _delete2.apply(this, arguments);
+      }
+      return _delete;
+    }()
   }]);
   return PeopleGroups;
 }();

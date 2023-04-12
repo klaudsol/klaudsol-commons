@@ -532,12 +532,21 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "updateUserInfo",
     value: function () {
+<<<<<<< Updated upstream
       var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(_ref14) {
         var id, firstName, lastName, email, loginEnabled, forcePasswordChange, db, updateSql, executeStatementParam;
         return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) switch (_context9.prev = _context9.next) {
             case 0:
               id = _ref14.id, firstName = _ref14.firstName, lastName = _ref14.lastName, email = _ref14.email, loginEnabled = _ref14.loginEnabled, forcePasswordChange = _ref14.forcePasswordChange;
+=======
+      var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(_ref6) {
+        var id, first_name, last_name, email, oldPassword, newPassword, sme_timezone_id, db, encryptedPasswordPhrase, updateSql, checkPasswordSql, sqlPass, executeStatementParam, data;
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              id = _ref6.id, first_name = _ref6.first_name, last_name = _ref6.last_name, email = _ref6.email, oldPassword = _ref6.oldPassword, newPassword = _ref6.newPassword, sme_timezone_id = _ref6.sme_timezone_id;
+>>>>>>> Stashed changes
               db = new _DB["default"]();
               updateSql = "UPDATE people \n                        SET \n                            first_name = :first_name, \n                            last_name = :last_name, \n                            email = :email,\n                            login_enabled = :login_enabled,\n                            force_password_change = :force_password_change\n                        WHERE \n                            id = :id";
               executeStatementParam = {
@@ -578,11 +587,21 @@ var People = /*#__PURE__*/function () {
                   }
                 }
               };
+<<<<<<< Updated upstream
               _context9.next = 6;
               return db.executeStatement(updateSql, Object.values(executeStatementParam));
             case 6:
               return _context9.abrupt("return", true);
             case 7:
+=======
+              if (!newPassword) delete executeStatementParam.newPassword;
+              _context4.next = 15;
+              return db.executeStatement(updateSql, Object.values(executeStatementParam));
+            case 15:
+              data = _context4.sent;
+              return _context4.abrupt("return", true);
+            case 17:
+>>>>>>> Stashed changes
             case "end":
               return _context9.stop();
           }
