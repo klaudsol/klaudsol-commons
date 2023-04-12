@@ -1,23 +1,43 @@
 import DB from "../lib/DB";
 
 export default class PeopleGroups {
-    static async add({ id, groups }) {
-        const db = new DB();
+  static async connect({ peopleId, groups }) {
+    const db = new DB();
 
-        const sql = `INSERT INTO people_groups (people_id, group_id) VALUES (:id, :groups)`;
-        const params = groups.map((group) => ({
-             
-        }))
+    const sql = `INSERT IGNORE INTO people_groups (people_id, group_id) VALUES (:people_id, :group_id)`;
+    const params = groups.map((group) => [
+      { name: "people_id", value: { longValue: peopleId } },
+      { name: "group_id", value: { longValue: group } },
+    ]);
 
-        const data = await db.executeStatement(sql);
-        const records = data.records.map(
-            ([
-                { longValue: id },
-                { stringValue: name },
-                { stringValue: description },
-                { longValue: isSystemSupplied }, // for some reason, its a integer, not a boolean
-            ]) => ({ id, name, description, isSystemSupplied }));
+    await db.batchExecuteStatement(sql, params);
 
-        return records;
-    }
+    return true;
+  }
+
+  static async disconnect({ peopleId, groups }) {
+    const db = new DB();
+
+    // DELETE IN (...groups) wont work for some reason. Each deletion is batched for now
+    const sql = `DELETE FROM people_groups WHERE people_id = :people_id AND group_id = :group_id`;
+    const params = groups.map((group) => [
+      { name: "people_id", value: { longValue: peopleId } },
+      { name: "group_id", value: { longValue: group } },
+    ]);
+
+    await db.batchExecuteStatement(sql, params);
+
+    return true;
+  }
+
+  static async delete({ id }) {
+    const db = new DB();
+
+    const sql = `DELETE FROM people_groups WHERE people_id = :id`;
+    const params = [{ name: 'id', value: { longValue: id } }]
+
+    await db.executeStatement(sql, params);
+
+    return true;
+  }
 }
