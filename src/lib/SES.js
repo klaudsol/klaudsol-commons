@@ -1,4 +1,4 @@
-import { SendEmailCommand } from '@aws-sdk/client-sesv2';
+import { SendEmailCommand, SESv2Client } from '@aws-sdk/client-sesv2';
 
 export const createSendEmailCommand = ( 
   mailSender, 
@@ -32,4 +32,24 @@ export const createSendEmailCommand = (
     },
   };
   return new SendEmailCommand(params);
+}
+
+export const createConfigObject = (region, accesKeyId, secretAccessKey) => {
+  return {
+    region: region,
+    credentials: {
+      accessKeyId: accesKeyId,
+      secretAccessKey: secretAccessKey,
+    },
+  }
+}
+
+export const sendEmail = async (region, accesKeyId, secretAccessKey, sendEmailCommand) => {
+  try {
+    const configObject = createConfigObject(region, accesKeyId, secretAccessKey)
+    const sesClient = new SESv2Client(configObject);
+    await sesClient.send(sendEmailCommand);
+  } catch (err) {
+    console.error(err);
+  }
 }
