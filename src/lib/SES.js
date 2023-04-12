@@ -38,8 +38,8 @@ export const createConfigObject = (region, accesKeyId, secretAccessKey) => {
   return {
     region: region,
     credentials: {
-      accessKeyId: accesKeyId,
-      secretAccessKey: secretAccessKey,
+      accessKeyId: accesKeyId ?? process.env.KS_SES_ACCESS_KEY_ID ??process.env.KS_AWS_ACCESS_KEY_ID,
+      secretAccessKey: secretAccessKey ?? process.env.KS_SES_SECRET_ACCESS_KEY ??process.env.KS_AWS_SECRET_ACCESS_KEY,
     },
   }
 }
