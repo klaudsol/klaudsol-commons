@@ -124,9 +124,10 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
        { name: 'force_password_change', value: { booleanValue: forcePasswordChange } }
     ];
 
-    await db.exectuteStatement(sql, params);
-    
-    return true;
+    // Returns the id
+    const { generatedFields } = await db.exectuteStatement(sql, params);
+
+    return generatedFields[0].longValue;
   }
 
   static async get({ id }) {

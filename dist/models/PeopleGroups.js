@@ -23,18 +23,18 @@ var PeopleGroups = /*#__PURE__*/function () {
     key: "connect",
     value: function () {
       var _connect = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(_ref) {
-        var peopleId, groups, db, sql, params;
+        var id, groups, db, sql, params;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              peopleId = _ref.peopleId, groups = _ref.groups;
+              id = _ref.id, groups = _ref.groups;
               db = new _DB["default"]();
               sql = "INSERT IGNORE INTO people_groups (people_id, group_id) VALUES (:people_id, :group_id)";
               params = groups.map(function (group) {
                 return [{
                   name: "people_id",
                   value: {
-                    longValue: peopleId
+                    longValue: id
                   }
                 }, {
                   name: "group_id",
@@ -62,18 +62,18 @@ var PeopleGroups = /*#__PURE__*/function () {
     key: "disconnect",
     value: function () {
       var _disconnect = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_ref2) {
-        var peopleId, groups, db, sql, params;
+        var id, groups, db, sql, params;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              peopleId = _ref2.peopleId, groups = _ref2.groups;
+              id = _ref2.id, groups = _ref2.groups;
               db = new _DB["default"](); // DELETE IN (...groups) wont work for some reason. Each deletion is batched for now
               sql = "DELETE FROM people_groups WHERE people_id = :people_id AND group_id = :group_id";
               params = groups.map(function (group) {
                 return [{
                   name: "people_id",
                   value: {
-                    longValue: peopleId
+                    longValue: id
                   }
                 }, {
                   name: "group_id",
@@ -96,38 +96,6 @@ var PeopleGroups = /*#__PURE__*/function () {
         return _disconnect.apply(this, arguments);
       }
       return disconnect;
-    }()
-  }, {
-    key: "delete",
-    value: function () {
-      var _delete2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(_ref3) {
-        var id, db, sql, params;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-          while (1) switch (_context3.prev = _context3.next) {
-            case 0:
-              id = _ref3.id;
-              db = new _DB["default"]();
-              sql = "DELETE FROM people_groups WHERE people_id = :id";
-              params = [{
-                name: 'id',
-                value: {
-                  longValue: id
-                }
-              }];
-              _context3.next = 6;
-              return db.executeStatement(sql, params);
-            case 6:
-              return _context3.abrupt("return", true);
-            case 7:
-            case "end":
-              return _context3.stop();
-          }
-        }, _callee3);
-      }));
-      function _delete(_x3) {
-        return _delete2.apply(this, arguments);
-      }
-      return _delete;
     }()
   }]);
   return PeopleGroups;
