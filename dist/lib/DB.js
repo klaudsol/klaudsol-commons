@@ -8,7 +8,7 @@ exports.sha256 = exports.sanitizeData = exports.fromInsertAurora = exports.fromD
 var _awsSdk = _interopRequireDefault(require("aws-sdk"));
 var _es6Promisify = require("es6-promisify");
 var _crypto = _interopRequireDefault(require("crypto"));
-var _process$env$AURORA_A, _process$env$AURORA_A2, _process$env$AURORA_R, _process$env$AURORA_S, _process$env$AURORA_D, _ref, _process$env$AURORA_A3;
+var _ref, _process$env$AURORA_A, _ref2, _process$env$AURORA_A2, _process$env$AURORA_R, _process$env$AURORA_S, _process$env$AURORA_D, _ref3, _ref4, _ref5, _process$env$AURORA_A3;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -27,12 +27,14 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-var AURORA_AWS_ACCESS_KEY_ID = (_process$env$AURORA_A = process.env.AURORA_AWS_ACCESS_KEY_ID) !== null && _process$env$AURORA_A !== void 0 ? _process$env$AURORA_A : process.env.KS_AURORA_AWS_ACCESS_KEY_ID;
-var AURORA_AWS_SECRET_ACCESS_KEY = (_process$env$AURORA_A2 = process.env.AURORA_AWS_SECRET_ACCESS_KEY) !== null && _process$env$AURORA_A2 !== void 0 ? _process$env$AURORA_A2 : process.env.KS_AURORA_AWS_SECRET_ACCESS_KEY;
+//Deprecated: all environment variabes without the KS_ prefix.
+//We remove this on v2.0.0
+var AURORA_AWS_ACCESS_KEY_ID = (_ref = (_process$env$AURORA_A = process.env.AURORA_AWS_ACCESS_KEY_ID) !== null && _process$env$AURORA_A !== void 0 ? _process$env$AURORA_A : process.env.KS_AURORA_AWS_ACCESS_KEY_ID) !== null && _ref !== void 0 ? _ref : process.env.KS_AWS_ACCESS_KEY_ID;
+var AURORA_AWS_SECRET_ACCESS_KEY = (_ref2 = (_process$env$AURORA_A2 = process.env.AURORA_AWS_SECRET_ACCESS_KEY) !== null && _process$env$AURORA_A2 !== void 0 ? _process$env$AURORA_A2 : process.env.KS_AURORA_AWS_SECRET_ACCESS_KEY) !== null && _ref2 !== void 0 ? _ref2 : process.env.KS_AWS_SECRET_ACCESS_KEY;
 var AURORA_RESOURCE_ARN = (_process$env$AURORA_R = process.env.AURORA_RESOURCE_ARN) !== null && _process$env$AURORA_R !== void 0 ? _process$env$AURORA_R : process.env.KS_AURORA_RESOURCE_ARN;
 var AURORA_SECRET_ARN = (_process$env$AURORA_S = process.env.AURORA_SECRET_ARN) !== null && _process$env$AURORA_S !== void 0 ? _process$env$AURORA_S : process.env.KS_AURORA_SECRET_ARN;
 var AURORA_DATABASE = (_process$env$AURORA_D = process.env.AURORA_DATABASE) !== null && _process$env$AURORA_D !== void 0 ? _process$env$AURORA_D : process.env.KS_AURORA_DATABASE;
-var AURORA_AWS_REGION = (_ref = (_process$env$AURORA_A3 = process.env.AURORA_AWS_REGION) !== null && _process$env$AURORA_A3 !== void 0 ? _process$env$AURORA_A3 : process.env.KS_AURORA_AWS_REGION) !== null && _ref !== void 0 ? _ref : 'us-east-1';
+var AURORA_AWS_REGION = (_ref3 = (_ref4 = (_ref5 = (_process$env$AURORA_A3 = process.env.AURORA_AWS_REGION) !== null && _process$env$AURORA_A3 !== void 0 ? _process$env$AURORA_A3 : process.env.KS_AURORA_AWS_REGION) !== null && _ref5 !== void 0 ? _ref5 : process.env.KS_AURORA_REGION) !== null && _ref4 !== void 0 ? _ref4 : process.env.KS_AWS_REGION) !== null && _ref3 !== void 0 ? _ref3 : 'us-east-1';
 var DB = /*#__PURE__*/function () {
   function DB() {
     _classCallCheck(this, DB);
@@ -50,7 +52,7 @@ var DB = /*#__PURE__*/function () {
       database: AURORA_DATABASE
     };
     this.executeStatement = /*#__PURE__*/function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(sql) {
+      var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(sql) {
         var parameters,
           exec,
           _args = arguments;
@@ -73,11 +75,11 @@ var DB = /*#__PURE__*/function () {
         }, _callee);
       }));
       return function (_x) {
-        return _ref2.apply(this, arguments);
+        return _ref6.apply(this, arguments);
       };
     }();
     this.batchExecuteStatement = /*#__PURE__*/function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(sql) {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(sql) {
         var parameterSets,
           exec,
           _args2 = arguments;
@@ -100,7 +102,7 @@ var DB = /*#__PURE__*/function () {
         }, _callee2);
       }));
       return function (_x2) {
-        return _ref3.apply(this, arguments);
+        return _ref7.apply(this, arguments);
       };
     }();
   }
@@ -139,42 +141,42 @@ var sha256 = function sha256(text) {
 };
 exports.sha256 = sha256;
 var fieldsForSelect = function fieldsForSelect(table, fieldsHash) {
-  return Object.entries(fieldsHash).map(function (_ref4) {
-    var _ref5 = _slicedToArray(_ref4, 1),
-      name = _ref5[0];
+  return Object.entries(fieldsHash).map(function (_ref8) {
+    var _ref9 = _slicedToArray(_ref8, 1),
+      name = _ref9[0];
     return "".concat(table, ".").concat(name);
   }).join(',');
 };
 exports.fieldsForSelect = fieldsForSelect;
 var allowedFieldsOnCreate = function allowedFieldsOnCreate(fieldsHash) {
-  return Object.entries(fieldsHash).filter(function (_ref6) {
-    var _ref7 = _slicedToArray(_ref6, 2),
-      name = _ref7[0],
-      allowOnCreate = _ref7[1].allowOnCreate;
+  return Object.entries(fieldsHash).filter(function (_ref10) {
+    var _ref11 = _slicedToArray(_ref10, 2),
+      name = _ref11[0],
+      allowOnCreate = _ref11[1].allowOnCreate;
     return allowOnCreate;
   });
 };
 var fieldsForInsert = function fieldsForInsert(fieldsHash) {
-  return allowedFieldsOnCreate(fieldsHash).map(function (_ref8) {
-    var _ref9 = _slicedToArray(_ref8, 1),
-      name = _ref9[0];
+  return allowedFieldsOnCreate(fieldsHash).map(function (_ref12) {
+    var _ref13 = _slicedToArray(_ref12, 1),
+      name = _ref13[0];
     return "".concat(name);
   }).join(',');
 };
 exports.fieldsForInsert = fieldsForInsert;
 var fieldParametersForInsert = function fieldParametersForInsert(fieldsHash) {
-  return allowedFieldsOnCreate(fieldsHash).map(function (_ref10) {
-    var _ref11 = _slicedToArray(_ref10, 1),
-      name = _ref11[0];
+  return allowedFieldsOnCreate(fieldsHash).map(function (_ref14) {
+    var _ref15 = _slicedToArray(_ref14, 1),
+      name = _ref15[0];
     return ":".concat(name);
   }).join(',');
 };
 exports.fieldParametersForInsert = fieldParametersForInsert;
 var executeStatementParamsForInsert = function executeStatementParamsForInsert(fieldsHash, model, transform) {
-  return allowedFieldsOnCreate(fieldsHash).map(function (_ref12) {
-    var _ref13 = _slicedToArray(_ref12, 2),
-      name = _ref13[0],
-      auroraType = _ref13[1].auroraType;
+  return allowedFieldsOnCreate(fieldsHash).map(function (_ref16) {
+    var _ref17 = _slicedToArray(_ref16, 2),
+      name = _ref17[0],
+      auroraType = _ref17[1].auroraType;
     //for flexibiity, we can pass a transformer function to manipulate our data
     var value = transform ? transform(name, model[name]) : model[name];
     return {
@@ -185,26 +187,26 @@ var executeStatementParamsForInsert = function executeStatementParamsForInsert(f
 };
 exports.executeStatementParamsForInsert = executeStatementParamsForInsert;
 var allowedFieldsOnUpdate = function allowedFieldsOnUpdate(fieldsHash) {
-  return Object.entries(fieldsHash).filter(function (_ref14) {
-    var _ref15 = _slicedToArray(_ref14, 2),
-      name = _ref15[0],
-      allowOnUpdate = _ref15[1].allowOnUpdate;
+  return Object.entries(fieldsHash).filter(function (_ref18) {
+    var _ref19 = _slicedToArray(_ref18, 2),
+      name = _ref19[0],
+      allowOnUpdate = _ref19[1].allowOnUpdate;
     return allowOnUpdate;
   });
 };
 var fieldsForUpdate = function fieldsForUpdate(fieldsHash) {
-  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref16) {
-    var _ref17 = _slicedToArray(_ref16, 1),
-      name = _ref17[0];
+  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref20) {
+    var _ref21 = _slicedToArray(_ref20, 1),
+      name = _ref21[0];
     return "".concat(name, " = :").concat(name);
   }).join(',');
 };
 exports.fieldsForUpdate = fieldsForUpdate;
 var executeStatementParamsForUpdate = function executeStatementParamsForUpdate(fieldsHash, model, transform) {
-  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref18) {
-    var _ref19 = _slicedToArray(_ref18, 2),
-      name = _ref19[0],
-      auroraType = _ref19[1].auroraType;
+  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref22) {
+    var _ref23 = _slicedToArray(_ref22, 2),
+      name = _ref23[0],
+      auroraType = _ref23[1].auroraType;
     var value = transform ? transform(name, model[name]) : model[name];
     return {
       name: name,
@@ -255,23 +257,23 @@ A single Aurora record looks something like this:
 */
 exports.AURORA_TYPE = AURORA_TYPE;
 var fromAurora = function fromAurora(record, fields) {
-  return Object.fromEntries(Object.entries(fields).map(function (_ref20, index) {
-    var _ref21 = _slicedToArray(_ref20, 2),
-      key = _ref21[0],
-      auroraType = _ref21[1].auroraType;
+  return Object.fromEntries(Object.entries(fields).map(function (_ref24, index) {
+    var _ref25 = _slicedToArray(_ref24, 2),
+      key = _ref25[0],
+      auroraType = _ref25[1].auroraType;
     return [key, record[index]["".concat(auroraType, "Value")]];
   }));
 };
 exports.fromAurora = fromAurora;
 var sanitizeData = function sanitizeData(rawData, fields) {
-  var allowedFields = Object.entries(fields).map(function (_ref22) {
-    var _ref23 = _slicedToArray(_ref22, 1),
-      name = _ref23[0];
+  var allowedFields = Object.entries(fields).map(function (_ref26) {
+    var _ref27 = _slicedToArray(_ref26, 1),
+      name = _ref27[0];
     return name;
   });
-  return Object.fromEntries(Object.entries(rawData).filter(function (_ref24) {
-    var _ref25 = _slicedToArray(_ref24, 1),
-      key = _ref25[0];
+  return Object.fromEntries(Object.entries(rawData).filter(function (_ref28) {
+    var _ref29 = _slicedToArray(_ref28, 1),
+      key = _ref29[0];
     return allowedFields.includes(key);
   }));
 };
