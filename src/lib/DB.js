@@ -1,19 +1,16 @@
 import AWS from 'aws-sdk';
 import {promisify} from 'es6-promisify';
-import GlobalConstants  from "../lib/GlobalConstants";
 import crypto from 'crypto';
 
-const AURORA_AWS_ACCESS_KEY_ID = process.env.AURORA_AWS_ACCESS_KEY_ID;
-const AURORA_AWS_SECRET_ACCESS_KEY = process.env.AURORA_AWS_SECRET_ACCESS_KEY;
-const AURORA_RESOURCE_ARN = process.env.AURORA_RESOURCE_ARN;
-const AURORA_SECRET_ARN = process.env.AURORA_SECRET_ARN;
-const AURORA_DATABASE = process.env.AURORA_DATABASE;
+//Deprecated: all environment variabes without the KS_ prefix.
+//We remove this on v2.0.0
+const AURORA_AWS_ACCESS_KEY_ID = process.env.AURORA_AWS_ACCESS_KEY_ID ?? process.env.KS_AURORA_AWS_ACCESS_KEY_ID ?? process.env.KS_AWS_ACCESS_KEY_ID;
+const AURORA_AWS_SECRET_ACCESS_KEY = process.env.AURORA_AWS_SECRET_ACCESS_KEY ?? process.env.KS_AURORA_AWS_SECRET_ACCESS_KEY ?? process.env.KS_AWS_SECRET_ACCESS_KEY;
+const AURORA_RESOURCE_ARN = process.env.AURORA_RESOURCE_ARN ?? process.env.KS_AURORA_RESOURCE_ARN;
+const AURORA_SECRET_ARN = process.env.AURORA_SECRET_ARN ?? process.env.KS_AURORA_SECRET_ARN;
+const AURORA_DATABASE = process.env.AURORA_DATABASE ?? process.env.KS_AURORA_DATABASE;
+const AURORA_AWS_REGION = process.env.AURORA_AWS_REGION ?? process.env.KS_AURORA_AWS_REGION ?? process.env.KS_AURORA_REGION ?? process.env.KS_AWS_REGION ?? 'us-east-1';
 
-const {
-  AURORA_AWS_REGION,
-  BACKEND_PORT,
-  FRONTEND_PORT
-} = GlobalConstants;
 
 class DB {
   
@@ -46,8 +43,7 @@ class DB {
     }
   }
   
-  
-  //OMG the typo has been here the whole time!
+  //DEPRECATE on v2.0.0 
   async exectuteStatement(sql, parameters=[]) {
     console.error("Migrate to exectuteStatement to executeStatement ASAP!");
     return this.executeStatement(sql, parameters);  
