@@ -67,19 +67,19 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
       WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL`;
 
-      const rolesSQL = `SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id`;
+      const groupsSQL = `SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id`;
       
       // separate SQL for capabilities and roles so we dont have to filter duplicated values.
       const rawCapabilities = await db.executeStatement(capabilitiesSQL, [
         {name: 'people_id', value:{longValue: userId}},
       ]);
 
-      const rawRoles = await db.executeStatement(rolesSQL, [
+      const rawGroups = await db.executeStatement(groupsSQL, [
         {name: 'people_id', value:{longValue: userId}},
       ]);
 
       const capabilities = rawCapabilities.records.map(([{ stringValue: capability }])=> capability);
-      const roles = rawRoles.records.map(([{ stringValue: role }])=> role);
+      const groups = rawGroups.records.map(([{ stringValue: role }])=> role);
      
       const session_token = sha256(`${userId}${userSalt}${Date.now()}`);
       
@@ -97,7 +97,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       defaultEntityTypeData = await db.executeStatement(defaultEntityTypeSQL, []);
       [{stringValue: defaultEntityType}] = defaultEntityTypeData.records[0];
  
-      return { session_token, user: {firstName, lastName, roles, capabilities, defaultEntityType, forcePasswordChange} };
+      return { session_token, user: {firstName, lastName, groups, capabilities, defaultEntityType, forcePasswordChange} };
   }
 
   static async createUser({ firstName, lastName, loginEnabled, approved, email, password, forcePasswordChange }) {

@@ -98,7 +98,7 @@ var People = /*#__PURE__*/function () {
     }*/
     function () {
       var _login = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(email, password) {
-        var db, sql, data, user, _user, userId, userSalt, firstName, lastName, forcePasswordChange, capabilitiesSQL, rolesSQL, rawCapabilities, rawRoles, capabilities, roles, session_token, sessionSql, defaultEntityType, defaultEntityTypeData, defaultEntityTypeSQL, _defaultEntityTypeDat;
+        var db, sql, data, user, _user, userId, userSalt, firstName, lastName, forcePasswordChange, capabilitiesSQL, groupsSQL, rawCapabilities, rawGroups, capabilities, groups, session_token, sessionSql, defaultEntityType, defaultEntityTypeData, defaultEntityTypeSQL, _defaultEntityTypeDat;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
@@ -127,7 +127,7 @@ var People = /*#__PURE__*/function () {
               user = data.records[0];
               _user = _slicedToArray(user, 5), userId = _user[0].longValue, userSalt = _user[1].stringValue, firstName = _user[2].stringValue, lastName = _user[3].stringValue, forcePasswordChange = _user[4].booleanValue;
               capabilitiesSQL = "SELECT DISTINCT capabilities.name from people_groups \n      LEFT JOIN groups ON groups.id = people_groups.group_id\n      LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n      LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n      WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL";
-              rolesSQL = "SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id"; // separate SQL for capabilities and roles so we dont have to filter duplicated values.
+              groupsSQL = "SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id"; // separate SQL for capabilities and roles so we dont have to filter duplicated values.
               _context.next = 13;
               return db.executeStatement(capabilitiesSQL, [{
                 name: 'people_id',
@@ -138,20 +138,20 @@ var People = /*#__PURE__*/function () {
             case 13:
               rawCapabilities = _context.sent;
               _context.next = 16;
-              return db.executeStatement(rolesSQL, [{
+              return db.executeStatement(groupsSQL, [{
                 name: 'people_id',
                 value: {
                   longValue: userId
                 }
               }]);
             case 16:
-              rawRoles = _context.sent;
+              rawGroups = _context.sent;
               capabilities = rawCapabilities.records.map(function (_ref) {
                 var _ref2 = _slicedToArray(_ref, 1),
                   capability = _ref2[0].stringValue;
                 return capability;
               });
-              roles = rawRoles.records.map(function (_ref3) {
+              groups = rawGroups.records.map(function (_ref3) {
                 var _ref4 = _slicedToArray(_ref3, 1),
                   role = _ref4[0].stringValue;
                 return role;
@@ -183,7 +183,7 @@ var People = /*#__PURE__*/function () {
                 user: {
                   firstName: firstName,
                   lastName: lastName,
-                  roles: roles,
+                  groups: groups,
                   capabilities: capabilities,
                   defaultEntityType: defaultEntityType,
                   forcePasswordChange: forcePasswordChange
