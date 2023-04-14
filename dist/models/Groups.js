@@ -64,6 +64,44 @@ var Group = /*#__PURE__*/function () {
       }
       return all;
     }()
+  }, {
+    key: "findByUser",
+    value: function () {
+      var _findByUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_ref3) {
+        var id, db, sql, params, data, records;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              id = _ref3.id;
+              db = new _DB["default"]();
+              sql = "SELECT group_id FROM people_groups WHERE people_id = :id";
+              params = [{
+                name: "id",
+                value: {
+                  longValue: id
+                }
+              }];
+              _context2.next = 6;
+              return db.executeStatement(sql, params);
+            case 6:
+              data = _context2.sent;
+              records = data.records.map(function (_ref4) {
+                var _ref5 = _slicedToArray(_ref4, 1),
+                  id = _ref5[0].stringValue;
+                return id;
+              }); // id is stringvalue for some reason
+              return _context2.abrupt("return", records);
+            case 9:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }));
+      function findByUser(_x2) {
+        return _findByUser.apply(this, arguments);
+      }
+      return findByUser;
+    }()
   }]);
   return Group;
 }();

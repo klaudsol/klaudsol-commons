@@ -18,9 +18,6 @@ export const slsFetch = async (url, params, extra) => {
         );
       });
     }
-  } else if (response.status === UNAUTHORIZED) {
-    if (unauthorized) unauthorized();
-    return null;
   } else {
     const responseJson = await response.json();
 

@@ -39,11 +39,9 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
 }*/
   
   static async login(email, password) {
-    try {
-      
       const db = new DB();
       const sql = `SELECT id, salt, first_name, last_name, force_password_change FROM people 
-        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 LIMIT 1;`; 
+        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 AND approved = 1 LIMIT 1;`; 
         
       const data = await db.executeStatement(sql, [
         {name: 'email', value:{stringValue: email}},
@@ -60,7 +58,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         {stringValue: userSalt},
         {stringValue: firstName},
         {stringValue: lastName},
-        {booleanValue: forcePasswordChange}
+        {booleanValue: forcePasswordChange},
       ] = user;
 
       const capabilitiesSQL = `SELECT DISTINCT capabilities.name from people_groups 
@@ -99,25 +97,20 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       defaultEntityTypeData = await db.executeStatement(defaultEntityTypeSQL, []);
       [{stringValue: defaultEntityType}] = defaultEntityTypeData.records[0];
  
-      return { session_token, user: {firstName, lastName, roles, capabilities, defaultEntityType, forcePasswordChange } };
-      
-    } catch (error) {
-      log(error.stack);
-      throw error; //throw error after logging so that the application handles the error
-    }
-    
+      return { session_token, user: {firstName, lastName, roles, capabilities, defaultEntityType, forcePasswordChange} };
   }
 
-  static async createUser({ firstName, lastName, loginEnabled, email, password, forcePasswordChange }) {
+  static async createUser({ firstName, lastName, loginEnabled, approved, email, password, forcePasswordChange }) {
     const db = new DB();
     const salt = await generateRandVals(5);
 
-    const sql = `INSERT INTO people (first_name, last_name, role, login_enabled, email, encrypted_password, salt, created_at, force_password_change)
-                 VALUES (:first_name, :last_name, 'deprecated', :login_enabled, :email, SHA2(CONCAT(:password, :salt), 256), :salt, NOW(), :force_password_change)`;
+    const sql = `INSERT INTO people (first_name, last_name, role, login_enabled, approved, email, encrypted_password, salt, created_at, force_password_change)
+                 VALUES (:first_name, :last_name, 'deprecated', :login_enabled, :approved, :email, SHA2(CONCAT(:password, :salt), 256), :salt, NOW(), :force_password_change)`;
     const params = [
        { name: 'first_name', value: { stringValue: firstName } },
        { name: 'last_name', value: { stringValue: lastName } },
        { name: 'login_enabled', value: { booleanValue: loginEnabled } },
+       { name: 'approved', value: { booleanValue: approved } },
        { name: 'email', value: { stringValue: email } },
        { name: 'password', value: { stringValue: password } },
        { name: 'salt', value: { stringValue: salt } },
@@ -133,7 +126,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   static async get({ id }) {
     const db = new DB();
 
-    const sql = `SELECT first_name, last_name, login_enabled, force_password_change, email, created_at FROM people WHERE id = :id`;
+    const sql = `SELECT first_name, last_name, login_enabled, approved, force_password_change, email, created_at FROM people WHERE id = :id`;
     const params = [ { name: 'id', value: { longValue: id } } ];
 
     const data = await db.executeStatement(sql, params);
@@ -142,30 +135,25 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
             { stringValue: firstName },
             { stringValue: lastName },
             { booleanValue: loginEnabled },
+            { booleanValue: approved },
             { booleanValue: forcePasswordChange },
             { stringValue: email },
             { stringValue: createdAt },
-        ]) => ({ firstName, lastName, loginEnabled, forcePasswordChange, email, createdAt }));
+        ]) => ({ firstName, lastName, loginEnabled, approved, forcePasswordChange, email, createdAt }));
 
     return record;
   }
 
-  static async getAll({ approved, pending } = {}) {
+  static async getAll({ approved, pending  } = {}) {
     const db = new DB();
 
-    let filter;
-    if (approved && pending) {
-        filter = '';
+    let sql = `SELECT id, CONCAT(first_name, " ", last_name) AS full_name, login_enabled, email, created_at FROM people`;
+    if ((approved && pending) || (!approved && !pending)) {
     } else if (approved) {
-        filter = `WHERE login_enabled = true`;
-    } else if (pending) {
-        filter = `WHERE login_enabled = false`;
+        sql = `${sql} WHERE approved = true`
     } else {
-        filter = ''; 
-    };
-
-    const sql = `SELECT id, CONCAT(first_name, " ", last_name) AS full_name, login_enabled, email, created_at 
-                 FROM people ${filter}`;
+        sql = `${sql} WHERE approved = false`
+    }
 
     const data = await db.executeStatement(sql);
     const records = data.records.map(
@@ -196,7 +184,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
 
   static async approve({ id }) {
     const db = new DB();
-    const sql = `UPDATE people SET login_enabled = true WHERE id = :id`;
+    const sql = `UPDATE people SET approved = true WHERE id = :id`;
     const params = [ { name: 'id', value: { longValue: id } } ];
 
     await db.executeStatement(sql, params);
@@ -241,7 +229,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   }
 
 
-  static async updateUserInfo({ id, firstName, lastName, email, loginEnabled, forcePasswordChange }){
+  static async updateUserInfo({ id, firstName, lastName, email, approved, loginEnabled, forcePasswordChange }){
     const db = new DB();
     const updateSql =  `UPDATE people 
                         SET 
@@ -249,6 +237,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
                             last_name = :last_name, 
                             email = :email,
                             login_enabled = :login_enabled,
+                            approved = :approved,
                             force_password_change = :force_password_change
                         WHERE 
                             id = :id`;
@@ -259,6 +248,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         last_name: {name: 'last_name', value: {stringValue: lastName}},
         email: {name: 'email', value: {stringValue: email}},
         login_enabled: {name: 'login_enabled', value: {booleanValue: loginEnabled}},
+        approved: {name: 'approved', value: {booleanValue: approved}},
         force_password_change: {name: 'force_password_change', value: {booleanValue: forcePasswordChange}},
     }
 
@@ -268,7 +258,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   }
 
   //A password changer needs a method of its own for security purposes
-  static async updatePassword({id, oldPassword, newPassword}){
+  static async updatePassword({id, oldPassword, newPassword, forcePasswordChange}){
 
     //early exit if the old password or the new password is not provided.
     if (!oldPassword || !newPassword) throw new Error('Passwords are required.');
@@ -299,7 +289,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     const executeStatementParam = [
       {name: 'id', value: {longValue: id}},
       {name: 'newPassword', value: {stringValue: newPassword}},
-      {name: 'force_password_change', value: {booleanValue: false}},
+      {name: 'force_password_change', value: {booleanValue: forcePasswordChange}},
       {name: 'salt', value: {stringValue: salt}}
     ];
 

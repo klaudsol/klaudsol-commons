@@ -102,10 +102,9 @@ var People = /*#__PURE__*/function () {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              _context.prev = 0;
               db = new _DB["default"]();
-              sql = "SELECT id, salt, first_name, last_name, force_password_change FROM people \n        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 LIMIT 1;";
-              _context.next = 5;
+              sql = "SELECT id, salt, first_name, last_name, force_password_change FROM people \n        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 AND approved = 1 LIMIT 1;";
+              _context.next = 4;
               return db.executeStatement(sql, [{
                 name: 'email',
                 value: {
@@ -117,35 +116,35 @@ var People = /*#__PURE__*/function () {
                   stringValue: password
                 }
               }]);
-            case 5:
+            case 4:
               data = _context.sent;
               if (!(data.records.length === 0)) {
-                _context.next = 8;
+                _context.next = 7;
                 break;
               }
               throw new _UnauthorizedError["default"]("Invalid username and/or password.");
-            case 8:
+            case 7:
               user = data.records[0];
               _user = _slicedToArray(user, 5), userId = _user[0].longValue, userSalt = _user[1].stringValue, firstName = _user[2].stringValue, lastName = _user[3].stringValue, forcePasswordChange = _user[4].booleanValue;
               capabilitiesSQL = "SELECT DISTINCT capabilities.name from people_groups \n      LEFT JOIN groups ON groups.id = people_groups.group_id\n      LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n      LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n      WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL";
               rolesSQL = "SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id"; // separate SQL for capabilities and roles so we dont have to filter duplicated values.
-              _context.next = 14;
+              _context.next = 13;
               return db.executeStatement(capabilitiesSQL, [{
                 name: 'people_id',
                 value: {
                   longValue: userId
                 }
               }]);
-            case 14:
+            case 13:
               rawCapabilities = _context.sent;
-              _context.next = 17;
+              _context.next = 16;
               return db.executeStatement(rolesSQL, [{
                 name: 'people_id',
                 value: {
                   longValue: userId
                 }
               }]);
-            case 17:
+            case 16:
               rawRoles = _context.sent;
               capabilities = rawCapabilities.records.map(function (_ref) {
                 var _ref2 = _slicedToArray(_ref, 1),
@@ -159,7 +158,7 @@ var People = /*#__PURE__*/function () {
               });
               session_token = (0, _DB.sha256)("".concat(userId).concat(userSalt).concat(Date.now()));
               sessionSql = "INSERT INTO sessions (`people_id`, `session`, `session_expiry`)  \n        VALUES(:id, :session, DATE_ADD(NOW(), INTERVAL 744 HOUR))";
-              _context.next = 24;
+              _context.next = 23;
               return db.executeStatement(sessionSql, [{
                 name: 'session',
                 value: {
@@ -171,11 +170,11 @@ var People = /*#__PURE__*/function () {
                   longValue: userId
                 }
               }]);
-            case 24:
+            case 23:
               defaultEntityTypeSQL = "SELECT entity_types.slug FROM entity_types ORDER BY id ASC LIMIT 1";
-              _context.next = 27;
+              _context.next = 26;
               return db.executeStatement(defaultEntityTypeSQL, []);
-            case 27:
+            case 26:
               defaultEntityTypeData = _context.sent;
               _defaultEntityTypeDat = _slicedToArray(defaultEntityTypeData.records[0], 1);
               defaultEntityType = _defaultEntityTypeDat[0].stringValue;
@@ -190,16 +189,11 @@ var People = /*#__PURE__*/function () {
                   forcePasswordChange: forcePasswordChange
                 }
               });
-            case 33:
-              _context.prev = 33;
-              _context.t0 = _context["catch"](0);
-              (0, _Logger.log)(_context.t0.stack);
-              throw _context.t0;
-            case 37:
+            case 30:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 33]]);
+        }, _callee);
       }));
       function login(_x, _x2) {
         return _login.apply(this, arguments);
@@ -210,17 +204,17 @@ var People = /*#__PURE__*/function () {
     key: "createUser",
     value: function () {
       var _createUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_ref5) {
-        var firstName, lastName, loginEnabled, email, password, forcePasswordChange, db, salt, sql, params, _yield$db$exectuteSta, generatedFields;
+        var firstName, lastName, loginEnabled, approved, email, password, forcePasswordChange, db, salt, sql, params, _yield$db$exectuteSta, generatedFields;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              firstName = _ref5.firstName, lastName = _ref5.lastName, loginEnabled = _ref5.loginEnabled, email = _ref5.email, password = _ref5.password, forcePasswordChange = _ref5.forcePasswordChange;
+              firstName = _ref5.firstName, lastName = _ref5.lastName, loginEnabled = _ref5.loginEnabled, approved = _ref5.approved, email = _ref5.email, password = _ref5.password, forcePasswordChange = _ref5.forcePasswordChange;
               db = new _DB["default"]();
               _context2.next = 4;
               return (0, _Math.generateRandVals)(5);
             case 4:
               salt = _context2.sent;
-              sql = "INSERT INTO people (first_name, last_name, role, login_enabled, email, encrypted_password, salt, created_at, force_password_change)\n                 VALUES (:first_name, :last_name, 'deprecated', :login_enabled, :email, SHA2(CONCAT(:password, :salt), 256), :salt, NOW(), :force_password_change)";
+              sql = "INSERT INTO people (first_name, last_name, role, login_enabled, approved, email, encrypted_password, salt, created_at, force_password_change)\n                 VALUES (:first_name, :last_name, 'deprecated', :login_enabled, :approved, :email, SHA2(CONCAT(:password, :salt), 256), :salt, NOW(), :force_password_change)";
               params = [{
                 name: 'first_name',
                 value: {
@@ -235,6 +229,11 @@ var People = /*#__PURE__*/function () {
                 name: 'login_enabled',
                 value: {
                   booleanValue: loginEnabled
+                }
+              }, {
+                name: 'approved',
+                value: {
+                  booleanValue: approved
                 }
               }, {
                 name: 'email',
@@ -284,7 +283,7 @@ var People = /*#__PURE__*/function () {
             case 0:
               id = _ref6.id;
               db = new _DB["default"]();
-              sql = "SELECT first_name, last_name, login_enabled, force_password_change, email, created_at FROM people WHERE id = :id";
+              sql = "SELECT first_name, last_name, login_enabled, approved, force_password_change, email, created_at FROM people WHERE id = :id";
               params = [{
                 name: 'id',
                 value: {
@@ -296,17 +295,19 @@ var People = /*#__PURE__*/function () {
             case 6:
               data = _context3.sent;
               record = data.records.map(function (_ref7) {
-                var _ref8 = _slicedToArray(_ref7, 6),
+                var _ref8 = _slicedToArray(_ref7, 7),
                   firstName = _ref8[0].stringValue,
                   lastName = _ref8[1].stringValue,
                   loginEnabled = _ref8[2].booleanValue,
-                  forcePasswordChange = _ref8[3].booleanValue,
-                  email = _ref8[4].stringValue,
-                  createdAt = _ref8[5].stringValue;
+                  approved = _ref8[3].booleanValue,
+                  forcePasswordChange = _ref8[4].booleanValue,
+                  email = _ref8[5].stringValue,
+                  createdAt = _ref8[6].stringValue;
                 return {
                   firstName: firstName,
                   lastName: lastName,
                   loginEnabled: loginEnabled,
+                  approved: approved,
                   forcePasswordChange: forcePasswordChange,
                   email: email,
                   createdAt: createdAt
@@ -332,7 +333,6 @@ var People = /*#__PURE__*/function () {
           approved,
           pending,
           db,
-          filter,
           sql,
           data,
           records,
@@ -342,20 +342,15 @@ var People = /*#__PURE__*/function () {
             case 0:
               _ref9 = _args4.length > 0 && _args4[0] !== undefined ? _args4[0] : {}, approved = _ref9.approved, pending = _ref9.pending;
               db = new _DB["default"]();
-              if (approved && pending) {
-                filter = '';
-              } else if (approved) {
-                filter = "WHERE login_enabled = true";
-              } else if (pending) {
-                filter = "WHERE login_enabled = false";
+              sql = "SELECT id, CONCAT(first_name, \" \", last_name) AS full_name, login_enabled, email, created_at FROM people";
+              if (approved && pending || !approved && !pending) {} else if (approved) {
+                sql = "".concat(sql, " WHERE approved = true");
               } else {
-                filter = '';
+                sql = "".concat(sql, " WHERE approved = false");
               }
-              ;
-              sql = "SELECT id, CONCAT(first_name, \" \", last_name) AS full_name, login_enabled, email, created_at \n                 FROM people ".concat(filter);
-              _context4.next = 7;
+              _context4.next = 6;
               return db.executeStatement(sql);
-            case 7:
+            case 6:
               data = _context4.sent;
               records = data.records.map(function (_ref10) {
                 var _ref11 = _slicedToArray(_ref10, 5),
@@ -373,7 +368,7 @@ var People = /*#__PURE__*/function () {
                 };
               });
               return _context4.abrupt("return", records);
-            case 10:
+            case 9:
             case "end":
               return _context4.stop();
           }
@@ -426,7 +421,7 @@ var People = /*#__PURE__*/function () {
             case 0:
               id = _ref12.id;
               db = new _DB["default"]();
-              sql = "UPDATE people SET login_enabled = true WHERE id = :id";
+              sql = "UPDATE people SET approved = true WHERE id = :id";
               params = [{
                 name: 'id',
                 value: {
@@ -532,23 +527,14 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "updateUserInfo",
     value: function () {
-<<<<<<< Updated upstream
       var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(_ref14) {
-        var id, firstName, lastName, email, loginEnabled, forcePasswordChange, db, updateSql, executeStatementParam;
+        var id, firstName, lastName, email, approved, loginEnabled, forcePasswordChange, db, updateSql, executeStatementParam;
         return _regeneratorRuntime().wrap(function _callee9$(_context9) {
           while (1) switch (_context9.prev = _context9.next) {
             case 0:
-              id = _ref14.id, firstName = _ref14.firstName, lastName = _ref14.lastName, email = _ref14.email, loginEnabled = _ref14.loginEnabled, forcePasswordChange = _ref14.forcePasswordChange;
-=======
-      var _updateUserInfo = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(_ref6) {
-        var id, first_name, last_name, email, oldPassword, newPassword, sme_timezone_id, db, encryptedPasswordPhrase, updateSql, checkPasswordSql, sqlPass, executeStatementParam, data;
-        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-          while (1) switch (_context4.prev = _context4.next) {
-            case 0:
-              id = _ref6.id, first_name = _ref6.first_name, last_name = _ref6.last_name, email = _ref6.email, oldPassword = _ref6.oldPassword, newPassword = _ref6.newPassword, sme_timezone_id = _ref6.sme_timezone_id;
->>>>>>> Stashed changes
+              id = _ref14.id, firstName = _ref14.firstName, lastName = _ref14.lastName, email = _ref14.email, approved = _ref14.approved, loginEnabled = _ref14.loginEnabled, forcePasswordChange = _ref14.forcePasswordChange;
               db = new _DB["default"]();
-              updateSql = "UPDATE people \n                        SET \n                            first_name = :first_name, \n                            last_name = :last_name, \n                            email = :email,\n                            login_enabled = :login_enabled,\n                            force_password_change = :force_password_change\n                        WHERE \n                            id = :id";
+              updateSql = "UPDATE people \n                        SET \n                            first_name = :first_name, \n                            last_name = :last_name, \n                            email = :email,\n                            login_enabled = :login_enabled,\n                            approved = :approved,\n                            force_password_change = :force_password_change\n                        WHERE \n                            id = :id";
               executeStatementParam = {
                 id: {
                   name: 'id',
@@ -580,6 +566,12 @@ var People = /*#__PURE__*/function () {
                     booleanValue: loginEnabled
                   }
                 },
+                approved: {
+                  name: 'approved',
+                  value: {
+                    booleanValue: approved
+                  }
+                },
                 force_password_change: {
                   name: 'force_password_change',
                   value: {
@@ -587,21 +579,11 @@ var People = /*#__PURE__*/function () {
                   }
                 }
               };
-<<<<<<< Updated upstream
               _context9.next = 6;
               return db.executeStatement(updateSql, Object.values(executeStatementParam));
             case 6:
               return _context9.abrupt("return", true);
             case 7:
-=======
-              if (!newPassword) delete executeStatementParam.newPassword;
-              _context4.next = 15;
-              return db.executeStatement(updateSql, Object.values(executeStatementParam));
-            case 15:
-              data = _context4.sent;
-              return _context4.abrupt("return", true);
-            case 17:
->>>>>>> Stashed changes
             case "end":
               return _context9.stop();
           }
@@ -616,11 +598,11 @@ var People = /*#__PURE__*/function () {
     key: "updatePassword",
     value: function () {
       var _updatePassword = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(_ref15) {
-        var id, oldPassword, newPassword, db, checkPasswordSql, sqlPass, updateSql, salt, executeStatementParam, data;
+        var id, oldPassword, newPassword, forcePasswordChange, db, checkPasswordSql, sqlPass, updateSql, salt, executeStatementParam, data;
         return _regeneratorRuntime().wrap(function _callee10$(_context10) {
           while (1) switch (_context10.prev = _context10.next) {
             case 0:
-              id = _ref15.id, oldPassword = _ref15.oldPassword, newPassword = _ref15.newPassword;
+              id = _ref15.id, oldPassword = _ref15.oldPassword, newPassword = _ref15.newPassword, forcePasswordChange = _ref15.forcePasswordChange;
               if (!(!oldPassword || !newPassword)) {
                 _context10.next = 3;
                 break;
@@ -667,7 +649,7 @@ var People = /*#__PURE__*/function () {
               }, {
                 name: 'force_password_change',
                 value: {
-                  booleanValue: false
+                  booleanValue: forcePasswordChange
                 }
               }, {
                 name: 'salt',

@@ -20,12 +20,12 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 function _isNativeFunction(fn) { return Function.toString.call(fn).indexOf("[native code]") !== -1; }
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-var InsufficientDataError = /*#__PURE__*/function (_Error) {
-  _inherits(InsufficientDataError, _Error);
-  var _super = _createSuper(InsufficientDataError);
-  function InsufficientDataError() {
+var InvalidCredentialsError = /*#__PURE__*/function (_Error) {
+  _inherits(InvalidCredentialsError, _Error);
+  var _super = _createSuper(InvalidCredentialsError);
+  function InvalidCredentialsError() {
     var _this;
-    _classCallCheck(this, InsufficientDataError);
+    _classCallCheck(this, InvalidCredentialsError);
     for (var _len = arguments.length, params = new Array(_len), _key = 0; _key < _len; _key++) {
       params[_key] = arguments[_key];
     }
@@ -34,11 +34,11 @@ var InsufficientDataError = /*#__PURE__*/function (_Error) {
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(_assertThisInitialized(_this), InsufficientDataError);
+      Error.captureStackTrace(_assertThisInitialized(_this), InvalidCredentialsError);
     }
-    _this.name = 'InsufficientDataError';
+    _this.name = 'InvalidCredentialsError';
     return _this;
   }
-  return _createClass(InsufficientDataError);
+  return _createClass(InvalidCredentialsError);
 }( /*#__PURE__*/_wrapNativeSuper(Error));
-exports["default"] = InsufficientDataError;
+exports["default"] = InvalidCredentialsError;

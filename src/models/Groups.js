@@ -17,4 +17,16 @@ export default class Group {
 
         return records;
     }
+
+    static async findByUser({ id }) {
+        const db = new DB();
+
+        const sql = `SELECT group_id FROM people_groups WHERE people_id = :id`;
+        const params = [ { name: "id", value: { longValue: id } } ];
+
+        const data = await db.executeStatement(sql, params);
+        const records = data.records.map(([ { stringValue: id } ]) => id); // id is stringvalue for some reason
+
+        return records;
+    }
 }

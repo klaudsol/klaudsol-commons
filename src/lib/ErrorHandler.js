@@ -11,16 +11,17 @@ import JsonWebTokenError from '../errors/JsonWebTokenError';
 import InsufficientDataError from '../errors/InsufficientDataError';
 import UserAlreadyExists from '../errors/UserAlreadyExists';
 import { serverSideLogout } from '../lib/Session';
+import RecordNotFound from '../../dist/errors/RecordNotFound';
 
 export async function defaultErrorHandler(error, req, res) {
   
   await log(error.stack);
-  
+
   if (
     error instanceof UnauthorizedError ||
     error instanceof SessionNotFound
     ) {
-      res.status(UNAUTHORIZED).json({message: 'Authentication required.'});
+      res.status(UNAUTHORIZED).json({ message: error.message ?? 'Authentication required.' });
   } else if (
     error instanceof AppNotEnabledError || 
     error instanceof InsufficientPermissionsError
@@ -43,11 +44,15 @@ export async function defaultErrorHandler(error, req, res) {
   } else if (
     error instanceof InsufficientDataError
   ) {
-      res.status(BAD_REQUEST).json({ message: error.message });
+      res.status(BAD_REQUEST).json({ message: error.message ?? 'Insufficient data.' });
   } else if (
     error instanceof UserAlreadyExists
   ) {
       res.status(BAD_REQUEST).json({ message: 'User already exists.' });
+  } else if (
+    error instanceof RecordNotFound
+  ) {
+      res.status(BAD_REQUEST).json({ message: error.message ?? 'Record not found.' });
   } else {
       /* Let's be conservative on our regex*/
       if (error.stack.match(/Communications\s+link\s+failure/gi)) {

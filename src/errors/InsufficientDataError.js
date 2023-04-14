@@ -8,10 +8,7 @@ export default class InsufficientDataError extends Error {
       Error.captureStackTrace(this, InsufficientDataError);
     }
 
-    const message = params[0];
-
     this.name = 'InsufficientDataError';
-    this.message = message ?? 'Insufficient data.';
   }
 }
 
