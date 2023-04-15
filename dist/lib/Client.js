@@ -49,28 +49,21 @@ var slsFetch = /*#__PURE__*/function () {
         case 16:
           return _context.abrupt("return", _context.sent);
         case 17:
-          _context.next = 32;
+          _context.next = 27;
           break;
         case 19:
-          if (!(response.status === _HttpStatuses.UNAUTHORIZED)) {
-            _context.next = 24;
-            break;
-          }
-          if (unauthorized) unauthorized();
-          return _context.abrupt("return", null);
-        case 24:
-          _context.next = 26;
+          _context.next = 21;
           return response.json();
-        case 26:
+        case 21:
           responseJson = _context.sent;
           if (!responseJson.message) {
-            _context.next = 31;
+            _context.next = 26;
             break;
           }
           throw new Error(responseJson.message);
-        case 31:
+        case 26:
           throw new Error("Response status: ".concat(response.status));
-        case 32:
+        case 27:
         case "end":
           return _context.stop();
       }
