@@ -39,11 +39,9 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
 }*/
   
   static async login(email, password) {
-    try {
-      
       const db = new DB();
       const sql = `SELECT id, salt, first_name, last_name, force_password_change FROM people 
-        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 LIMIT 1;`; 
+        WHERE email=:email AND encrypted_password = sha2(CONCAT(:password, salt), 256) AND login_enabled = 1 AND approved = 1 LIMIT 1;`; 
         
       const data = await db.executeStatement(sql, [
         {name: 'email', value:{stringValue: email}},
@@ -60,7 +58,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         {stringValue: userSalt},
         {stringValue: firstName},
         {stringValue: lastName},
-        {booleanValue: forcePasswordChange}
+        {booleanValue: forcePasswordChange},
       ] = user;
 
       const capabilitiesSQL = `SELECT DISTINCT capabilities.name from people_groups 
@@ -69,23 +67,19 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
       WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL`;
 
-      const rolesSQL = `SELECT DISTINCT groups.name from people_groups 
-      LEFT JOIN groups ON groups.id = people_groups.group_id
-      LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
-      LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
-      WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL`;
+      const groupsSQL = `SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id`;
       
       // separate SQL for capabilities and roles so we dont have to filter duplicated values.
       const rawCapabilities = await db.executeStatement(capabilitiesSQL, [
         {name: 'people_id', value:{longValue: userId}},
       ]);
 
-      const rawRoles = await db.executeStatement(rolesSQL, [
+      const rawGroups = await db.executeStatement(groupsSQL, [
         {name: 'people_id', value:{longValue: userId}},
       ]);
 
       const capabilities = rawCapabilities.records.map(([{ stringValue: capability }])=> capability);
-      const roles = rawRoles.records.map(([{ stringValue: roles }])=> roles);
+      const groups = rawGroups.records.map(([{ stringValue: role }])=> role);
      
       const session_token = sha256(`${userId}${userSalt}${Date.now()}`);
       
@@ -103,13 +97,109 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       defaultEntityTypeData = await db.executeStatement(defaultEntityTypeSQL, []);
       [{stringValue: defaultEntityType}] = defaultEntityTypeData.records[0];
  
-      return { session_token, user: {firstName, lastName, roles, capabilities, defaultEntityType, forcePasswordChange } };
-      
-    } catch (error) {
-      log(error.stack);
-      throw error; //throw error after logging so that the application handles the error
+      return { session_token, user: {firstName, lastName, groups, capabilities, defaultEntityType, forcePasswordChange} };
+  }
+
+  static async createUser({ firstName, lastName, loginEnabled, approved, email, password, forcePasswordChange }) {
+    const db = new DB();
+    const salt = await generateRandVals(5);
+
+    const sql = `INSERT INTO people (first_name, last_name, role, login_enabled, approved, email, encrypted_password, salt, created_at, force_password_change)
+                 VALUES (:first_name, :last_name, 'deprecated', :login_enabled, :approved, :email, SHA2(CONCAT(:password, :salt), 256), :salt, NOW(), :force_password_change)`;
+    const params = [
+       { name: 'first_name', value: { stringValue: firstName } },
+       { name: 'last_name', value: { stringValue: lastName } },
+       { name: 'login_enabled', value: { booleanValue: loginEnabled } },
+       { name: 'approved', value: { booleanValue: approved } },
+       { name: 'email', value: { stringValue: email } },
+       { name: 'password', value: { stringValue: password } },
+       { name: 'salt', value: { stringValue: salt } },
+       { name: 'force_password_change', value: { booleanValue: forcePasswordChange } }
+    ];
+
+    // Returns the id
+    const { generatedFields } = await db.executeStatement(sql, params);
+
+    return generatedFields[0].longValue;
+  }
+
+  static async get({ id }) {
+    const db = new DB();
+
+    const sql = `SELECT first_name, last_name, login_enabled, approved, force_password_change, email, created_at FROM people WHERE id = :id`;
+    const params = [ { name: 'id', value: { longValue: id } } ];
+
+    const data = await db.executeStatement(sql, params);
+    const record = data.records.map(
+        ([
+            { stringValue: firstName },
+            { stringValue: lastName },
+            { booleanValue: loginEnabled },
+            { booleanValue: approved },
+            { booleanValue: forcePasswordChange },
+            { stringValue: email },
+            { stringValue: createdAt },
+        ]) => ({ firstName, lastName, loginEnabled, approved, forcePasswordChange, email, createdAt }));
+
+    return record;
+  }
+
+  static async getAll({ approved, pending  } = {}) {
+    const db = new DB();
+
+    let sql = `SELECT id, CONCAT(first_name, " ", last_name) AS full_name, login_enabled, email, created_at FROM people`;
+    if ((approved && pending) || (!approved && !pending)) {
+    } else if (approved) {
+        sql = `${sql} WHERE approved = true`
+    } else {
+        sql = `${sql} WHERE approved = false`
     }
-    
+
+    const data = await db.executeStatement(sql);
+    const records = data.records.map(
+        ([
+            { longValue: id },
+            { stringValue: name },
+            { booleanValue: loginEnabled },
+            { stringValue: email },
+            { stringValue: createdAt },
+        ]) => ({ id, name, loginEnabled, email, createdAt }));
+
+    return records;
+  }
+
+  static async findByColumn(column, value) {
+    const db = new DB();
+
+    // columns as parameters wont work for some reason
+    const sql = `SELECT * FROM people WHERE ${column} = :value`;
+    const params = [
+        { name: 'value', value: { stringValue: value } }
+    ];
+
+    const data = await db.executeStatement(sql, params);
+
+    return data.records[0];
+  }
+
+  static async approve({ id }) {
+    const db = new DB();
+    const sql = `UPDATE people SET approved = true WHERE id = :id`;
+    const params = [ { name: 'id', value: { longValue: id } } ];
+
+    await db.executeStatement(sql, params);
+
+    return true;
+  }
+
+  static async delete({ id }) {
+    const db = new DB();
+    const sql = `DELETE FROM people WHERE id = :id`;
+    const params = [ { name: 'id', value: { longValue: id } } ];
+
+    await db.executeStatement(sql, params);
+
+    return true;
   }
 
   static async displayCurrentUser(session) { // return User's information
@@ -139,44 +229,36 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
   }
 
 
-  //TODO: Remove password change here.
-  static async updateUserInfo({id, first_name, last_name, email, oldPassword, newPassword, sme_timezone_id}){
+  static async updateUserInfo({ id, firstName, lastName, email, approved, loginEnabled, forcePasswordChange }){
     const db = new DB();
-      const encryptedPasswordPhrase =  newPassword ? 'encrypted_password = sha2(CONCAT(:newPassword, salt), 256),' : '';
-      const updateSql =  `UPDATE sme_people set first_name = :first_name, last_name = :last_name, email = :email, ${encryptedPasswordPhrase} sme_timezone_id = :sme_timezone_id WHERE id = :id`;
-      const checkPasswordSql = `SELECT * FROM sme_people 
-                                where id = :id AND encrypted_password = sha2(CONCAT(:oldPassword, salt), 256) LIMIT 1`;
-      
-      // !oldPassword/!newPassword is not working.
-      // Validations for updating password
-      if (oldPassword || newPassword){
-        const sqlPass = await db.executeStatement(checkPasswordSql, [
-          {name: 'id', value: {longValue: id}},
-          {name: 'oldPassword', value:{stringValue: oldPassword}}
-        ]);
-        if (sqlPass.records.length === 0) {
-          throw new RecordNotFound("Incorrect password");
-        }
-      }
+    const updateSql =  `UPDATE people 
+                        SET 
+                            first_name = :first_name, 
+                            last_name = :last_name, 
+                            email = :email,
+                            login_enabled = :login_enabled,
+                            approved = :approved,
+                            force_password_change = :force_password_change
+                        WHERE 
+                            id = :id`;
 
-      const executeStatementParam = {
+    const executeStatementParam = {
         id: {name: 'id', value: {longValue: id}},
-        first_name: {name: 'first_name', value: {stringValue: first_name}},
-        last_name: {name: 'last_name', value: {stringValue: last_name}},
+        first_name: {name: 'first_name', value: {stringValue: firstName}},
+        last_name: {name: 'last_name', value: {stringValue: lastName}},
         email: {name: 'email', value: {stringValue: email}},
-        newPassword: {name: 'newPassword', value: {stringValue: newPassword}},
-        sme_timezone_id: {name: 'sme_timezone_id', value: {longValue: sme_timezone_id}}
-      }
+        login_enabled: {name: 'login_enabled', value: {booleanValue: loginEnabled}},
+        approved: {name: 'approved', value: {booleanValue: approved}},
+        force_password_change: {name: 'force_password_change', value: {booleanValue: forcePasswordChange}},
+    }
 
-      if(!newPassword) delete executeStatementParam.newPassword;
+    await db.executeStatement(updateSql, Object.values(executeStatementParam)); 
 
-      const data = await db.executeStatement(updateSql, Object.values(executeStatementParam)); 
-      return true;
-      
+    return true;
   }
 
   //A password changer needs a method of its own for security purposes
-  static async updatePassword({id, oldPassword, newPassword}){
+  static async updatePassword({id, oldPassword, newPassword, forcePasswordChange}){
 
     //early exit if the old password or the new password is not provided.
     if (!oldPassword || !newPassword) throw new Error('Passwords are required.');
@@ -207,7 +289,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     const executeStatementParam = [
       {name: 'id', value: {longValue: id}},
       {name: 'newPassword', value: {stringValue: newPassword}},
-      {name: 'force_password_change', value: {booleanValue: false}},
+      {name: 'force_password_change', value: {booleanValue: forcePasswordChange}},
       {name: 'salt', value: {stringValue: salt}}
     ];
 
