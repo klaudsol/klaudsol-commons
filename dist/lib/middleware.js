@@ -82,37 +82,17 @@ var checkToken = /*#__PURE__*/function () {
     return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) switch (_context4.prev = _context4.next) {
         case 0:
-          authorization = req.headers.authorization; // Allows public access to all data except for user data
-          if (!(req.method === "GET" && !authorization)) {
-            _context4.next = 4;
-            break;
-          }
-          if (req.url.includes("/api/admin/users")) {
-            _context4.next = 4;
-            break;
-          }
-          return _context4.abrupt("return");
-        case 4:
-          if (!(req.method === "POST" && !authorization)) {
-            _context4.next = 7;
-            break;
-          }
-          if (!(req.url === '/api/admin/users' || req.url === '/api/session')) {
-            _context4.next = 7;
-            break;
-          }
-          return _context4.abrupt("return");
-        case 7:
+          authorization = req.headers.authorization;
           req.token = authorization;
-          _context4.next = 10;
+          _context4.next = 4;
           return tokenValidator(req, res);
-        case 10:
-          _context4.next = 12;
+        case 4:
+          _context4.next = 6;
           return tokenExtractor(req, res);
-        case 12:
-          _context4.next = 14;
+        case 6:
+          _context4.next = 8;
           return tokenVerifier(req, res);
-        case 14:
+        case 8:
         case "end":
           return _context4.stop();
       }

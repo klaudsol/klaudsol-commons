@@ -28,16 +28,7 @@ const tokenVerifier = async (req, res) => {
 
 const checkToken = async (req, res) => {
     const { authorization } = req.headers;
-
-    // Allows public access to all data except for user data
-    if (req.method === "GET" && !authorization) {
-        if (!req.url.includes(`/api/admin/users`)) return;
-    }
-    // Allows users to sign in/up
-    if (req.method === "POST" && !authorization) {
-        if (req.url === '/api/admin/users' || req.url === '/api/session') return;
-    }
-
+    
     req.token = authorization;
 
     await tokenValidator(req, res);
