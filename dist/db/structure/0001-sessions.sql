@@ -1,4 +1,4 @@
-CREATE TABLE `people` (
+CREATE TABLE IF NOT EXISTS `people` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `first_name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
@@ -10,13 +10,13 @@ CREATE TABLE `people` (
   `force_password_change` BOOLEAN DEFAULT TRUE,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `sessions` (
+CREATE TABLE IF NOT EXISTS `sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `people_id` int(11) NOT NULL,
   `session` varchar(255) NOT NULL,
   `session_expiry` datetime NOT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=199 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
