@@ -118,7 +118,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     ];
 
     // Returns the id
-    const { generatedFields } = await db.exectuteStatement(sql, params);
+    const { generatedFields } = await db.executeStatement(sql, params);
 
     return generatedFields[0].longValue;
   }

@@ -204,7 +204,7 @@ var People = /*#__PURE__*/function () {
     key: "createUser",
     value: function () {
       var _createUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_ref5) {
-        var firstName, lastName, loginEnabled, approved, email, password, forcePasswordChange, db, salt, sql, params, _yield$db$exectuteSta, generatedFields;
+        var firstName, lastName, loginEnabled, approved, email, password, forcePasswordChange, db, salt, sql, params, _yield$db$executeStat, generatedFields;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
@@ -257,10 +257,10 @@ var People = /*#__PURE__*/function () {
                 }
               }]; // Returns the id
               _context2.next = 9;
-              return db.exectuteStatement(sql, params);
+              return db.executeStatement(sql, params);
             case 9:
-              _yield$db$exectuteSta = _context2.sent;
-              generatedFields = _yield$db$exectuteSta.generatedFields;
+              _yield$db$executeStat = _context2.sent;
+              generatedFields = _yield$db$executeStat.generatedFields;
               return _context2.abrupt("return", generatedFields[0].longValue);
             case 12:
             case "end":
