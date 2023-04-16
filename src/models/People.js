@@ -289,7 +289,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     const executeStatementParam = [
       {name: 'id', value: {longValue: id}},
       {name: 'newPassword', value: {stringValue: newPassword}},
-      {name: 'force_password_change', value: {booleanValue: forcePasswordChange}},
+      {name: 'force_password_change', value: {booleanValue: false}},
       {name: 'salt', value: {stringValue: salt}}
     ];
 

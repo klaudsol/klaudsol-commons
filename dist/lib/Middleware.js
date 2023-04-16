@@ -19,19 +19,26 @@ var tokenValidator = /*#__PURE__*/function () {
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
-          token = req.token;
+          token = req.token; //Note: We must take into consideration that not all API calls are JWT-based.
+          //Some (e.g. the admin) are session-based.
           if (token) {
             _context.next = 3;
             break;
           }
-          throw new _MissingHeaderError["default"]();
+          return _context.abrupt("return");
         case 3:
-          if (token.startsWith("Bearer")) {
+          if (token) {
             _context.next = 5;
             break;
           }
-          throw new _InvalidTokenError["default"]();
+          throw new _MissingHeaderError["default"]();
         case 5:
+          if (token.startsWith("Bearer")) {
+            _context.next = 7;
+            break;
+          }
+          throw new _InvalidTokenError["default"]();
+        case 7:
         case "end":
           return _context.stop();
       }
@@ -43,11 +50,20 @@ var tokenValidator = /*#__PURE__*/function () {
 }();
 var tokenExtractor = /*#__PURE__*/function () {
   var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req, res) {
+    var token;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
+          token = req.token; //Note: We must take into consideration that not all API calls are JWT-based.
+          //Some (e.g. the admin) are session-based.
+          if (token) {
+            _context2.next = 3;
+            break;
+          }
+          return _context2.abrupt("return");
+        case 3:
           req.token = req.token.substring(BEARER_LENGTH);
-        case 1:
+        case 4:
         case "end":
           return _context2.stop();
       }
@@ -63,10 +79,17 @@ var tokenVerifier = /*#__PURE__*/function () {
     return _regeneratorRuntime().wrap(function _callee3$(_context3) {
       while (1) switch (_context3.prev = _context3.next) {
         case 0:
-          token = req.token;
+          token = req.token; //Note: We must take into consideration that not all API calls are JWT-based.
+          //Some (e.g. the admin) are session-based.
+          if (token) {
+            _context3.next = 3;
+            break;
+          }
+          return _context3.abrupt("return");
+        case 3:
           user = (0, _JWT.verifyToken)(token);
           req.user = user;
-        case 3:
+        case 5:
         case "end":
           return _context3.stop();
       }

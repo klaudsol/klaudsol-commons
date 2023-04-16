@@ -10,16 +10,30 @@ const BEARER_LENGTH = 7;
 const tokenValidator = async (req, res) => {
     const { token } = req;
 
+    //Note: We must take into consideration that not all API calls are JWT-based.
+    //Some (e.g. the admin) are session-based.
+    if (!token) return;
+    
     if (!token) throw new MissingHeaderError();
     if (!token.startsWith("Bearer")) throw new InvalidTokenError();
 };
 
 const tokenExtractor = async (req, res) => {
+    const { token } = req;
+
+    //Note: We must take into consideration that not all API calls are JWT-based.
+    //Some (e.g. the admin) are session-based.
+    if (!token) return;
+
     req.token = req.token.substring(BEARER_LENGTH);
 };
 
 const tokenVerifier = async (req, res) => {
     const { token } = req;
+
+    //Note: We must take into consideration that not all API calls are JWT-based.
+    //Some (e.g. the admin) are session-based.
+    if (!token) return;
 
     const user = verifyToken(token);
 
