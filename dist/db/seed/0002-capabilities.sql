@@ -25,7 +25,6 @@ LOCK TABLES `people_groups` WRITE;
 REPLACE INTO `people_groups` VALUES (1,1);
 UNLOCK TABLES;
 
-
 LOCK TABLES `group_capabilities` WRITE;
 REPLACE INTO `group_capabilities` VALUES 
   /*Super Administrators*/
