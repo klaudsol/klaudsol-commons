@@ -60,7 +60,3 @@ REPLACE INTO `group_capabilities` VALUES
   (4,1,NULL,NULL,NULL),
   (4,3,NULL,NULL,NULL);
 UNLOCK TABLES;
-
-
-
-

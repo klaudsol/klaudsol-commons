@@ -1,4 +1,3 @@
-
 CREATE TABLE IF NOT EXISTS `capabilities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -6,7 +5,6 @@ CREATE TABLE IF NOT EXISTS `capabilities` (
   `is_system_supplied` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
 
 CREATE TABLE IF NOT EXISTS `groups`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -16,7 +14,6 @@ CREATE TABLE IF NOT EXISTS `groups`  (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
 
-
 CREATE TABLE IF NOT EXISTS `people_groups` (
   `people_id` varchar(255) NOT NULL,
   `group_id` varchar(255) NOT NULL,
@@ -24,7 +21,6 @@ CREATE TABLE IF NOT EXISTS `people_groups` (
   KEY `idx_people_id` (`people_id`),
   KEY `idx_group_id` (`group_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
-
 
 CREATE TABLE IF NOT EXISTS `group_capabilities` (
   `group_id` varchar(255) NOT NULL,
