@@ -8,10 +8,13 @@ case $1 in
   structure)
     echo "Structure."
 
+    #Select database to prevent "No database selected error"
+    echo "USE ${KS_AURORA_DATABASE}" | node $SCRIPT_PATH/scripts/db.js 
+
     #klaudsol-commons structrue.sql
     for structure in $(ls $SCRIPT_PATH/db/structure/*.sql); do
       echo "Running ${structure}..."
-      cat $structure | node $SCRIPT_PATH/scripts/db.js structure
+      cat $structure | node $SCRIPT_PATH/scripts/db.js
     done
 
     # Per-project structure.sql (Optional)

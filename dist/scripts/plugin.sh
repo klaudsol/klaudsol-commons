@@ -45,7 +45,7 @@ fi
 case $MODE in
 
   info)
-    node scripts/plugins-reducer.js info $PLUGIN_ARRAY
+    node $SCRIPT_PATH/scripts/plugins-reducer.js info $PLUGIN_ARRAY
     ;;
 
   build)
@@ -54,7 +54,7 @@ case $MODE in
     git update-index --assume-unchanged ./plugin-menus.json 
     #echo "PLUGIN_ARRAY"
     #echo $PLUGIN_ARRAY
-    node scripts/plugins-reducer.js plugin-menus $PLUGIN_ARRAY > plugin-menus.json
+    node $SCRIPT_PATH/scripts/plugins-reducer.js plugin-menus $PLUGIN_ARRAY > plugin-menus.json
     ;;
 
   cleanup)
