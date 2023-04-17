@@ -16,39 +16,41 @@ function cloudwatchLog(_x) {
 }
 function _cloudwatchLog() {
   _cloudwatchLog = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(message) {
-    var accessKeyId, secretAccessKey, region, config, cwl, timestamp, logGroupName, logStreamName, data, nextSequenceToken;
+    var _process$env$KS_AWS_A, _process$env$KS_AWS_S, _ref, _process$env$KS_AWS_R, accessKeyId, secretAccessKey, region, logGroupName, logStreamName, config, cwl, timestamp, data, nextSequenceToken;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
-          accessKeyId = process.env.AURORA_AWS_ACCESS_KEY_ID;
-          secretAccessKey = process.env.AURORA_AWS_SECRET_ACCESS_KEY;
-          region = process.env.CLOUDWATCH_AWS_DEFAULT_REGION;
-          config = {};
-          if (region) config.region = region;
-
-          //if accessKeyId and secretAccessKey is not provided, rely on AWS roles
-          //for the access.
-          if (accessKeyId && secretAccessKey) {
-            config.credentials = new _awsSdk["default"].Credentials({
-              accessKeyId: accessKeyId,
-              secretAccessKey: secretAccessKey
-            });
-          }
-          cwl = new _awsSdk["default"].CloudWatchLogs(config);
-          timestamp = new Date().getTime();
+          accessKeyId = (_process$env$KS_AWS_A = process.env.KS_AWS_ACCESS_KEY_ID) !== null && _process$env$KS_AWS_A !== void 0 ? _process$env$KS_AWS_A : process.env.AURORA_AWS_ACCESS_KEY_ID;
+          secretAccessKey = (_process$env$KS_AWS_S = process.env.KS_AWS_SECRET_ACCESS_KEY) !== null && _process$env$KS_AWS_S !== void 0 ? _process$env$KS_AWS_S : process.env.AURORA_AWS_SECRET_ACCESS_KEY;
+          region = (_ref = (_process$env$KS_AWS_R = process.env.KS_AWS_REGION) !== null && _process$env$KS_AWS_R !== void 0 ? _process$env$KS_AWS_R : process.env.CLOUDWATCH_AWS_DEFAULT_REGION) !== null && _ref !== void 0 ? _ref : 'us-east-1';
           logGroupName = process.env.CLOUDWATCH_AWS_LOG_GROUP_NAME;
-          logStreamName = process.env.CLOUDWATCH_AWS_LOG_STREAM_NAME; //convert error-first callbacks into functions that return Promises 
+          logStreamName = process.env.CLOUDWATCH_AWS_LOG_STREAM_NAME; //Hard exit if it isn't configured
+          if (!(!logGroupName && !logStreamName)) {
+            _context.next = 8;
+            break;
+          }
+          return _context.abrupt("return");
+        case 8:
+          config = {}; //if accessKeyId and secretAccessKey is not provided, rely on AWS roles
+          //for the access.
+          config.credentials = new _awsSdk["default"].Credentials({
+            accessKeyId: accessKeyId,
+            secretAccessKey: secretAccessKey
+          });
+          config.region = region;
+          cwl = new _awsSdk["default"].CloudWatchLogs(config);
+          timestamp = new Date().getTime(); //convert error-first callbacks into functions that return Promises 
           cwl.describeLogStreams = (0, _es6Promisify.promisify)(cwl.describeLogStreams).bind(cwl);
           cwl.putLogEvents = (0, _es6Promisify.promisify)(cwl.putLogEvents).bind(cwl);
-          _context.next = 15;
+          _context.next = 17;
           return cwl.describeLogStreams({
             logGroupName: logGroupName
           });
-        case 15:
+        case 17:
           data = _context.sent;
           nextSequenceToken = data.logStreams[0].uploadSequenceToken;
-          _context.next = 19;
+          _context.next = 21;
           return cwl.putLogEvents({
             logEvents: [{
               message: message,
@@ -58,19 +60,19 @@ function _cloudwatchLog() {
             logStreamName: logStreamName,
             sequenceToken: nextSequenceToken
           });
-        case 19:
-          _context.next = 25;
-          break;
         case 21:
-          _context.prev = 21;
+          _context.next = 27;
+          break;
+        case 23:
+          _context.prev = 23;
           _context.t0 = _context["catch"](0);
           console.error(_context.t0.stack);
           throw _context.t0;
-        case 25:
+        case 27:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 21]]);
+    }, _callee, null, [[0, 23]]);
   }));
   return _cloudwatchLog.apply(this, arguments);
 }
