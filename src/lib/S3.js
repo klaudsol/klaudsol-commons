@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
-import { generateRandVals } from "@klaudsol/commons/lib/Math";
-import { slsFetch } from "@klaudsol/commons/lib/Client";
+import { generateRandVals } from "./Math";
+import { slsFetch } from "./Client";
 
 const S3_ACCESS_KEY_ID =
   process.env.KS_S3_ACCESS_KEY_ID ??
