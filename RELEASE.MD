@@ -1,3 +1,6 @@
+# v1.5.0
+* Execute migrations inside plugins
+
 # v1.4.1
 * Disable Cloudwatch errors when not being used
 
