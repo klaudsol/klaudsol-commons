@@ -1,4 +1,5 @@
 # v1.5.0
+* Add the S3.js file, which includes presigned URL's upload, among other things.
 * Execute migrations inside plugins
 
 # v1.4.1
