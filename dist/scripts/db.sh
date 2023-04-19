@@ -84,15 +84,22 @@ case $1 in
     echo '{"data": []}' > /tmp/migrate-acc.json
 
 
-    #Reduce all migration fiels in one big fie - KlaudSol Commons
-    for migration in $(ls $SCRIPT_PATH/db/migrations/*); do
+    #Reduce all migration files in one big fie - KlaudSol Commons
+    for migration in $(ls $SCRIPT_PATH/db/migrations/*.json); do
       BASENAME=$(basename $migration)
       echo "{\"filename\": \"$BASENAME\"}" > /tmp/migrate-filename.json
       echo $($SCRIPT_PATH/scripts/base64cat.sh /tmp/migrate-acc.json $migration /tmp/migrate-filename.json | node $SCRIPT_PATH/scripts/migrations-reducer.js) > /tmp/migrate-acc.json
     done
 
     #Reduce all migration files in one big file - Project Specific
-    for migration in $(ls db/migrations/*); do
+    for migration in $(ls db/migrations/*.json); do
+      BASENAME=$(basename $migration)
+      echo "{\"filename\": \"$BASENAME\"}" > /tmp/migrate-filename.json
+      echo $($SCRIPT_PATH/scripts/base64cat.sh /tmp/migrate-acc.json $migration /tmp/migrate-filename.json | node $SCRIPT_PATH/scripts/migrations-reducer.js) > /tmp/migrate-acc.json
+    done
+
+    #Reduce all migration files in one big file - Plugins
+    for migration in $(ls db/migrations/plugins/*.json); do
       BASENAME=$(basename $migration)
       echo "{\"filename\": \"$BASENAME\"}" > /tmp/migrate-filename.json
       echo $($SCRIPT_PATH/scripts/base64cat.sh /tmp/migrate-acc.json $migration /tmp/migrate-filename.json | node $SCRIPT_PATH/scripts/migrations-reducer.js) > /tmp/migrate-acc.json
