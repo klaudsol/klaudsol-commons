@@ -297,6 +297,30 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
     return false;
       
   }
+
+  // This method is specifically for the user management page. The admin
+  // can update a user's password without needing their old password,
+  // or if the user has forgotten their password and wants to change it
+  static async resetPassword({ id, newPassword, forcePasswordChange }) {
+    const db = new DB();
+
+    const salt = await generateRandVals(5);
+    const sql = `UPDATE people SET
+                    encrypted_password = sha2(CONCAT(:newPassword, :salt), 256),
+                    force_password_change = :force_password_change,
+                    salt = :salt
+                 WHERE id = :id`;
+    const params = [
+      { name: 'id', value: { longValue: id } },
+      { name: 'newPassword', value: { stringValue: newPassword } },
+      { name: 'force_password_change', value: { booleanValue: forcePasswordChange } },
+      { name: 'salt', value: { stringValue: salt } }
+    ];
+
+     await db.executeStatement(sql, params); 
+
+    return false;
+  }
   
   //This is deprecated. Use Session.assert instead.
   
