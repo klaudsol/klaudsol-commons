@@ -1,0 +1,5 @@
+{
+  "up": "INSERT INTO capabilities (name, description, is_system_supplied) VALUES ('read_pending_users', 'Can read pending users', true)",
+  "down": "DELETE FROM capabilities WHERE name = 'read_pending_users' AND is_system_supplied = true"
+}
+

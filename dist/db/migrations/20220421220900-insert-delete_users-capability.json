@@ -1,0 +1,5 @@
+{
+  "up": "INSERT INTO capabilities (name, description, is_system_supplied) VALUES ('delete_users', 'Delete other users', true)",
+  "down": "DELETE FROM capabilities WHERE name = 'delete_users' AND is_system_supplied = true"
+}
+
