@@ -83,12 +83,12 @@ function assertUserCan(_x3, _x4) {
 }
 function _assertUserCan() {
   _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req) {
-    var _req$user$sessionToke, _req$user, _req$session3;
+    var _req$session3;
     var currentCapabilities, session_token;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          session_token = (_req$user$sessionToke = req === null || req === void 0 ? void 0 : (_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.sessionToken) !== null && _req$user$sessionToke !== void 0 ? _req$user$sessionToke : req === null || req === void 0 ? void 0 : (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token;
+          session_token = (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token;
           if (!session_token) {
             _context2.next = 7;
             break;
