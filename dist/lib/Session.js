@@ -43,19 +43,30 @@ function serverSideLogout(_x) {
 }
 function _serverSideLogout() {
   _serverSideLogout = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(req) {
+    var _req$user$sessionToke, _req$user;
     var session_token;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          _context2.next = 2;
+          if (!((_req$user$sessionToke = req === null || req === void 0 ? void 0 : (_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.sessionToken) !== null && _req$user$sessionToke !== void 0)) {
+            _context2.next = 4;
+            break;
+          }
+          _context2.t0 = _req$user$sessionToke;
+          _context2.next = 7;
+          break;
+        case 4:
+          _context2.next = 6;
           return (0, _Permissions.assertUserIsLoggedIn)(req);
-        case 2:
-          session_token = _context2.sent;
-          _context2.next = 5;
-          return _Session["default"].logout(session_token);
-        case 5:
-          req.session.destroy();
         case 6:
+          _context2.t0 = _context2.sent;
+        case 7:
+          session_token = _context2.t0;
+          _context2.next = 10;
+          return _Session["default"].logout(session_token);
+        case 10:
+          req.session.destroy();
+        case 11:
         case "end":
           return _context2.stop();
       }
