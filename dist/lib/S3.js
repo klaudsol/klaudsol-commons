@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.uploadFilesToUrl = exports.uploadFileToUrl = exports.uploadFileToBucket = exports.updateFilesFromBucket = exports.initializeS3 = exports.getS3Param = exports.generateUniqueKey = exports.generateS3ParamsForDeletion = exports.generateS3ParamForDeletion = exports.generateS3KeyForDeletion = exports.generateResource = exports.generatePresignedUrls = exports.generatePresignedUrl = exports.generateEntry = exports.generateEntries = exports.formatS3Param = exports.deleteObjectsFromBucket = exports.deleteObjectFromBucket = exports.deleteFilesFromBucket = exports.addFilesToBucket = exports.addFileToBucket = void 0;
 var _awsSdk = _interopRequireDefault(require("aws-sdk"));
-var _Math = require("@klaudsol/commons/lib/Math");
-var _Client = require("@klaudsol/commons/lib/Client");
+var _Math = require("./Math");
+var _Client = require("./Client");
 var _ref, _process$env$KS_S3_AC, _ref2, _process$env$KS_S3_SE, _ref3, _process$env$KS_S3_RE;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
