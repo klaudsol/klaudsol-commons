@@ -672,19 +672,72 @@ var People = /*#__PURE__*/function () {
         return _updatePassword.apply(this, arguments);
       }
       return updatePassword;
+    }() // This method is specifically for the user management page. The admin
+    // can update a user's password without needing their old password,
+    // or if the user has forgotten their password and wants to change it
+  }, {
+    key: "resetPassword",
+    value: function () {
+      var _resetPassword = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(_ref16) {
+        var id, newPassword, forcePasswordChange, db, salt, sql, params;
+        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
+          while (1) switch (_context11.prev = _context11.next) {
+            case 0:
+              id = _ref16.id, newPassword = _ref16.newPassword, forcePasswordChange = _ref16.forcePasswordChange;
+              db = new _DB["default"]();
+              _context11.next = 4;
+              return (0, _Math.generateRandVals)(5);
+            case 4:
+              salt = _context11.sent;
+              sql = "UPDATE people SET\n                    encrypted_password = sha2(CONCAT(:newPassword, :salt), 256),\n                    force_password_change = :force_password_change,\n                    salt = :salt\n                 WHERE id = :id";
+              params = [{
+                name: 'id',
+                value: {
+                  longValue: id
+                }
+              }, {
+                name: 'newPassword',
+                value: {
+                  stringValue: newPassword
+                }
+              }, {
+                name: 'force_password_change',
+                value: {
+                  booleanValue: forcePasswordChange
+                }
+              }, {
+                name: 'salt',
+                value: {
+                  stringValue: salt
+                }
+              }];
+              _context11.next = 9;
+              return db.executeStatement(sql, params);
+            case 9:
+              return _context11.abrupt("return", false);
+            case 10:
+            case "end":
+              return _context11.stop();
+          }
+        }, _callee11);
+      }));
+      function resetPassword(_x12) {
+        return _resetPassword.apply(this, arguments);
+      }
+      return resetPassword;
     }() //This is deprecated. Use Session.assert instead.
   }, {
     key: "isSessionAlive",
     value: function () {
-      var _isSessionAlive = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee11(session_token) {
+      var _isSessionAlive = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(session_token) {
         var db, sql, data;
-        return _regeneratorRuntime().wrap(function _callee11$(_context11) {
-          while (1) switch (_context11.prev = _context11.next) {
+        return _regeneratorRuntime().wrap(function _callee12$(_context12) {
+          while (1) switch (_context12.prev = _context12.next) {
             case 0:
               db = new _DB["default"]();
               sql = "SELECT sme_sessions.session FROM sme_sessions JOIN people ON sme_sessions.people_id = sme_people.id WHERE \n      sme_sessions.session = :session AND\n      sme_sessions.session_expiry >= NOW() AND\n      sme_people.login_enabled = 1 \n    ";
-              _context11.prev = 2;
-              _context11.next = 5;
+              _context12.prev = 2;
+              _context12.next = 5;
               return db.executeStatement(sql, [{
                 name: 'session',
                 value: {
@@ -692,20 +745,20 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 5:
-              data = _context11.sent;
-              return _context11.abrupt("return", data.records.length > 0);
+              data = _context12.sent;
+              return _context12.abrupt("return", data.records.length > 0);
             case 9:
-              _context11.prev = 9;
-              _context11.t0 = _context11["catch"](2);
-              console.error(_context11.t0);
-              return _context11.abrupt("return", false);
+              _context12.prev = 9;
+              _context12.t0 = _context12["catch"](2);
+              console.error(_context12.t0);
+              return _context12.abrupt("return", false);
             case 13:
             case "end":
-              return _context11.stop();
+              return _context12.stop();
           }
-        }, _callee11, null, [[2, 9]]);
+        }, _callee12, null, [[2, 9]]);
       }));
-      function isSessionAlive(_x12) {
+      function isSessionAlive(_x13) {
         return _isSessionAlive.apply(this, arguments);
       }
       return isSessionAlive;
@@ -713,19 +766,19 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "findBySession",
     value: function () {
-      var _findBySession = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee12(session) {
+      var _findBySession = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(session) {
         var _person_raw, db, fields, sql, data, person_raw, SME_TENANTS_HOMEPAGE, sme_tenants_homepage, person;
-        return _regeneratorRuntime().wrap(function _callee12$(_context12) {
-          while (1) switch (_context12.prev = _context12.next) {
+        return _regeneratorRuntime().wrap(function _callee13$(_context13) {
+          while (1) switch (_context13.prev = _context13.next) {
             case 0:
-              _context12.prev = 0;
+              _context13.prev = 0;
               db = new _DB["default"](); //TODO: We need to think on how to do joins elegantly.
               //Is it time to use an ORM? Is it worth the effort?
               fields = [].concat(_toConsumableArray(Object.keys(People.fields()).map(function (key) {
                 return "sme_people.".concat(key);
               })), ['sme_tenants.homepage']);
               sql = "SELECT ".concat(fields.join(','), " FROM sme_sessions \n        JOIN sme_people ON sme_sessions.people_id = sme_people.id \n        JOIN sme_tenants ON sme_sessions.sme_tenant_id = sme_tenants.id\n        WHERE \n        sme_sessions.session = :session AND\n        sme_sessions.session_expiry >= NOW() AND\n        sme_people.login_enabled = 1 \n        LIMIT 1\n      ");
-              _context12.next = 6;
+              _context13.next = 6;
               return db.executeStatement(sql, [{
                 name: 'session',
                 value: {
@@ -733,7 +786,7 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 6:
-              data = _context12.sent;
+              data = _context13.sent;
               person_raw = data.records[0]; //fields not in the people table, as it is a join. How to do this elegantly?
               SME_TENANTS_HOMEPAGE = 0;
               sme_tenants_homepage = (_person_raw = person_raw[Object.keys(People.fields()).length + SME_TENANTS_HOMEPAGE]) === null || _person_raw === void 0 ? void 0 : _person_raw.stringValue;
@@ -741,19 +794,19 @@ var People = /*#__PURE__*/function () {
               person.tenant = {
                 homepage: sme_tenants_homepage
               };
-              return _context12.abrupt("return", person);
+              return _context13.abrupt("return", person);
             case 15:
-              _context12.prev = 15;
-              _context12.t0 = _context12["catch"](0);
-              (0, _Logger.log)(_context12.t0.stack);
-              return _context12.abrupt("return", false);
+              _context13.prev = 15;
+              _context13.t0 = _context13["catch"](0);
+              (0, _Logger.log)(_context13.t0.stack);
+              return _context13.abrupt("return", false);
             case 19:
             case "end":
-              return _context12.stop();
+              return _context13.stop();
           }
-        }, _callee12, null, [[0, 15]]);
+        }, _callee13, null, [[0, 15]]);
       }));
-      function findBySession(_x13) {
+      function findBySession(_x14) {
         return _findBySession.apply(this, arguments);
       }
       return findBySession;
@@ -761,17 +814,17 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "all",
     value: function () {
-      var _all = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee13(session) {
+      var _all = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(session) {
         var db, fields, sql, data, peopleRaw, people;
-        return _regeneratorRuntime().wrap(function _callee13$(_context13) {
-          while (1) switch (_context13.prev = _context13.next) {
+        return _regeneratorRuntime().wrap(function _callee14$(_context14) {
+          while (1) switch (_context14.prev = _context14.next) {
             case 0:
               db = new _DB["default"]();
               fields = _toConsumableArray(Object.keys(People.fields()).map(function (key) {
                 return "sme_people.".concat(key);
               }));
               sql = "SELECT ".concat(fields.join(','), " FROM sme_people_tenants\n        LEFT JOIN sme_people ON sme_people_tenants.sme_people_id = sme_people.id \n        LEFT JOIN sme_sessions ON sme_people_tenants.sme_tenant_id = sme_sessions.sme_tenant_id\n        WHERE \n          sme_sessions.session = :session AND\n          sme_sessions.session_expiry >= NOW()\n        ORDER BY first_name ASC\n      ");
-              _context13.next = 5;
+              _context14.next = 5;
               return db.executeStatement(sql, [{
                 name: 'session',
                 value: {
@@ -779,19 +832,19 @@ var People = /*#__PURE__*/function () {
                 }
               }]);
             case 5:
-              data = _context13.sent;
+              data = _context14.sent;
               peopleRaw = data.records;
               people = peopleRaw.map(function (person) {
                 return new People((0, _DB.fromAurora)(person, People.fields()));
               });
-              return _context13.abrupt("return", people);
+              return _context14.abrupt("return", people);
             case 9:
             case "end":
-              return _context13.stop();
+              return _context14.stop();
           }
-        }, _callee13);
+        }, _callee14);
       }));
-      function all(_x14) {
+      function all(_x15) {
         return _all.apply(this, arguments);
       }
       return all;
@@ -825,17 +878,17 @@ var People = /*#__PURE__*/function () {
   }, {
     key: "displayPeopleProfessional",
     value: function () {
-      var _displayPeopleProfessional = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee14(session) {
+      var _displayPeopleProfessional = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee15(session) {
         var db, session_data, sme_tenant_id, sql, executeStatementParam, data, peopleRaw, people;
-        return _regeneratorRuntime().wrap(function _callee14$(_context14) {
-          while (1) switch (_context14.prev = _context14.next) {
+        return _regeneratorRuntime().wrap(function _callee15$(_context15) {
+          while (1) switch (_context15.prev = _context15.next) {
             case 0:
               // returns array of Timesheet Table
               db = new _DB["default"]();
-              _context14.next = 3;
+              _context15.next = 3;
               return _Session["default"].getSession(session);
             case 3:
-              session_data = _context14.sent;
+              session_data = _context15.sent;
               // gets people_id and sme_tenant_id based on session
               sme_tenant_id = session_data.sme_tenant_id;
               sql = "select sme_people_id, payment_to, code, rate from sme_people_professional \n                 WHERE sme_tenant_id = :sme_tenant_id";
@@ -845,28 +898,28 @@ var People = /*#__PURE__*/function () {
                   longValue: sme_tenant_id
                 }
               }];
-              _context14.next = 9;
+              _context15.next = 9;
               return db.executeStatement(sql, executeStatementParam);
             case 9:
-              data = _context14.sent;
+              data = _context15.sent;
               if (!(data.records.length === 0)) {
-                _context14.next = 12;
+                _context15.next = 12;
                 break;
               }
-              return _context14.abrupt("return", null);
+              return _context15.abrupt("return", null);
             case 12:
               peopleRaw = data.records;
               people = peopleRaw.map(function (person) {
                 return new People((0, _DB.fromAurora)(person, People.peopleProfessionalFields()));
               });
-              return _context14.abrupt("return", people);
+              return _context15.abrupt("return", people);
             case 15:
             case "end":
-              return _context14.stop();
+              return _context15.stop();
           }
-        }, _callee14);
+        }, _callee15);
       }));
-      function displayPeopleProfessional(_x15) {
+      function displayPeopleProfessional(_x16) {
         return _displayPeopleProfessional.apply(this, arguments);
       }
       return displayPeopleProfessional;
