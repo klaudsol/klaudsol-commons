@@ -1,3 +1,6 @@
+# v1.6.0
+* Added a method that resets a user's password (change password w/out old password)
+
 # v1.5.0
 * Add the S3.js file, which includes presigned URL's upload, among other things.
 * Execute migrations inside plugins
