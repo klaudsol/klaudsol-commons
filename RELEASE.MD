@@ -1,5 +1,6 @@
 # v1.6.0
 * Added a method that resets a user's password (change password w/out old password)
+* assertUserCan now caters to both JWT and session.
 
 # v1.5.0
 * Add the S3.js file, which includes presigned URL's upload, among other things.
