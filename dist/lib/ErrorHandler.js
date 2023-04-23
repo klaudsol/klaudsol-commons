@@ -28,7 +28,6 @@ function defaultErrorHandler(_x, _x2, _x3) {
 }
 function _defaultErrorHandler() {
   _defaultErrorHandler = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(error, req, res) {
-    var _error$message, _error$message2, _error$message3;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
@@ -40,7 +39,7 @@ function _defaultErrorHandler() {
             break;
           }
           res.status(_HttpStatuses.UNAUTHORIZED).json({
-            message: (_error$message = error.message) !== null && _error$message !== void 0 ? _error$message : 'Authentication required.'
+            message: error.message || 'Authentication required.'
           });
           _context.next = 25;
           break;
@@ -90,7 +89,7 @@ function _defaultErrorHandler() {
         case 24:
           if (error instanceof _InsufficientDataError["default"]) {
             res.status(_HttpStatuses.BAD_REQUEST).json({
-              message: (_error$message2 = error.message) !== null && _error$message2 !== void 0 ? _error$message2 : 'Insufficient data.'
+              message: error.message || 'Insufficient data.'
             });
           } else if (error instanceof _UserAlreadyExists["default"]) {
             res.status(_HttpStatuses.BAD_REQUEST).json({
@@ -98,7 +97,7 @@ function _defaultErrorHandler() {
             });
           } else if (error instanceof _RecordNotFound["default"]) {
             res.status(_HttpStatuses.BAD_REQUEST).json({
-              message: (_error$message3 = error.message) !== null && _error$message3 !== void 0 ? _error$message3 : 'Record not found.'
+              message: error.message || 'Record not found.'
             });
           } else {
             /* Let's be conservative on our regex*/

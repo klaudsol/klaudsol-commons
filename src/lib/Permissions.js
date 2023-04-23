@@ -77,7 +77,7 @@ export async function assert(conditions, req) {
 
 export async function assertUserCan(capabilities, req){
     let currentCapabilities;
-    const session_token = req.session?.session_token;
+    const session_token = req?.user?.sessionToken ?? req?.session?.session_token;
 
     if(session_token){
         currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token);

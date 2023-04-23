@@ -21,7 +21,7 @@ export async function defaultErrorHandler(error, req, res) {
     error instanceof UnauthorizedError ||
     error instanceof SessionNotFound
     ) {
-      res.status(UNAUTHORIZED).json({ message: error.message ?? 'Authentication required.' });
+      res.status(UNAUTHORIZED).json({ message: error.message || 'Authentication required.' });
   } else if (
     error instanceof AppNotEnabledError || 
     error instanceof InsufficientPermissionsError
@@ -44,7 +44,7 @@ export async function defaultErrorHandler(error, req, res) {
   } else if (
     error instanceof InsufficientDataError
   ) {
-      res.status(BAD_REQUEST).json({ message: error.message ?? 'Insufficient data.' });
+      res.status(BAD_REQUEST).json({ message: error.message || 'Insufficient data.' });
   } else if (
     error instanceof UserAlreadyExists
   ) {
@@ -52,7 +52,7 @@ export async function defaultErrorHandler(error, req, res) {
   } else if (
     error instanceof RecordNotFound
   ) {
-      res.status(BAD_REQUEST).json({ message: error.message ?? 'Record not found.' });
+      res.status(BAD_REQUEST).json({ message: error.message || 'Record not found.' });
   } else {
       /* Let's be conservative on our regex*/
       if (error.stack.match(/Communications\s+link\s+failure/gi)) {
