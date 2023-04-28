@@ -1,3 +1,6 @@
+# v1.6.1
+* Fix: Removed trailing commas on migration script
+
 # v1.6.0
 * Added a method that resets a user's password (change password w/out old password)
 * assertUserCan now caters to both JWT and session.
