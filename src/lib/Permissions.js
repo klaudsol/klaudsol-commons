@@ -86,8 +86,6 @@ export async function assertUserCan(capabilities, req){
     let currentCapabilities;
     let bearerSession;
 
-    console.log(req.headers);
-    console.log(req.headers.authorization);
 
     if (req.headers && req.headers.authorization) {
       const { authorization } = req.headers;
