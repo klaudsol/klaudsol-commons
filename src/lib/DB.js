@@ -1,6 +1,7 @@
+//TODO: update to aws sdk v3.0
 import AWS from 'aws-sdk';
 import {promisify} from 'es6-promisify';
-import crypto from 'crypto';
+import { sha256 } from "../lib/Crypto";
 
 //Deprecated: all environment variabes without the KS_ prefix.
 //We remove this on v2.0.0
@@ -53,13 +54,25 @@ class DB {
 
 export default DB;
 
-export const sha256 = (text) => crypto.createHash('sha256').update(text).digest('base64'); 
+//DEPRECATE on v2.0.0
+export const sha256 = (text, encoding='base64') => {
+  console.log('DB.sha256 is deprecated. Please use sha256 from @klaudsol/commons/lib/Crypto instead.');
+  return sha256(text, encoding);
+}; 
 
+//DEPRECATE on v2.0.0
 export const fieldsForSelect = (table, fieldsHash) => Object.entries(fieldsHash).map(([name]) => `${table}.${name}`).join(',');
 
+//DEPRECATE on v2.0.0
 const allowedFieldsOnCreate = (fieldsHash) => Object.entries(fieldsHash).filter(([name, {allowOnCreate} ]) => allowOnCreate );
+
+//DEPRECATE on v2.0.0
 export const fieldsForInsert = (fieldsHash) =>  allowedFieldsOnCreate(fieldsHash).map(([name]) => `${name}`).join(',');
+
+//DEPRECATE on v2.0.0
 export const fieldParametersForInsert = (fieldsHash) => allowedFieldsOnCreate(fieldsHash).map(([name]) => `:${name}`).join(',');
+
+//DEPRECATE on v2.0.0
 export const executeStatementParamsForInsert = (fieldsHash, model, transform) =>  allowedFieldsOnCreate(fieldsHash)
   .map(([name, {auroraType}]) => {
     //for flexibiity, we can pass a transformer function to manipulate our data
@@ -69,8 +82,13 @@ export const executeStatementParamsForInsert = (fieldsHash, model, transform) =>
     }
   });
   
+//DEPRECATE on v2.0.0
 const allowedFieldsOnUpdate = (fieldsHash) => Object.entries(fieldsHash).filter(([name, {allowOnUpdate} ]) => allowOnUpdate );
+
+//DEPRECATE on v2.0.0
 export const fieldsForUpdate = (fieldsHash) => allowedFieldsOnUpdate(fieldsHash).map(([name]) => `${name} = :${name}`).join(',');
+
+//DEPRECATE on v2.0.0
 export const executeStatementParamsForUpdate = (fieldsHash, model, transform) => allowedFieldsOnUpdate(fieldsHash)
   .map(([name, {auroraType}]) => {
     const value = transform ? transform(name, model[name]) : model[name];
@@ -80,6 +98,7 @@ export const executeStatementParamsForUpdate = (fieldsHash, model, transform) =>
   });
 
 
+//DEPRECATE on v2.0.0
 //Allowed datatypes in Aurora Data API
 export const AURORA_TYPE = {
   LONG: 'long',
@@ -119,8 +138,11 @@ A single Aurora record looks something like this:
   It is rather unwieldy, and has reliance on the order of the fields in the query, so we need a layer that shields the app from this 
   format, and just return a sane key-value Object.
 */
+
+//DEPRECATE on v2.0.0
 export const fromAurora = (record, fields) =>  Object.fromEntries(Object.entries(fields).map(([key, {auroraType}], index) => [key, record[index][`${auroraType}Value`]]));
 
+//DEPRECATE on v2.0.0
 export const sanitizeData = (rawData, fields) => {
     const allowedFields = Object.entries(fields).map(([name]) => name);  
     return Object.fromEntries(Object.entries(rawData).filter(([key]) => allowedFields.includes(key)));
@@ -133,7 +155,9 @@ export const sanitizeData = (rawData, fields) => {
 
 */
 
+//DEPRECATE on v2.0.0
 export const fromInsertAurora = (record) => ({id: record.generatedFields[0].longValue});
 
+//DEPRECATE on v2.0.0
 export const fromDeleteAurora = (record) => record.numberOfRecordsUpdated > 0;
   

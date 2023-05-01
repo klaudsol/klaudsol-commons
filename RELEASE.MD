@@ -1,3 +1,8 @@
+# v1.7.0
+* Added Session#create() and Session#cleanupExpired
+* Added @klaudsol/commons/lib/Crypto for cryptography-related functions
+* Crypto#sha256 has can now be encoded as 'hex' or 'base64' (used to be 'base64' only)
+
 # v1.6.1
 * Fix: Removed trailing commas on migration script
 

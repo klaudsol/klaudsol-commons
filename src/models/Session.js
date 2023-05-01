@@ -3,6 +3,7 @@ import UnauthorizedError from "../errors/UnauthorizedError";
 import AppNotEnabledError from "../errors/AppNotEnabledError";
 import InsufficientPermissionsError from "../errors/InsufficientPermissionsError";
 import { log } from "../lib/Logger";
+import { sha256 } from "../lib/Crypto";
 
 class Session {
   static fields() {
@@ -35,8 +36,38 @@ class Session {
       people_id,
     }))[0];
   }
+  
+  static async create({people_id}) {
+      
+    const session = sha256(`${people_id}${Date.now()}`, 'hex');
+
+      const sql = `
+        INSERT INTO sessions(session, people_id, session_expiry)          
+        VALUES(:session, :people_id, NOW() + INTERVAL 1 WEEK)
+      `;
+
+      const db = new DB();
+      const rawdata = await db.executeStatement(sql, [
+        {name: 'session', value:{stringValue: session}},
+        {name: 'people_id', value:{stringValue: people_id}}
+      ]);
+
+      return session;
+  }
+
+  static async cleanupExpired() {
+
+      const sql = `
+        DELETE FROM sessions WHERE session_expiry < NOW()         
+      `;
+
+      const db = new DB();
+      const rawdata = await db.executeStatement(sql, []);
+      return rawdata;
+  }
 
   /**
+   * DEPRECATED. Remove in @klaudsol/commons#v2.0.0
    * assert({
    *  loggedIn: true,
    *  appsEnabled: ["trucking"],
