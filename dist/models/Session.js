@@ -9,6 +9,7 @@ var _UnauthorizedError = _interopRequireDefault(require("../errors/UnauthorizedE
 var _AppNotEnabledError = _interopRequireDefault(require("../errors/AppNotEnabledError"));
 var _InsufficientPermissionsError = _interopRequireDefault(require("../errors/InsufficientPermissionsError"));
 var _Logger = require("../lib/Logger");
+var _Crypto = require("../lib/Crypto");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -104,7 +105,72 @@ var Session = /*#__PURE__*/function () {
       }
       return getSession;
     }()
+  }, {
+    key: "create",
+    value: function () {
+      var _create = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(_ref3) {
+        var people_id, session, sql, db, rawdata;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              people_id = _ref3.people_id;
+              session = (0, _Crypto.sha256)("".concat(people_id).concat(Date.now()), 'hex');
+              sql = "\n        INSERT INTO sessions(session, people_id, session_expiry)          \n        VALUES(:session, :people_id, NOW() + INTERVAL 1 WEEK)\n      ";
+              db = new _DB["default"]();
+              _context2.next = 6;
+              return db.executeStatement(sql, [{
+                name: 'session',
+                value: {
+                  stringValue: session
+                }
+              }, {
+                name: 'people_id',
+                value: {
+                  stringValue: people_id
+                }
+              }]);
+            case 6:
+              rawdata = _context2.sent;
+              return _context2.abrupt("return", session);
+            case 8:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }));
+      function create(_x2) {
+        return _create.apply(this, arguments);
+      }
+      return create;
+    }()
+  }, {
+    key: "cleanupExpired",
+    value: function () {
+      var _cleanupExpired = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var sql, db, rawdata;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              sql = "\n        DELETE FROM sessions WHERE session_expiry < NOW()         \n      ";
+              db = new _DB["default"]();
+              _context3.next = 4;
+              return db.executeStatement(sql, []);
+            case 4:
+              rawdata = _context3.sent;
+              return _context3.abrupt("return", rawdata);
+            case 6:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }));
+      function cleanupExpired() {
+        return _cleanupExpired.apply(this, arguments);
+      }
+      return cleanupExpired;
+    }()
     /**
+     * DEPRECATED. Remove in @klaudsol/commons#v2.0.0
      * assert({
      *  loggedIn: true,
      *  appsEnabled: ["trucking"],
@@ -117,13 +183,13 @@ var Session = /*#__PURE__*/function () {
   }, {
     key: "assert",
     value: function () {
-      var _assert = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(conditions, sessionToken) {
+      var _assert = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(conditions, sessionToken) {
         var sql, sqlArray, params, appsEnabledArray, permissionsArray, db, isLoggedInSQL, appsEnabledSQL, userHasPermissionSQL, _appsEnabledArray$, _appsEnabledArray$2, app1, app2, app3, _permissionsArray$, _permissionsArray$2, permission1, permission2, permission3, rawData, data;
-        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) switch (_context2.prev = _context2.next) {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
             case 0:
               if (sessionToken) {
-                _context2.next = 2;
+                _context4.next = 2;
                 break;
               }
               throw new _UnauthorizedError["default"]();
@@ -233,58 +299,58 @@ var Session = /*#__PURE__*/function () {
                 });
               }
               sql = sqlArray.join(" UNION ");
-              _context2.next = 17;
+              _context4.next = 17;
               return db.executeStatement(sql, Object.values(params));
             case 17:
-              rawData = _context2.sent;
-              data = Object.fromEntries(rawData.records.map(function (_ref3) {
-                var _ref4 = _slicedToArray(_ref3, 2),
-                  key = _ref4[0].stringValue,
-                  value = _ref4[1].longValue;
+              rawData = _context4.sent;
+              data = Object.fromEntries(rawData.records.map(function (_ref4) {
+                var _ref5 = _slicedToArray(_ref4, 2),
+                  key = _ref5[0].stringValue,
+                  value = _ref5[1].longValue;
                 return [key, value];
               }));
-              _context2.next = 21;
+              _context4.next = 21;
               return (0, _Logger.log)(JSON.stringify(rawData.records));
             case 21:
-              _context2.next = 23;
+              _context4.next = 23;
               return (0, _Logger.log)(JSON.stringify(data));
             case 23:
               if (!Object.keys(data).includes("isLoggedIn")) {
-                _context2.next = 26;
+                _context4.next = 26;
                 break;
               }
               if (!(data.isLoggedIn !== 1)) {
-                _context2.next = 26;
+                _context4.next = 26;
                 break;
               }
               throw new _UnauthorizedError["default"]();
             case 26:
               if (!Object.keys(data).includes("appsEnabled")) {
-                _context2.next = 29;
+                _context4.next = 29;
                 break;
               }
               if (!(data.appsEnabled !== 1)) {
-                _context2.next = 29;
+                _context4.next = 29;
                 break;
               }
               throw new _AppNotEnabledError["default"]("One of the dependency apps is not enabled: ".concat(conditions.appsEnabled.join(",")));
             case 29:
               if (!Object.keys(data).includes("userHasPermission")) {
-                _context2.next = 32;
+                _context4.next = 32;
                 break;
               }
               if (!(data.userHasPermission !== 1)) {
-                _context2.next = 32;
+                _context4.next = 32;
                 break;
               }
               throw new _InsufficientPermissionsError["default"]("You do not have one of the required permissions: ".concat(permissionsArray.join(",")));
             case 32:
             case "end":
-              return _context2.stop();
+              return _context4.stop();
           }
-        }, _callee2);
+        }, _callee4);
       }));
-      function assert(_x2, _x3) {
+      function assert(_x3, _x4) {
         return _assert.apply(this, arguments);
       }
       return assert;
@@ -292,15 +358,15 @@ var Session = /*#__PURE__*/function () {
   }, {
     key: "logout",
     value: function () {
-      var _logout = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(session_token) {
+      var _logout = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(session_token) {
         var db, sessionSql;
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-          while (1) switch (_context3.prev = _context3.next) {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
             case 0:
-              _context3.prev = 0;
+              _context5.prev = 0;
               db = new _DB["default"]();
               sessionSql = "DELETE FROM sessions WHERE `session` = :session";
-              _context3.next = 5;
+              _context5.next = 5;
               return db.executeStatement(sessionSql, [{
                 name: "session",
                 value: {
@@ -308,19 +374,19 @@ var Session = /*#__PURE__*/function () {
                 }
               }]);
             case 5:
-              return _context3.abrupt("return", true);
+              return _context5.abrupt("return", true);
             case 8:
-              _context3.prev = 8;
-              _context3.t0 = _context3["catch"](0);
-              console.error(_context3.t0);
-              return _context3.abrupt("return", false);
+              _context5.prev = 8;
+              _context5.t0 = _context5["catch"](0);
+              console.error(_context5.t0);
+              return _context5.abrupt("return", false);
             case 12:
             case "end":
-              return _context3.stop();
+              return _context5.stop();
           }
-        }, _callee3, null, [[0, 8]]);
+        }, _callee5, null, [[0, 8]]);
       }));
-      function logout(_x4) {
+      function logout(_x5) {
         return _logout.apply(this, arguments);
       }
       return logout;

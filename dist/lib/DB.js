@@ -134,11 +134,14 @@ var DB = /*#__PURE__*/function () {
   }]);
   return DB;
 }();
-var _default = DB;
+var _default = DB; //DEPRECATE on v2.0.0
 exports["default"] = _default;
 var sha256 = function sha256(text) {
+  console.log('DB.sha256 is deprecated. Please use sha256 from @klaudsol/commons/lib/Crypto instead.');
   return _crypto["default"].createHash('sha256').update(text).digest('base64');
 };
+
+//DEPRECATE on v2.0.0
 exports.sha256 = sha256;
 var fieldsForSelect = function fieldsForSelect(table, fieldsHash) {
   return Object.entries(fieldsHash).map(function (_ref8) {
@@ -147,6 +150,8 @@ var fieldsForSelect = function fieldsForSelect(table, fieldsHash) {
     return "".concat(table, ".").concat(name);
   }).join(',');
 };
+
+//DEPRECATE on v2.0.0
 exports.fieldsForSelect = fieldsForSelect;
 var allowedFieldsOnCreate = function allowedFieldsOnCreate(fieldsHash) {
   return Object.entries(fieldsHash).filter(function (_ref10) {
@@ -156,6 +161,8 @@ var allowedFieldsOnCreate = function allowedFieldsOnCreate(fieldsHash) {
     return allowOnCreate;
   });
 };
+
+//DEPRECATE on v2.0.0
 var fieldsForInsert = function fieldsForInsert(fieldsHash) {
   return allowedFieldsOnCreate(fieldsHash).map(function (_ref12) {
     var _ref13 = _slicedToArray(_ref12, 1),
@@ -163,6 +170,8 @@ var fieldsForInsert = function fieldsForInsert(fieldsHash) {
     return "".concat(name);
   }).join(',');
 };
+
+//DEPRECATE on v2.0.0
 exports.fieldsForInsert = fieldsForInsert;
 var fieldParametersForInsert = function fieldParametersForInsert(fieldsHash) {
   return allowedFieldsOnCreate(fieldsHash).map(function (_ref14) {
@@ -171,6 +180,8 @@ var fieldParametersForInsert = function fieldParametersForInsert(fieldsHash) {
     return ":".concat(name);
   }).join(',');
 };
+
+//DEPRECATE on v2.0.0
 exports.fieldParametersForInsert = fieldParametersForInsert;
 var executeStatementParamsForInsert = function executeStatementParamsForInsert(fieldsHash, model, transform) {
   return allowedFieldsOnCreate(fieldsHash).map(function (_ref16) {
@@ -185,6 +196,8 @@ var executeStatementParamsForInsert = function executeStatementParamsForInsert(f
     };
   });
 };
+
+//DEPRECATE on v2.0.0
 exports.executeStatementParamsForInsert = executeStatementParamsForInsert;
 var allowedFieldsOnUpdate = function allowedFieldsOnUpdate(fieldsHash) {
   return Object.entries(fieldsHash).filter(function (_ref18) {
@@ -194,6 +207,8 @@ var allowedFieldsOnUpdate = function allowedFieldsOnUpdate(fieldsHash) {
     return allowOnUpdate;
   });
 };
+
+//DEPRECATE on v2.0.0
 var fieldsForUpdate = function fieldsForUpdate(fieldsHash) {
   return allowedFieldsOnUpdate(fieldsHash).map(function (_ref20) {
     var _ref21 = _slicedToArray(_ref20, 1),
@@ -201,6 +216,8 @@ var fieldsForUpdate = function fieldsForUpdate(fieldsHash) {
     return "".concat(name, " = :").concat(name);
   }).join(',');
 };
+
+//DEPRECATE on v2.0.0
 exports.fieldsForUpdate = fieldsForUpdate;
 var executeStatementParamsForUpdate = function executeStatementParamsForUpdate(fieldsHash, model, transform) {
   return allowedFieldsOnUpdate(fieldsHash).map(function (_ref22) {
@@ -215,6 +232,7 @@ var executeStatementParamsForUpdate = function executeStatementParamsForUpdate(f
   });
 };
 
+//DEPRECATE on v2.0.0
 //Allowed datatypes in Aurora Data API
 exports.executeStatementParamsForUpdate = executeStatementParamsForUpdate;
 var AURORA_TYPE = {
@@ -255,6 +273,8 @@ A single Aurora record looks something like this:
   It is rather unwieldy, and has reliance on the order of the fields in the query, so we need a layer that shields the app from this 
   format, and just return a sane key-value Object.
 */
+
+//DEPRECATE on v2.0.0
 exports.AURORA_TYPE = AURORA_TYPE;
 var fromAurora = function fromAurora(record, fields) {
   return Object.fromEntries(Object.entries(fields).map(function (_ref24, index) {
@@ -264,6 +284,8 @@ var fromAurora = function fromAurora(record, fields) {
     return [key, record[index]["".concat(auroraType, "Value")]];
   }));
 };
+
+//DEPRECATE on v2.0.0
 exports.fromAurora = fromAurora;
 var sanitizeData = function sanitizeData(rawData, fields) {
   var allowedFields = Object.entries(fields).map(function (_ref26) {
@@ -284,12 +306,16 @@ var sanitizeData = function sanitizeData(rawData, fields) {
   numberOfRecordsUpdated: 1 }
 
 */
+
+//DEPRECATE on v2.0.0
 exports.sanitizeData = sanitizeData;
 var fromInsertAurora = function fromInsertAurora(record) {
   return {
     id: record.generatedFields[0].longValue
   };
 };
+
+//DEPRECATE on v2.0.0
 exports.fromInsertAurora = fromInsertAurora;
 var fromDeleteAurora = function fromDeleteAurora(record) {
   return record.numberOfRecordsUpdated > 0;

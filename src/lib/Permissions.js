@@ -28,11 +28,12 @@ import UnauthorizedError from '../errors/UnauthorizedError';
 import InsufficientPermissionsError from '../errors/InsufficientPermissionsError';
 import Capability from '../models/Capability';
 import Session from '../models/Session';
+import { verifyToken } from '../lib/JWT';
 
+const BEARER_LENGTH = 7;
 
-/* Deprecated.
- * Use assert instead.
- *
+/* DEPRECATED 
+ * Use assertUserCan instead.
  **/
 export function assertUserIsLoggedIn(req) {
   let session_token;
@@ -43,15 +44,20 @@ export function assertUserIsLoggedIn(req) {
   };    
 }
 
+/* DEPRECATED 
+ * Use assertUserCan instead.
+ **/
 export function assertAppIsEnabled(req, appName) {
-  //TODO  
 }
 
+/* DEPRECATED 
+ * Use assertUserCan instead.
+ **/
 export function assertUserHasPermission(req, permissionName) {
-  //TODO  
 }
 
-/**
+/* DEPRECATED 
+ * Use assertUserCan instead.
  * assert({
  *  loggedIn: true,
  *  appsEnabled: ["trucking"],
@@ -64,7 +70,8 @@ export function getSessionToken(req) {
   return req.session?.session_token;   
 };
 
-/* 
+/* DEPRECATED 
+ * Use assertUserCan instead.
  * This is just a syntactic sugar of Session.assert
  */
 
@@ -77,10 +84,26 @@ export async function assert(conditions, req) {
 
 export async function assertUserCan(capabilities, req){
     let currentCapabilities;
-    const session_token = req?.user?.sessionToken ?? req?.session?.session_token;
+    let bearerSession;
+
+
+    if (req.headers && req.headers.authorization) {
+      const { authorization } = req.headers;
+      const bearerToken = authorization.substring(BEARER_LENGTH); //Remove "Bearer" text 
+      const decodedToken = verifyToken(bearerToken);
+      bearerSession = decodedToken.session;
+    }
+
+    //bearerSession - extracted directly from headers
+    //req?.user - derived from middleware (seee Middleware#tokenVerifier). Note that we do not always use the Middleware module.
+    //req?.session - if using IronSession (defaut implementation of KlaudSol CMS)
+
+    const session_token = bearerSession ?? req?.user?.sessionToken ?? req?.session?.session_token;
 
     if(session_token){
         currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token);
+        //console.log('currentCapabiities');
+        //console.log(currentCapabilities);
     } else{
         // If we can't find the user's ID, we can assume they are a guest.
         currentCapabilities =  await Capability.getCapabilitiesByGuest();
