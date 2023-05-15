@@ -96,8 +96,6 @@ function _assertUserCan() {
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
-          console.log(req.headers);
-          console.log(req.headers.authorization);
           if (req.headers && req.headers.authorization) {
             authorization = req.headers.authorization;
             bearerToken = authorization.substring(BEARER_LENGTH); //Remove "Bearer" text 
@@ -110,27 +108,27 @@ function _assertUserCan() {
           //req?.session - if using IronSession (defaut implementation of KlaudSol CMS)
           session_token = (_ref = (_bearerSession = bearerSession) !== null && _bearerSession !== void 0 ? _bearerSession : req === null || req === void 0 ? void 0 : (_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.sessionToken) !== null && _ref !== void 0 ? _ref : req === null || req === void 0 ? void 0 : (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token;
           if (!session_token) {
-            _context2.next = 10;
+            _context2.next = 8;
             break;
           }
-          _context2.next = 7;
+          _context2.next = 5;
           return _Capability["default"].getCapabilitiesByLoggedInUser(session_token);
-        case 7:
+        case 5:
           currentCapabilities = _context2.sent;
-          _context2.next = 13;
+          _context2.next = 11;
           break;
-        case 10:
-          _context2.next = 12;
+        case 8:
+          _context2.next = 10;
           return _Capability["default"].getCapabilitiesByGuest();
-        case 12:
+        case 10:
           currentCapabilities = _context2.sent;
-        case 13:
+        case 11:
           if (currentCapabilities.includes(capabilities)) {
-            _context2.next = 15;
+            _context2.next = 13;
             break;
           }
           throw new _InsufficientPermissionsError["default"]();
-        case 15:
+        case 13:
         case "end":
           return _context2.stop();
       }

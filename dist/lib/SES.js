@@ -65,7 +65,7 @@ var sendEmail = /*#__PURE__*/function () {
         case 6:
           _context.prev = 6;
           _context.t0 = _context["catch"](0);
-          console.error(_context.t0);
+          throw new Error(_context.t0);
         case 9:
         case "end":
           return _context.stop();

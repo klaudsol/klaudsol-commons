@@ -55,12 +55,6 @@ class DB {
 export default DB;
 
 //DEPRECATE on v2.0.0
-export const sha256 = (text, encoding='base64') => {
-  console.log('DB.sha256 is deprecated. Please use sha256 from @klaudsol/commons/lib/Crypto instead.');
-  return sha256(text, encoding);
-}; 
-
-//DEPRECATE on v2.0.0
 export const fieldsForSelect = (table, fieldsHash) => Object.entries(fieldsHash).map(([name]) => `${table}.${name}`).join(',');
 
 //DEPRECATE on v2.0.0
