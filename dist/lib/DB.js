@@ -4,7 +4,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sanitizeData = exports.fromInsertAurora = exports.fromDeleteAurora = exports.fromAurora = exports.fieldsForUpdate = exports.fieldsForSelect = exports.fieldsForInsert = exports.fieldParametersForInsert = exports.executeStatementParamsForUpdate = exports.executeStatementParamsForInsert = exports["default"] = exports.AURORA_TYPE = void 0;
+exports.sha256 = exports.sanitizeData = exports.fromInsertAurora = exports.fromDeleteAurora = exports.fromAurora = exports.fieldsForUpdate = exports.fieldsForSelect = exports.fieldsForInsert = exports.fieldParametersForInsert = exports.executeStatementParamsForUpdate = exports.executeStatementParamsForInsert = exports["default"] = exports.AURORA_TYPE = void 0;
 var _awsSdk = _interopRequireDefault(require("aws-sdk"));
 var _es6Promisify = require("es6-promisify");
 var _Crypto = require("../lib/Crypto");
@@ -136,6 +136,14 @@ var DB = /*#__PURE__*/function () {
 }();
 var _default = DB; //DEPRECATE on v2.0.0
 exports["default"] = _default;
+var sha256 = function sha256(text) {
+  var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'base64';
+  console.log('DB.sha256 is deprecated. Please use sha256 from @klaudsol/commons/lib/Crypto instead.');
+  return (0, _Crypto.sha256)(text, encoding);
+};
+
+//DEPRECATE on v2.0.0
+exports.sha256 = sha256;
 var fieldsForSelect = function fieldsForSelect(table, fieldsHash) {
   return Object.entries(fieldsHash).map(function (_ref8) {
     var _ref9 = _slicedToArray(_ref8, 1),
