@@ -1,3 +1,8 @@
+# v1.7.1
+* Fixed build issues involving DB#sha256
+* Removed `write_content_types` capability from Administrator and Editor
+* Removed `write_settings` capability from Administrator
+
 # v1.7.0
 * Added Session#create() and Session#cleanupExpired
 * Added @klaudsol/commons/lib/Crypto for cryptography-related functions
