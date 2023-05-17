@@ -1,7 +1,7 @@
 //TODO: update to aws sdk v3.0
 import AWS from 'aws-sdk';
 import {promisify} from 'es6-promisify';
-import { sha256 } from "../lib/Crypto";
+import { sha256 as sha256Crypto } from "../lib/Crypto";
 
 //Deprecated: all environment variabes without the KS_ prefix.
 //We remove this on v2.0.0
@@ -57,7 +57,7 @@ export default DB;
 //DEPRECATE on v2.0.0
 export const sha256 = (text, encoding='base64') => {
   console.log('DB.sha256 is deprecated. Please use sha256 from @klaudsol/commons/lib/Crypto instead.');
-  return sha256(text, encoding);
+  return sha256Crypto(text, encoding);
 }; 
 
 //DEPRECATE on v2.0.0

@@ -49,6 +49,6 @@ export const sendEmail = async (configObject, sendEmailCommand) => {
     const sesClient = new SESv2Client(configObject);
     await sesClient.send(sendEmailCommand);
   } catch (err) {
-    console.error(err);
+    throw new Error(err);
   }
 }

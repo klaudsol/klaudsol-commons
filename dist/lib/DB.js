@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.sha256 = exports.sanitizeData = exports.fromInsertAurora = exports.fromDeleteAurora = exports.fromAurora = exports.fieldsForUpdate = exports.fieldsForSelect = exports.fieldsForInsert = exports.fieldParametersForInsert = exports.executeStatementParamsForUpdate = exports.executeStatementParamsForInsert = exports["default"] = exports.AURORA_TYPE = void 0;
 var _awsSdk = _interopRequireDefault(require("aws-sdk"));
 var _es6Promisify = require("es6-promisify");
-var _crypto = _interopRequireDefault(require("crypto"));
+var _Crypto = require("../lib/Crypto");
 var _ref, _process$env$AURORA_A, _ref2, _process$env$AURORA_A2, _process$env$AURORA_R, _process$env$AURORA_S, _process$env$AURORA_D, _ref3, _ref4, _ref5, _process$env$AURORA_A3;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -137,8 +137,9 @@ var DB = /*#__PURE__*/function () {
 var _default = DB; //DEPRECATE on v2.0.0
 exports["default"] = _default;
 var sha256 = function sha256(text) {
+  var encoding = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'base64';
   console.log('DB.sha256 is deprecated. Please use sha256 from @klaudsol/commons/lib/Crypto instead.');
-  return _crypto["default"].createHash('sha256').update(text).digest('base64');
+  return (0, _Crypto.sha256)(text, encoding);
 };
 
 //DEPRECATE on v2.0.0
