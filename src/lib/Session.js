@@ -32,7 +32,7 @@ export async function serverSideLogout(req) {
   req.session.destroy();
 }
 
-export function getSessionCache(callback = () => {}) {
+export function getSessionCache(callback) {
   return withIronSessionSsr(async (context) => {
     const { req, res } = context;
     
@@ -56,10 +56,10 @@ export function getSessionCache(callback = () => {}) {
         }
       }
 
-      const callbackProps = await callback(context);
+      const { props } = callback ? await callback(context) : {};
 
       // Pass data to the page via props
-      return { props: { cache: req.session?.cache, ...(callbackProps?.props ?? {}) } }
+      return { props: { cache: req.session?.cache, ...props } }
     }
     catch(error){
       await defaultErrorHandler(error, req, res);

@@ -79,11 +79,10 @@ function _serverSideLogout() {
   }));
   return _serverSideLogout.apply(this, arguments);
 }
-function getSessionCache() {
-  var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
+function getSessionCache(callback) {
   return (0, _next2.withIronSessionSsr)( /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(context) {
-      var req, res, _req$session, _req$session2, _req$session2$cache, _req$session3, _callbackProps$props, callbackProps;
+      var req, res, _req$session, _req$session2, _req$session2$cache, _req$session3, _ref2, props;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -114,25 +113,36 @@ function getSessionCache() {
               }
             });
           case 8:
-            _context.next = 10;
+            if (!callback) {
+              _context.next = 14;
+              break;
+            }
+            _context.next = 11;
             return callback(context);
-          case 10:
-            callbackProps = _context.sent;
+          case 11:
+            _context.t0 = _context.sent;
+            _context.next = 15;
+            break;
+          case 14:
+            _context.t0 = {};
+          case 15:
+            _ref2 = _context.t0;
+            props = _ref2.props;
             return _context.abrupt("return", {
               props: _objectSpread({
                 cache: (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.cache
-              }, (_callbackProps$props = callbackProps === null || callbackProps === void 0 ? void 0 : callbackProps.props) !== null && _callbackProps$props !== void 0 ? _callbackProps$props : {})
+              }, props)
             });
-          case 14:
-            _context.prev = 14;
-            _context.t0 = _context["catch"](1);
-            _context.next = 18;
-            return (0, _ErrorHandler.defaultErrorHandler)(_context.t0, req, res);
-          case 18:
+          case 20:
+            _context.prev = 20;
+            _context.t1 = _context["catch"](1);
+            _context.next = 24;
+            return (0, _ErrorHandler.defaultErrorHandler)(_context.t1, req, res);
+          case 24:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[1, 14]]);
+      }, _callee, null, [[1, 20]]);
     }));
     return function (_x2) {
       return _ref.apply(this, arguments);
