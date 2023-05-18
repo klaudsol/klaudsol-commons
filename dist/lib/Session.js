@@ -82,7 +82,7 @@ function _serverSideLogout() {
 function getSessionCache(callback) {
   return (0, _next2.withIronSessionSsr)( /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(context) {
-      var req, res, _req$session, _req$session2, _req$session2$cache, _req$session3, _ref2, props;
+      var req, res, _req$session, _req$session2, _req$session2$cache, _req$session3, _ref2, _ref2$props, props;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -127,22 +127,23 @@ function getSessionCache(callback) {
             _context.t0 = {};
           case 15:
             _ref2 = _context.t0;
-            props = _ref2.props;
+            _ref2$props = _ref2.props;
+            props = _ref2$props === void 0 ? {} : _ref2$props;
             return _context.abrupt("return", {
               props: _objectSpread({
                 cache: (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.cache
               }, props)
             });
-          case 20:
-            _context.prev = 20;
+          case 21:
+            _context.prev = 21;
             _context.t1 = _context["catch"](1);
-            _context.next = 24;
+            _context.next = 25;
             return (0, _ErrorHandler.defaultErrorHandler)(_context.t1, req, res);
-          case 24:
+          case 25:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[1, 20]]);
+      }, _callee, null, [[1, 21]]);
     }));
     return function (_x2) {
       return _ref.apply(this, arguments);
