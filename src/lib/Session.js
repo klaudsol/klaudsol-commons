@@ -56,10 +56,10 @@ export function getSessionCache(callback = () => {}) {
         }
       }
 
-      const { props } = await callback(context);
+      const callbackProps = await callback(context);
 
       // Pass data to the page via props
-      return { props: { cache: req.session?.cache, ...props } }
+      return { props: { cache: req.session?.cache, ...(callbackProps?.props ?? {}) } }
     }
     catch(error){
       await defaultErrorHandler(error, req, res);

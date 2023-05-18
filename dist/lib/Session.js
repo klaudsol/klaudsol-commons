@@ -83,7 +83,7 @@ function getSessionCache() {
   var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
   return (0, _next2.withIronSessionSsr)( /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(context) {
-      var req, res, _req$session, _req$session2, _req$session2$cache, _req$session3, _yield$callback, props;
+      var req, res, _req$session, _req$session2, _req$session2$cache, _req$session3, _callbackProps$props, callbackProps;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) switch (_context.prev = _context.next) {
           case 0:
@@ -117,23 +117,22 @@ function getSessionCache() {
             _context.next = 10;
             return callback(context);
           case 10:
-            _yield$callback = _context.sent;
-            props = _yield$callback.props;
+            callbackProps = _context.sent;
             return _context.abrupt("return", {
               props: _objectSpread({
                 cache: (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.cache
-              }, props)
+              }, (_callbackProps$props = callbackProps === null || callbackProps === void 0 ? void 0 : callbackProps.props) !== null && _callbackProps$props !== void 0 ? _callbackProps$props : {})
             });
-          case 15:
-            _context.prev = 15;
+          case 14:
+            _context.prev = 14;
             _context.t0 = _context["catch"](1);
-            _context.next = 19;
+            _context.next = 18;
             return (0, _ErrorHandler.defaultErrorHandler)(_context.t0, req, res);
-          case 19:
+          case 18:
           case "end":
             return _context.stop();
         }
-      }, _callee, null, [[1, 15]]);
+      }, _callee, null, [[1, 14]]);
     }));
     return function (_x2) {
       return _ref.apply(this, arguments);
