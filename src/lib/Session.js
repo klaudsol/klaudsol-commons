@@ -32,8 +32,9 @@ export async function serverSideLogout(req) {
   req.session.destroy();
 }
 
-export function getSessionCache() {
-  return withIronSessionSsr(async ({ req, res }) => {
+export function getSessionCache(callback = () => {}) {
+  return withIronSessionSsr(async (context) => {
+    const { req, res } = context;
     
     try{
       if(!req.session?.cache) {
@@ -54,13 +55,15 @@ export function getSessionCache() {
           }
         }
       }
+
+      const callbackProps = await callback(context);
+      // Pass data to the page via props
+      return { props: { cache: req.session?.cache, ...callbackProps } }
     }
     catch(error){
       await defaultErrorHandler(error, req, res);
     }
  
-    // Pass data to the page via props
-    return { props: { cache: req.session?.cache} }
     },
     sessionOptions
   );  
