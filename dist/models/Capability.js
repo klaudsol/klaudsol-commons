@@ -29,21 +29,26 @@ var Capability = /*#__PURE__*/function () {
   _createClass(Capability, null, [{
     key: "getCapabilitiesByLoggedInUser",
     value: function () {
-      var _getCapabilitiesByLoggedInUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(session_token) {
-        var db, sql, rawCapabilites, userCapabilities;
+      var _getCapabilitiesByLoggedInUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(session_token, params) {
+        var db, sql, i, rawCapabilites, userCapabilities;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               db = new _DB["default"]();
               sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token) AND capabilities.name IS NOT NULL";
-              _context.next = 4;
+              if (params.length > 0) {
+                for (i = 0; i < params.length; i++) {
+                  sql += " AND params".concat(i + 1, " = ").concat(params[i]);
+                }
+              }
+              _context.next = 5;
               return db.executeStatement(sql, [{
                 name: "session_token",
                 value: {
                   stringValue: session_token
                 }
               }]);
-            case 4:
+            case 5:
               rawCapabilites = _context.sent;
               userCapabilities = rawCapabilites.records.map(function (_ref) {
                 var _ref2 = _slicedToArray(_ref, 1),
@@ -51,13 +56,13 @@ var Capability = /*#__PURE__*/function () {
                 return capability;
               });
               return _context.abrupt("return", userCapabilities);
-            case 7:
+            case 8:
             case "end":
               return _context.stop();
           }
         }, _callee);
       }));
-      function getCapabilitiesByLoggedInUser(_x) {
+      function getCapabilitiesByLoggedInUser(_x, _x2) {
         return _getCapabilitiesByLoggedInUser.apply(this, arguments);
       }
       return getCapabilitiesByLoggedInUser;

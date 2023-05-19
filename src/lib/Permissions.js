@@ -82,7 +82,7 @@ export async function assert(conditions, req) {
   
 };
 
-export async function assertUserCan(capabilities, req){
+export async function assertUserCan(capabilities, req, ...params){
     let currentCapabilities;
     let bearerSession;
 
@@ -101,7 +101,7 @@ export async function assertUserCan(capabilities, req){
     const session_token = bearerSession ?? req?.user?.sessionToken ?? req?.session?.session_token;
 
     if(session_token){
-        currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token);
+        currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token, params);
         //console.log('currentCapabiities');
         //console.log(currentCapabilities);
     } else{
