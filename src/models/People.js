@@ -89,8 +89,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
                     capability, 
                     ...(params1 ? [`${capability}(${params1})`] : []), 
                     ...(params2 ? [`${capability}(${params2})`] : []), 
-                    ...(params3 ? [`${capability}(${params3})`] : [])
-                ]
+                    ...(params3 ? [`${capability}(${params3})`] : [])]
         }
 
         return [...acc, capability]
