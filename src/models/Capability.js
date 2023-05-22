@@ -28,12 +28,18 @@ export default class Capability {
     return userCapabilities;
   }
 
-  static async getCapabilitiesByGuest() {
+  static async getCapabilitiesByGuest(params) {
     const db = new DB();
 
-    const sql = `SELECT DISTINCT capabilities.name FROM groups 
+    let sql = `SELECT DISTINCT capabilities.name FROM groups 
     LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
     LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = "Guests"`;
+
+    if (params.length > 0) {
+        for (let i = 0; i < params.length; i++) {
+            sql += ` AND params${i + 1} = ${params[i]}`;
+        }
+    }
 
     const rawCapabilites = await db.executeStatement(sql, []);
 

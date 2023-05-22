@@ -106,7 +106,7 @@ export async function assertUserCan(capabilities, req, ...params){
         //console.log(currentCapabilities);
     } else{
         // If we can't find the user's ID, we can assume they are a guest.
-        currentCapabilities =  await Capability.getCapabilitiesByGuest();
+        currentCapabilities =  await Capability.getCapabilitiesByGuest(params);
     }
 
     if (!currentCapabilities.includes(capabilities)) {

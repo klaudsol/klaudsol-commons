@@ -116,12 +116,12 @@ function _assertUserCan() {
           //req?.user - derived from middleware (seee Middleware#tokenVerifier). Note that we do not always use the Middleware module.
           //req?.session - if using IronSession (defaut implementation of KlaudSol CMS)
           session_token = (_ref = (_bearerSession = bearerSession) !== null && _bearerSession !== void 0 ? _bearerSession : req === null || req === void 0 ? void 0 : (_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.sessionToken) !== null && _ref !== void 0 ? _ref : req === null || req === void 0 ? void 0 : (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token;
+          for (_len = _args2.length, params = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+            params[_key - 2] = _args2[_key];
+          }
           if (!session_token) {
             _context2.next = 9;
             break;
-          }
-          for (_len = _args2.length, params = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-            params[_key - 2] = _args2[_key];
           }
           _context2.next = 6;
           return _Capability["default"].getCapabilitiesByLoggedInUser(session_token, params);
@@ -131,7 +131,7 @@ function _assertUserCan() {
           break;
         case 9:
           _context2.next = 11;
-          return _Capability["default"].getCapabilitiesByGuest();
+          return _Capability["default"].getCapabilitiesByGuest(params);
         case 11:
           currentCapabilities = _context2.sent;
         case 12:

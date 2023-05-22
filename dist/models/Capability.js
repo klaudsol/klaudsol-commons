@@ -70,16 +70,21 @@ var Capability = /*#__PURE__*/function () {
   }, {
     key: "getCapabilitiesByGuest",
     value: function () {
-      var _getCapabilitiesByGuest = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var db, sql, rawCapabilites, userCapabilities;
+      var _getCapabilitiesByGuest = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(params) {
+        var db, sql, i, rawCapabilites, userCapabilities;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               db = new _DB["default"]();
               sql = "SELECT DISTINCT capabilities.name FROM groups \n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = \"Guests\"";
-              _context2.next = 4;
+              if (params.length > 0) {
+                for (i = 0; i < params.length; i++) {
+                  sql += " AND params".concat(i + 1, " = ").concat(params[i]);
+                }
+              }
+              _context2.next = 5;
               return db.executeStatement(sql, []);
-            case 4:
+            case 5:
               rawCapabilites = _context2.sent;
               userCapabilities = rawCapabilites.records.map(function (_ref3) {
                 var _ref4 = _slicedToArray(_ref3, 1),
@@ -87,13 +92,13 @@ var Capability = /*#__PURE__*/function () {
                 return capability;
               });
               return _context2.abrupt("return", userCapabilities);
-            case 7:
+            case 8:
             case "end":
               return _context2.stop();
           }
         }, _callee2);
       }));
-      function getCapabilitiesByGuest() {
+      function getCapabilitiesByGuest(_x3) {
         return _getCapabilitiesByGuest.apply(this, arguments);
       }
       return getCapabilitiesByGuest;
