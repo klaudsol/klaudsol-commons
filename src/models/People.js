@@ -61,11 +61,11 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         {booleanValue: forcePasswordChange},
       ] = user;
 
-      const capabilitiesSQL = `SELECT DISTINCT capabilities.name from people_groups 
+      const capabilitiesSQL = `SELECT DISTINCT capabilities.name, group_capabilities.params1, group_capabilities.params2, group_capabilities.params3 from people_groups 
       LEFT JOIN groups ON groups.id = people_groups.group_id
       LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
       LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
-      WHERE people_groups.people_id = :people_id AND capabilities.name IS NOT NULL`;
+      WHERE people_groups.people_id = :people_id`;
 
       const groupsSQL = `SELECT groups.name FROM groups LEFT JOIN people_groups ON groups.id = people_groups.group_id WHERE people_groups.people_id = :people_id`;
       
@@ -78,7 +78,25 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         {name: 'people_id', value:{longValue: userId}},
       ]);
 
-      const capabilities = rawCapabilities.records.map(([{ stringValue: capability }])=> capability);
+      const capabilities = rawCapabilities.records.reduce((acc, curr) => {
+        const [{ stringValue: capability },
+                { stringValue: params1 },
+                { stringValue: params2 },
+                { stringValue: params3 }] = curr;
+
+        if (params1) {
+            return [...acc, 
+                    capability, 
+                    `${capability}(${params1})`, 
+                    ...(params2 ? [`${capability}(${params2})`] : []), 
+                    ...(params3 ? [`${capability}(${params3})`] : [])
+                ]
+        }
+
+        return [...acc, capability]
+      }, []);
+
+      console.log(capabilities)
       const groups = rawGroups.records.map(([{ stringValue: role }])=> role);
      
       const session_token = sha256(`${userId}${userSalt}${Date.now()}`);
