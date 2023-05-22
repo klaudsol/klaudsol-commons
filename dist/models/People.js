@@ -157,7 +157,6 @@ var People = /*#__PURE__*/function () {
                 }
                 return [].concat(_toConsumableArray(acc), [capability]);
               }, []);
-              console.log(capabilities);
               groups = rawGroups.records.map(function (_ref) {
                 var _ref2 = _slicedToArray(_ref, 1),
                   role = _ref2[0].stringValue;
@@ -165,7 +164,7 @@ var People = /*#__PURE__*/function () {
               });
               session_token = (0, _DB.sha256)("".concat(userId).concat(userSalt).concat(Date.now()));
               sessionSql = "INSERT INTO sessions (`people_id`, `session`, `session_expiry`)  \n        VALUES(:id, :session, DATE_ADD(NOW(), INTERVAL 744 HOUR))";
-              _context.next = 24;
+              _context.next = 23;
               return db.executeStatement(sessionSql, [{
                 name: 'session',
                 value: {
@@ -177,11 +176,11 @@ var People = /*#__PURE__*/function () {
                   longValue: userId
                 }
               }]);
-            case 24:
+            case 23:
               defaultEntityTypeSQL = "SELECT entity_types.slug FROM entity_types ORDER BY id ASC LIMIT 1";
-              _context.next = 27;
+              _context.next = 26;
               return db.executeStatement(defaultEntityTypeSQL, []);
-            case 27:
+            case 26:
               defaultEntityTypeData = _context.sent;
               _defaultEntityTypeDat = _slicedToArray(defaultEntityTypeData.records[0], 1);
               defaultEntityType = _defaultEntityTypeDat[0].stringValue;
@@ -196,7 +195,7 @@ var People = /*#__PURE__*/function () {
                   forcePasswordChange: forcePasswordChange
                 }
               });
-            case 31:
+            case 30:
             case "end":
               return _context.stop();
           }

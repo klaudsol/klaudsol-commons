@@ -96,7 +96,6 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         return [...acc, capability]
       }, []);
 
-      console.log(capabilities)
       const groups = rawGroups.records.map(([{ stringValue: role }])=> role);
      
       const session_token = sha256(`${userId}${userSalt}${Date.now()}`);
