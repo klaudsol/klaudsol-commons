@@ -13,7 +13,11 @@ export default class Capability {
 
     if (params.length > 0) {
         for (let i = 0; i < params.length; i++) {
-            sql += ` AND params${i + 1} = ${params[i]}`;
+            if(params[i]) {
+                sql += ` AND params${i + 1} = ${params[i]}`;
+            } else {
+                sql += ` AND params${i + 1} IS NULL`;
+            }
         }
     }
 

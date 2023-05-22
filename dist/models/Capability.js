@@ -38,7 +38,11 @@ var Capability = /*#__PURE__*/function () {
               sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token) AND capabilities.name IS NOT NULL";
               if (params.length > 0) {
                 for (i = 0; i < params.length; i++) {
-                  sql += " AND params".concat(i + 1, " = ").concat(params[i]);
+                  if (params[i]) {
+                    sql += " AND params".concat(i + 1, " = ").concat(params[i]);
+                  } else {
+                    sql += " AND params".concat(i + 1, " IS NULL");
+                  }
                 }
               }
               _context.next = 5;
