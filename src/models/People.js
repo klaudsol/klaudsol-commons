@@ -84,10 +84,10 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
                 { stringValue: params2 },
                 { stringValue: params3 }] = curr;
 
-        if (params1) {
+        if (params1 || params2 || params3) {
             return [...acc, 
                     capability, 
-                    `${capability}(${params1})`, 
+                    ...(params1 ? [`${capability}(${params1})`] : []), 
                     ...(params2 ? [`${capability}(${params2})`] : []), 
                     ...(params3 ? [`${capability}(${params3})`] : [])
                 ]

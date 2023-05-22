@@ -152,8 +152,8 @@ var People = /*#__PURE__*/function () {
                   params1 = _curr[1].stringValue,
                   params2 = _curr[2].stringValue,
                   params3 = _curr[3].stringValue;
-                if (params1) {
-                  return [].concat(_toConsumableArray(acc), [capability, "".concat(capability, "(").concat(params1, ")")], _toConsumableArray(params2 ? ["".concat(capability, "(").concat(params2, ")")] : []), _toConsumableArray(params3 ? ["".concat(capability, "(").concat(params3, ")")] : []));
+                if (params1 || params2 || params3) {
+                  return [].concat(_toConsumableArray(acc), [capability], _toConsumableArray(params1 ? ["".concat(capability, "(").concat(params1, ")")] : []), _toConsumableArray(params2 ? ["".concat(capability, "(").concat(params2, ")")] : []), _toConsumableArray(params3 ? ["".concat(capability, "(").concat(params3, ")")] : []));
                 }
                 return [].concat(_toConsumableArray(acc), [capability]);
               }, []);
