@@ -141,6 +141,8 @@ function _assertUserCan() {
           }
           throw new _InsufficientPermissionsError["default"]();
         case 14:
+          return _context2.abrupt("return", true);
+        case 15:
         case "end":
           return _context2.stop();
       }

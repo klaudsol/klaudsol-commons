@@ -86,7 +86,6 @@ export async function assertUserCan(capabilities, req, ...params){
     let currentCapabilities;
     let bearerSession;
 
-
     if (req.headers && req.headers.authorization) {
       const { authorization } = req.headers;
       const bearerToken = authorization.substring(BEARER_LENGTH); //Remove "Bearer" text 
@@ -112,4 +111,6 @@ export async function assertUserCan(capabilities, req, ...params){
     if (!currentCapabilities.includes(capabilities)) {
       throw new InsufficientPermissionsError();
     }
+
+    return true;
 }
