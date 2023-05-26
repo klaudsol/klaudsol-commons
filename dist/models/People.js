@@ -152,7 +152,7 @@ var People = /*#__PURE__*/function () {
                   params1 = _curr[1].stringValue,
                   params2 = _curr[2].stringValue,
                   params3 = _curr[3].stringValue;
-                return [].concat(_toConsumableArray(acc), [capability], _toConsumableArray(params1 ? ["".concat(capability, "(").concat(params1, ")")] : []), _toConsumableArray(params2 ? ["".concat(capability, "(").concat(params2, ")")] : []), _toConsumableArray(params3 ? ["".concat(capability, "(").concat(params3, ")")] : []));
+                return [].concat(_toConsumableArray(acc), _toConsumableArray(params1 ? ["".concat(capability, "(").concat(params1, ")")] : []), _toConsumableArray(params2 ? ["".concat(capability, "(").concat(params2, ")")] : []), _toConsumableArray(params3 ? ["".concat(capability, "(").concat(params3, ")")] : []));
               }, []);
               groups = rawGroups.records.map(function (_ref) {
                 var _ref2 = _slicedToArray(_ref, 1),
