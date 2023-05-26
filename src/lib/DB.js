@@ -15,7 +15,7 @@ const AURORA_AWS_REGION = process.env.AURORA_AWS_REGION ?? process.env.KS_AURORA
 
 class DB {
   
-  constructor() {
+  constructor(database) {
     
     const rdsConfig =  {
       region: AURORA_AWS_REGION,
@@ -30,7 +30,7 @@ class DB {
     const statementConfig = {
       resourceArn: AURORA_RESOURCE_ARN,
       secretArn: AURORA_SECRET_ARN,
-      database: AURORA_DATABASE
+      database: database ?? AURORA_DATABASE
     } ;   
     
     this.executeStatement = async (sql, parameters=[]) => {  

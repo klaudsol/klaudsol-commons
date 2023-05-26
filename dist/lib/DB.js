@@ -36,7 +36,7 @@ var AURORA_SECRET_ARN = (_process$env$AURORA_S = process.env.AURORA_SECRET_ARN) 
 var AURORA_DATABASE = (_process$env$AURORA_D = process.env.AURORA_DATABASE) !== null && _process$env$AURORA_D !== void 0 ? _process$env$AURORA_D : process.env.KS_AURORA_DATABASE;
 var AURORA_AWS_REGION = (_ref3 = (_ref4 = (_ref5 = (_process$env$AURORA_A3 = process.env.AURORA_AWS_REGION) !== null && _process$env$AURORA_A3 !== void 0 ? _process$env$AURORA_A3 : process.env.KS_AURORA_AWS_REGION) !== null && _ref5 !== void 0 ? _ref5 : process.env.KS_AURORA_REGION) !== null && _ref4 !== void 0 ? _ref4 : process.env.KS_AWS_REGION) !== null && _ref3 !== void 0 ? _ref3 : 'us-east-1';
 var DB = /*#__PURE__*/function () {
-  function DB() {
+  function DB(database) {
     _classCallCheck(this, DB);
     var rdsConfig = {
       region: AURORA_AWS_REGION,
@@ -49,7 +49,7 @@ var DB = /*#__PURE__*/function () {
     var statementConfig = {
       resourceArn: AURORA_RESOURCE_ARN,
       secretArn: AURORA_SECRET_ARN,
-      database: AURORA_DATABASE
+      database: database !== null && database !== void 0 ? database : AURORA_DATABASE
     };
     this.executeStatement = /*#__PURE__*/function () {
       var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(sql) {
