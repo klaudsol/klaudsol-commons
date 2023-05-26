@@ -82,7 +82,7 @@ export async function assert(conditions, req) {
   
 };
 
-export async function assertUserCan(capabilities, req, ...params){
+export async function assertUserCan(capabilities, req, params1, params2, params3){
     let currentCapabilities;
     let bearerSession;
 
@@ -100,12 +100,12 @@ export async function assertUserCan(capabilities, req, ...params){
     const session_token = bearerSession ?? req?.user?.sessionToken ?? req?.session?.session_token;
 
     if(session_token){
-        currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token, params);
+        currentCapabilities =  await Capability.getCapabilitiesByLoggedInUser(session_token, params1, params2, params3);
         //console.log('currentCapabiities');
         //console.log(currentCapabilities);
     } else{
         // If we can't find the user's ID, we can assume they are a guest.
-        currentCapabilities =  await Capability.getCapabilitiesByGuest(params);
+        currentCapabilities =  await Capability.getCapabilitiesByGuest(params1, params2, params3);
     }
 
     if (!currentCapabilities.includes(capabilities)) {

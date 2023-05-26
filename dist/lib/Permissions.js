@@ -86,22 +86,13 @@ function _assert() {
   return _assert.apply(this, arguments);
 }
 ;
-function assertUserCan(_x3, _x4) {
+function assertUserCan(_x3, _x4, _x5, _x6, _x7) {
   return _assertUserCan.apply(this, arguments);
 }
 function _assertUserCan() {
-  _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req) {
+  _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req, params1, params2, params3) {
     var _ref, _bearerSession, _req$user, _req$session3;
-    var currentCapabilities,
-      bearerSession,
-      authorization,
-      bearerToken,
-      decodedToken,
-      session_token,
-      _len,
-      params,
-      _key,
-      _args2 = arguments;
+    var currentCapabilities, bearerSession, authorization, bearerToken, decodedToken, session_token;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
@@ -116,33 +107,30 @@ function _assertUserCan() {
           //req?.user - derived from middleware (seee Middleware#tokenVerifier). Note that we do not always use the Middleware module.
           //req?.session - if using IronSession (defaut implementation of KlaudSol CMS)
           session_token = (_ref = (_bearerSession = bearerSession) !== null && _bearerSession !== void 0 ? _bearerSession : req === null || req === void 0 ? void 0 : (_req$user = req.user) === null || _req$user === void 0 ? void 0 : _req$user.sessionToken) !== null && _ref !== void 0 ? _ref : req === null || req === void 0 ? void 0 : (_req$session3 = req.session) === null || _req$session3 === void 0 ? void 0 : _req$session3.session_token;
-          for (_len = _args2.length, params = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-            params[_key - 2] = _args2[_key];
-          }
           if (!session_token) {
-            _context2.next = 9;
+            _context2.next = 8;
             break;
           }
-          _context2.next = 6;
-          return _Capability["default"].getCapabilitiesByLoggedInUser(session_token, params);
-        case 6:
+          _context2.next = 5;
+          return _Capability["default"].getCapabilitiesByLoggedInUser(session_token, params1, params2, params3);
+        case 5:
           currentCapabilities = _context2.sent;
-          _context2.next = 12;
-          break;
-        case 9:
           _context2.next = 11;
-          return _Capability["default"].getCapabilitiesByGuest(params);
-        case 11:
+          break;
+        case 8:
+          _context2.next = 10;
+          return _Capability["default"].getCapabilitiesByGuest(params1, params2, params3);
+        case 10:
           currentCapabilities = _context2.sent;
-        case 12:
+        case 11:
           if (currentCapabilities.includes(capabilities)) {
-            _context2.next = 14;
+            _context2.next = 13;
             break;
           }
           throw new _InsufficientPermissionsError["default"]();
-        case 14:
+        case 13:
           return _context2.abrupt("return", true);
-        case 15:
+        case 14:
         case "end":
           return _context2.stop();
       }
