@@ -25,22 +25,15 @@ export default class Capability {
     return userCapabilities;
   }
 
-  static async getCapabilitiesByGuest(params) {
+  static async getCapabilitiesByGuest(params1, params2, params3) {
     const db = new DB();
 
-    let sql = `SELECT DISTINCT capabilities.name FROM groups 
+    const sql = `SELECT DISTINCT capabilities.name FROM groups 
     LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
-    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = "Guests"`;
-
-    if (params.length > 0) {
-        for (let i = 0; i < params.length; i++) {
-            if(params[i]) {
-                sql += ` AND params${i + 1} = ${params[i]}`;
-            } else {
-                sql += ` AND params${i + 1} IS NULL`;
-            }
-        }
-    }
+    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = "Guests"
+    AND params1 ${params1 ? `= ${params1}` : 'IS NULL'}
+    AND params2 ${params2 ? `= ${params2}` : 'IS NULL'}
+    AND params3 ${params3 ? `= ${params3}` : 'IS NULL'}`
 
     const rawCapabilites = await db.executeStatement(sql, []);
 

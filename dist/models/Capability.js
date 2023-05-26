@@ -65,25 +65,16 @@ var Capability = /*#__PURE__*/function () {
   }, {
     key: "getCapabilitiesByGuest",
     value: function () {
-      var _getCapabilitiesByGuest = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(params) {
-        var db, sql, i, rawCapabilites, userCapabilities;
+      var _getCapabilitiesByGuest = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(params1, params2, params3) {
+        var db, sql, rawCapabilites, userCapabilities;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               db = new _DB["default"]();
-              sql = "SELECT DISTINCT capabilities.name FROM groups \n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = \"Guests\"";
-              if (params.length > 0) {
-                for (i = 0; i < params.length; i++) {
-                  if (params[i]) {
-                    sql += " AND params".concat(i + 1, " = ").concat(params[i]);
-                  } else {
-                    sql += " AND params".concat(i + 1, " IS NULL");
-                  }
-                }
-              }
-              _context2.next = 5;
+              sql = "SELECT DISTINCT capabilities.name FROM groups \n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = \"Guests\"\n    AND params1 ".concat(params1 ? "= ".concat(params1) : 'IS NULL', "\n    AND params2 ").concat(params2 ? "= ".concat(params2) : 'IS NULL', "\n    AND params3 ").concat(params3 ? "= ".concat(params3) : 'IS NULL');
+              _context2.next = 4;
               return db.executeStatement(sql, []);
-            case 5:
+            case 4:
               rawCapabilites = _context2.sent;
               userCapabilities = rawCapabilites.records.map(function (_ref3) {
                 var _ref4 = _slicedToArray(_ref3, 1),
@@ -91,13 +82,13 @@ var Capability = /*#__PURE__*/function () {
                 return capability;
               });
               return _context2.abrupt("return", userCapabilities);
-            case 8:
+            case 7:
             case "end":
               return _context2.stop();
           }
         }, _callee2);
       }));
-      function getCapabilitiesByGuest(_x5) {
+      function getCapabilitiesByGuest(_x5, _x6, _x7) {
         return _getCapabilitiesByGuest.apply(this, arguments);
       }
       return getCapabilitiesByGuest;
