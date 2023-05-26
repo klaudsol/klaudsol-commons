@@ -92,7 +92,7 @@ function assertUserCan(_x3, _x4) {
 function _assertUserCan() {
   _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req) {
     var _ref, _bearerSession, _req$user, _req$session3;
-    var currentCapabilities, bearerSession, authorization, bearerToken, decodedToken, session_token;
+    var currentCapabilities, bearerSession, authorization, bearerToken, decodedToken, session_token, isNotCapable;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
       while (1) switch (_context2.prev = _context2.next) {
         case 0:
@@ -123,12 +123,15 @@ function _assertUserCan() {
         case 10:
           currentCapabilities = _context2.sent;
         case 11:
-          if (currentCapabilities.includes(capabilities)) {
-            _context2.next = 13;
+          isNotCapable = capabilities instanceof Array ? !currentCapabilities.some(function (capability) {
+            return capabilities.includes(capability);
+          }) : !currentCapabilities.includes(capabilities);
+          if (!isNotCapable) {
+            _context2.next = 14;
             break;
           }
           throw new _InsufficientPermissionsError["default"]();
-        case 13:
+        case 14:
         case "end":
           return _context2.stop();
       }
