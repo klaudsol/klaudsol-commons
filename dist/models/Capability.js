@@ -35,33 +35,12 @@ var Capability = /*#__PURE__*/function () {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               db = new _DB["default"]();
-              sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token)\n    AND params1 = :params1 AND params2 = :params2 AND params3 = :params3";
+              sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token)\n    AND params1 ".concat(params1 ? "= ".concat(params1) : 'IS NULL', "\n    AND params2 ").concat(params2 ? "= ".concat(params2) : 'IS NULL', "\n    AND params3 ").concat(params3 ? "= ".concat(params3) : 'IS NULL');
               _context.next = 4;
               return db.executeStatement(sql, [{
                 name: "session_token",
                 value: {
                   stringValue: session_token
-                }
-              }, {
-                name: "params1",
-                value: params1 ? {
-                  stringValue: params1
-                } : {
-                  isNull: true
-                }
-              }, {
-                name: "params2",
-                value: params2 ? {
-                  stringValue: params2
-                } : {
-                  isNull: true
-                }
-              }, {
-                name: "params3",
-                value: params3 ? {
-                  stringValue: params3
-                } : {
-                  isNull: true
                 }
               }]);
             case 4:
