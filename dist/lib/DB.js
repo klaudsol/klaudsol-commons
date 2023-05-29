@@ -37,6 +37,10 @@ var AURORA_DATABASE = (_process$env$AURORA_D = process.env.AURORA_DATABASE) !== 
 var AURORA_AWS_REGION = (_ref3 = (_ref4 = (_ref5 = (_process$env$AURORA_A3 = process.env.AURORA_AWS_REGION) !== null && _process$env$AURORA_A3 !== void 0 ? _process$env$AURORA_A3 : process.env.KS_AURORA_AWS_REGION) !== null && _ref5 !== void 0 ? _ref5 : process.env.KS_AURORA_REGION) !== null && _ref4 !== void 0 ? _ref4 : process.env.KS_AWS_REGION) !== null && _ref3 !== void 0 ? _ref3 : 'us-east-1';
 var DB = /*#__PURE__*/function () {
   function DB() {
+    var _ref6 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      database = _ref6.database,
+      secretArn = _ref6.secretArn,
+      resourceArn = _ref6.resourceArn;
     _classCallCheck(this, DB);
     var rdsConfig = {
       region: AURORA_AWS_REGION,
@@ -47,12 +51,12 @@ var DB = /*#__PURE__*/function () {
     };
     var RDS = new _awsSdk["default"].RDSDataService(rdsConfig);
     var statementConfig = {
-      resourceArn: AURORA_RESOURCE_ARN,
-      secretArn: AURORA_SECRET_ARN,
-      database: AURORA_DATABASE
+      resourceArn: resourceArn !== null && resourceArn !== void 0 ? resourceArn : AURORA_RESOURCE_ARN,
+      secretArn: secretArn !== null && secretArn !== void 0 ? secretArn : AURORA_SECRET_ARN,
+      database: database !== null && database !== void 0 ? database : AURORA_DATABASE
     };
     this.executeStatement = /*#__PURE__*/function () {
-      var _ref6 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(sql) {
+      var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(sql) {
         var parameters,
           exec,
           _args = arguments;
@@ -75,11 +79,11 @@ var DB = /*#__PURE__*/function () {
         }, _callee);
       }));
       return function (_x) {
-        return _ref6.apply(this, arguments);
+        return _ref7.apply(this, arguments);
       };
     }();
     this.batchExecuteStatement = /*#__PURE__*/function () {
-      var _ref7 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(sql) {
+      var _ref8 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(sql) {
         var parameterSets,
           exec,
           _args2 = arguments;
@@ -102,7 +106,7 @@ var DB = /*#__PURE__*/function () {
         }, _callee2);
       }));
       return function (_x2) {
-        return _ref7.apply(this, arguments);
+        return _ref8.apply(this, arguments);
       };
     }();
   }
@@ -145,9 +149,9 @@ var sha256 = function sha256(text) {
 //DEPRECATE on v2.0.0
 exports.sha256 = sha256;
 var fieldsForSelect = function fieldsForSelect(table, fieldsHash) {
-  return Object.entries(fieldsHash).map(function (_ref8) {
-    var _ref9 = _slicedToArray(_ref8, 1),
-      name = _ref9[0];
+  return Object.entries(fieldsHash).map(function (_ref9) {
+    var _ref10 = _slicedToArray(_ref9, 1),
+      name = _ref10[0];
     return "".concat(table, ".").concat(name);
   }).join(',');
 };
@@ -155,19 +159,19 @@ var fieldsForSelect = function fieldsForSelect(table, fieldsHash) {
 //DEPRECATE on v2.0.0
 exports.fieldsForSelect = fieldsForSelect;
 var allowedFieldsOnCreate = function allowedFieldsOnCreate(fieldsHash) {
-  return Object.entries(fieldsHash).filter(function (_ref10) {
-    var _ref11 = _slicedToArray(_ref10, 2),
-      name = _ref11[0],
-      allowOnCreate = _ref11[1].allowOnCreate;
+  return Object.entries(fieldsHash).filter(function (_ref11) {
+    var _ref12 = _slicedToArray(_ref11, 2),
+      name = _ref12[0],
+      allowOnCreate = _ref12[1].allowOnCreate;
     return allowOnCreate;
   });
 };
 
 //DEPRECATE on v2.0.0
 var fieldsForInsert = function fieldsForInsert(fieldsHash) {
-  return allowedFieldsOnCreate(fieldsHash).map(function (_ref12) {
-    var _ref13 = _slicedToArray(_ref12, 1),
-      name = _ref13[0];
+  return allowedFieldsOnCreate(fieldsHash).map(function (_ref13) {
+    var _ref14 = _slicedToArray(_ref13, 1),
+      name = _ref14[0];
     return "".concat(name);
   }).join(',');
 };
@@ -175,9 +179,9 @@ var fieldsForInsert = function fieldsForInsert(fieldsHash) {
 //DEPRECATE on v2.0.0
 exports.fieldsForInsert = fieldsForInsert;
 var fieldParametersForInsert = function fieldParametersForInsert(fieldsHash) {
-  return allowedFieldsOnCreate(fieldsHash).map(function (_ref14) {
-    var _ref15 = _slicedToArray(_ref14, 1),
-      name = _ref15[0];
+  return allowedFieldsOnCreate(fieldsHash).map(function (_ref15) {
+    var _ref16 = _slicedToArray(_ref15, 1),
+      name = _ref16[0];
     return ":".concat(name);
   }).join(',');
 };
@@ -185,10 +189,10 @@ var fieldParametersForInsert = function fieldParametersForInsert(fieldsHash) {
 //DEPRECATE on v2.0.0
 exports.fieldParametersForInsert = fieldParametersForInsert;
 var executeStatementParamsForInsert = function executeStatementParamsForInsert(fieldsHash, model, transform) {
-  return allowedFieldsOnCreate(fieldsHash).map(function (_ref16) {
-    var _ref17 = _slicedToArray(_ref16, 2),
-      name = _ref17[0],
-      auroraType = _ref17[1].auroraType;
+  return allowedFieldsOnCreate(fieldsHash).map(function (_ref17) {
+    var _ref18 = _slicedToArray(_ref17, 2),
+      name = _ref18[0],
+      auroraType = _ref18[1].auroraType;
     //for flexibiity, we can pass a transformer function to manipulate our data
     var value = transform ? transform(name, model[name]) : model[name];
     return {
@@ -201,19 +205,19 @@ var executeStatementParamsForInsert = function executeStatementParamsForInsert(f
 //DEPRECATE on v2.0.0
 exports.executeStatementParamsForInsert = executeStatementParamsForInsert;
 var allowedFieldsOnUpdate = function allowedFieldsOnUpdate(fieldsHash) {
-  return Object.entries(fieldsHash).filter(function (_ref18) {
-    var _ref19 = _slicedToArray(_ref18, 2),
-      name = _ref19[0],
-      allowOnUpdate = _ref19[1].allowOnUpdate;
+  return Object.entries(fieldsHash).filter(function (_ref19) {
+    var _ref20 = _slicedToArray(_ref19, 2),
+      name = _ref20[0],
+      allowOnUpdate = _ref20[1].allowOnUpdate;
     return allowOnUpdate;
   });
 };
 
 //DEPRECATE on v2.0.0
 var fieldsForUpdate = function fieldsForUpdate(fieldsHash) {
-  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref20) {
-    var _ref21 = _slicedToArray(_ref20, 1),
-      name = _ref21[0];
+  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref21) {
+    var _ref22 = _slicedToArray(_ref21, 1),
+      name = _ref22[0];
     return "".concat(name, " = :").concat(name);
   }).join(',');
 };
@@ -221,10 +225,10 @@ var fieldsForUpdate = function fieldsForUpdate(fieldsHash) {
 //DEPRECATE on v2.0.0
 exports.fieldsForUpdate = fieldsForUpdate;
 var executeStatementParamsForUpdate = function executeStatementParamsForUpdate(fieldsHash, model, transform) {
-  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref22) {
-    var _ref23 = _slicedToArray(_ref22, 2),
-      name = _ref23[0],
-      auroraType = _ref23[1].auroraType;
+  return allowedFieldsOnUpdate(fieldsHash).map(function (_ref23) {
+    var _ref24 = _slicedToArray(_ref23, 2),
+      name = _ref24[0],
+      auroraType = _ref24[1].auroraType;
     var value = transform ? transform(name, model[name]) : model[name];
     return {
       name: name,
@@ -278,10 +282,10 @@ A single Aurora record looks something like this:
 //DEPRECATE on v2.0.0
 exports.AURORA_TYPE = AURORA_TYPE;
 var fromAurora = function fromAurora(record, fields) {
-  return Object.fromEntries(Object.entries(fields).map(function (_ref24, index) {
-    var _ref25 = _slicedToArray(_ref24, 2),
-      key = _ref25[0],
-      auroraType = _ref25[1].auroraType;
+  return Object.fromEntries(Object.entries(fields).map(function (_ref25, index) {
+    var _ref26 = _slicedToArray(_ref25, 2),
+      key = _ref26[0],
+      auroraType = _ref26[1].auroraType;
     return [key, record[index]["".concat(auroraType, "Value")]];
   }));
 };
@@ -289,14 +293,14 @@ var fromAurora = function fromAurora(record, fields) {
 //DEPRECATE on v2.0.0
 exports.fromAurora = fromAurora;
 var sanitizeData = function sanitizeData(rawData, fields) {
-  var allowedFields = Object.entries(fields).map(function (_ref26) {
-    var _ref27 = _slicedToArray(_ref26, 1),
-      name = _ref27[0];
+  var allowedFields = Object.entries(fields).map(function (_ref27) {
+    var _ref28 = _slicedToArray(_ref27, 1),
+      name = _ref28[0];
     return name;
   });
-  return Object.fromEntries(Object.entries(rawData).filter(function (_ref28) {
-    var _ref29 = _slicedToArray(_ref28, 1),
-      key = _ref29[0];
+  return Object.fromEntries(Object.entries(rawData).filter(function (_ref29) {
+    var _ref30 = _slicedToArray(_ref29, 1),
+      key = _ref30[0];
     return allowedFields.includes(key);
   }));
 };
