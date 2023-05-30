@@ -15,10 +15,10 @@ const AURORA_AWS_REGION = process.env.AURORA_AWS_REGION ?? process.env.KS_AURORA
 
 class DB {
   
-  constructor({ database, secretArn, resourceArn } = {}) {
+  constructor({ database, secretArn, resourceArn, region } = {}) {
     
     const rdsConfig =  {
-      region: AURORA_AWS_REGION,
+      region: region ?? AURORA_AWS_REGION,
       credentials: new AWS.Credentials({
         accessKeyId: AURORA_AWS_ACCESS_KEY_ID,
         secretAccessKey: AURORA_AWS_SECRET_ACCESS_KEY,
