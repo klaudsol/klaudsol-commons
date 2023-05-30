@@ -40,10 +40,11 @@ var DB = /*#__PURE__*/function () {
     var _ref6 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       database = _ref6.database,
       secretArn = _ref6.secretArn,
-      resourceArn = _ref6.resourceArn;
+      resourceArn = _ref6.resourceArn,
+      region = _ref6.region;
     _classCallCheck(this, DB);
     var rdsConfig = {
-      region: AURORA_AWS_REGION,
+      region: region !== null && region !== void 0 ? region : AURORA_AWS_REGION,
       credentials: new _awsSdk["default"].Credentials({
         accessKeyId: AURORA_AWS_ACCESS_KEY_ID,
         secretAccessKey: AURORA_AWS_SECRET_ACCESS_KEY
