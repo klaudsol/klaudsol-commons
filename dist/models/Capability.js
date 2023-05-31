@@ -35,12 +35,27 @@ var Capability = /*#__PURE__*/function () {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               db = new _DB["default"]();
-              sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token)\n    AND params1 ".concat(params1 ? "= ".concat(params1) : 'IS NULL', "\n    AND params2 ").concat(params2 ? "= ".concat(params2) : 'IS NULL', "\n    AND params3 ").concat(params3 ? "= ".concat(params3) : 'IS NULL');
+              sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token)\n    AND CASE WHEN :params1 = \"NULL\" THEN  params1 IS NULL ELSE params1 = :params1 END\n    AND CASE WHEN :params2 = \"NULL\" THEN  params2 IS NULL ELSE params2 = :params2 END\n    AND CASE WHEN :params3 = \"NULL\" THEN  params3 IS NULL ELSE params3 = :params3 END";
               _context.next = 4;
               return db.executeStatement(sql, [{
                 name: "session_token",
                 value: {
                   stringValue: session_token
+                }
+              }, {
+                name: "params1",
+                value: {
+                  stringValue: params1 !== null && params1 !== void 0 ? params1 : "NULL"
+                }
+              }, {
+                name: "params2",
+                value: {
+                  stringValue: params2 !== null && params2 !== void 0 ? params2 : "NULL"
+                }
+              }, {
+                name: "params3",
+                value: {
+                  stringValue: params3 !== null && params3 !== void 0 ? params3 : "NULL"
                 }
               }]);
             case 4:
@@ -71,9 +86,24 @@ var Capability = /*#__PURE__*/function () {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               db = new _DB["default"]();
-              sql = "SELECT DISTINCT capabilities.name FROM groups \n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = \"Guests\"\n    AND params1 ".concat(params1 ? "= ".concat(params1) : 'IS NULL', "\n    AND params2 ").concat(params2 ? "= ".concat(params2) : 'IS NULL', "\n    AND params3 ").concat(params3 ? "= ".concat(params3) : 'IS NULL');
+              sql = "SELECT DISTINCT capabilities.name FROM groups \n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = \"Guests\"\n    AND CASE WHEN :params1 = \"NULL\" THEN  params1 IS NULL ELSE params1 = :params1 END\n    AND CASE WHEN :params2 = \"NULL\" THEN  params2 IS NULL ELSE params2 = :params2 END\n    AND CASE WHEN :params3 = \"NULL\" THEN  params3 IS NULL ELSE params3 = :params3 END";
               _context2.next = 4;
-              return db.executeStatement(sql, []);
+              return db.executeStatement(sql, [{
+                name: "params1",
+                value: {
+                  stringValue: params1 !== null && params1 !== void 0 ? params1 : "NULL"
+                }
+              }, {
+                name: "params2",
+                value: {
+                  stringValue: params2 !== null && params2 !== void 0 ? params2 : "NULL"
+                }
+              }, {
+                name: "params3",
+                value: {
+                  stringValue: params3 !== null && params3 !== void 0 ? params3 : "NULL"
+                }
+              }]);
             case 4:
               rawCapabilites = _context2.sent;
               userCapabilities = rawCapabilites.records.map(function (_ref3) {

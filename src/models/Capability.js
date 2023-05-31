@@ -10,13 +10,16 @@ export default class Capability {
     LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
     LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id
     WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token)
-    AND params1 ${params1 ? `= ${params1}` : 'IS NULL'}
-    AND params2 ${params2 ? `= ${params2}` : 'IS NULL'}
-    AND params3 ${params3 ? `= ${params3}` : 'IS NULL'}` 
-
+    AND CASE WHEN :params1 = "NULL" THEN  params1 IS NULL ELSE params1 = :params1 END
+    AND CASE WHEN :params2 = "NULL" THEN  params2 IS NULL ELSE params2 = :params2 END
+    AND CASE WHEN :params3 = "NULL" THEN  params3 IS NULL ELSE params3 = :params3 END`
+    
     const rawCapabilites = await db.executeStatement(sql, [
       { name: "session_token", value: { stringValue: session_token } },
-    ]);
+      { name: "params1", value: { stringValue: params1 ?? "NULL" } },
+      { name: "params2", value: { stringValue: params2 ?? "NULL" } },
+      { name: "params3", value: { stringValue: params3 ?? "NULL" } },
+    ]);   
 
     const userCapabilities = rawCapabilites.records.map(
       ([{ stringValue: capability }]) => capability
@@ -31,11 +34,15 @@ export default class Capability {
     const sql = `SELECT DISTINCT capabilities.name FROM groups 
     LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id
     LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = "Guests"
-    AND params1 ${params1 ? `= ${params1}` : 'IS NULL'}
-    AND params2 ${params2 ? `= ${params2}` : 'IS NULL'}
-    AND params3 ${params3 ? `= ${params3}` : 'IS NULL'}`
-
-    const rawCapabilites = await db.executeStatement(sql, []);
+    AND CASE WHEN :params1 = "NULL" THEN  params1 IS NULL ELSE params1 = :params1 END
+    AND CASE WHEN :params2 = "NULL" THEN  params2 IS NULL ELSE params2 = :params2 END
+    AND CASE WHEN :params3 = "NULL" THEN  params3 IS NULL ELSE params3 = :params3 END`
+    
+    const rawCapabilites = await db.executeStatement(sql, [
+      { name: "params1", value: { stringValue: params1 ?? "NULL" } },
+      { name: "params2", value: { stringValue: params2 ?? "NULL" } },
+      { name: "params3", value: { stringValue: params3 ?? "NULL" } },
+    ]);   
 
     const userCapabilities = rawCapabilites.records.map(
       ([{ stringValue: capability }]) => capability
