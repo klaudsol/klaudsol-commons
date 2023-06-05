@@ -152,7 +152,7 @@ var People = /*#__PURE__*/function () {
                   params1 = _curr[1].stringValue,
                   params2 = _curr[2].stringValue,
                   params3 = _curr[3].stringValue;
-                return [].concat(_toConsumableArray(acc), _toConsumableArray(!params1 && !params2 && !params3 ? [capability] : []), _toConsumableArray(params1 ? ["".concat(capability, "(").concat(params1, ")")] : []), _toConsumableArray(params2 ? ["".concat(capability, "(").concat(params2, ")")] : []), _toConsumableArray(params3 ? ["".concat(capability, "(").concat(params3, ")")] : []));
+                return [].concat(_toConsumableArray(acc), _toConsumableArray(!params1 && !params2 && !params3 ? [capability] : []), _toConsumableArray(params1 ? ["".concat(capability, "(").concat(params1, ")")] : []), _toConsumableArray(params2 ? ["".concat(capability, "(").concat(params1 !== null && params1 !== void 0 ? params1 : 'NULL', ",").concat(params2, ")")] : []), _toConsumableArray(params3 ? ["".concat(capability, "(").concat(params1 !== null && params1 !== void 0 ? params1 : 'NULL', ",").concat(params2 !== null && params2 !== void 0 ? params2 : 'NULL', ",").concat(params3, ")")] : []));
               }, []);
               groups = rawGroups.records.map(function (_ref) {
                 var _ref2 = _slicedToArray(_ref, 1),
