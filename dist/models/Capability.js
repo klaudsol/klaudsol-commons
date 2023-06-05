@@ -29,18 +29,33 @@ var Capability = /*#__PURE__*/function () {
   _createClass(Capability, null, [{
     key: "getCapabilitiesByLoggedInUser",
     value: function () {
-      var _getCapabilitiesByLoggedInUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(session_token) {
+      var _getCapabilitiesByLoggedInUser = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(session_token, params1, params2, params3) {
         var db, sql, rawCapabilites, userCapabilities;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               db = new _DB["default"]();
-              sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token) AND capabilities.name IS NOT NULL";
+              sql = "SELECT DISTINCT capabilities.name from people_groups \n    LEFT JOIN groups ON groups.id = people_groups.group_id\n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id\n    WHERE people_groups.people_id IN (select people_id from sessions where session = :session_token)\n    AND CASE WHEN :params1 = \"NULL\" THEN  params1 IS NULL ELSE params1 = :params1 END\n    AND CASE WHEN :params2 = \"NULL\" THEN  params2 IS NULL ELSE params2 = :params2 END\n    AND CASE WHEN :params3 = \"NULL\" THEN  params3 IS NULL ELSE params3 = :params3 END";
               _context.next = 4;
               return db.executeStatement(sql, [{
                 name: "session_token",
                 value: {
                   stringValue: session_token
+                }
+              }, {
+                name: "params1",
+                value: {
+                  stringValue: params1 !== null && params1 !== void 0 ? params1 : "NULL"
+                }
+              }, {
+                name: "params2",
+                value: {
+                  stringValue: params2 !== null && params2 !== void 0 ? params2 : "NULL"
+                }
+              }, {
+                name: "params3",
+                value: {
+                  stringValue: params3 !== null && params3 !== void 0 ? params3 : "NULL"
                 }
               }]);
             case 4:
@@ -57,7 +72,7 @@ var Capability = /*#__PURE__*/function () {
           }
         }, _callee);
       }));
-      function getCapabilitiesByLoggedInUser(_x) {
+      function getCapabilitiesByLoggedInUser(_x, _x2, _x3, _x4) {
         return _getCapabilitiesByLoggedInUser.apply(this, arguments);
       }
       return getCapabilitiesByLoggedInUser;
@@ -65,15 +80,30 @@ var Capability = /*#__PURE__*/function () {
   }, {
     key: "getCapabilitiesByGuest",
     value: function () {
-      var _getCapabilitiesByGuest = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+      var _getCapabilitiesByGuest = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(params1, params2, params3) {
         var db, sql, rawCapabilites, userCapabilities;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               db = new _DB["default"]();
-              sql = "SELECT DISTINCT capabilities.name FROM groups \n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = \"Guests\"";
+              sql = "SELECT DISTINCT capabilities.name FROM groups \n    LEFT JOIN group_capabilities ON group_capabilities.group_id = groups.id\n    LEFT JOIN capabilities ON capabilities.id = group_capabilities.capabilities_id WHERE groups.name = \"Guests\"\n    AND CASE WHEN :params1 = \"NULL\" THEN  params1 IS NULL ELSE params1 = :params1 END\n    AND CASE WHEN :params2 = \"NULL\" THEN  params2 IS NULL ELSE params2 = :params2 END\n    AND CASE WHEN :params3 = \"NULL\" THEN  params3 IS NULL ELSE params3 = :params3 END";
               _context2.next = 4;
-              return db.executeStatement(sql, []);
+              return db.executeStatement(sql, [{
+                name: "params1",
+                value: {
+                  stringValue: params1 !== null && params1 !== void 0 ? params1 : "NULL"
+                }
+              }, {
+                name: "params2",
+                value: {
+                  stringValue: params2 !== null && params2 !== void 0 ? params2 : "NULL"
+                }
+              }, {
+                name: "params3",
+                value: {
+                  stringValue: params3 !== null && params3 !== void 0 ? params3 : "NULL"
+                }
+              }]);
             case 4:
               rawCapabilites = _context2.sent;
               userCapabilities = rawCapabilites.records.map(function (_ref3) {
@@ -88,7 +118,7 @@ var Capability = /*#__PURE__*/function () {
           }
         }, _callee2);
       }));
-      function getCapabilitiesByGuest() {
+      function getCapabilitiesByGuest(_x5, _x6, _x7) {
         return _getCapabilitiesByGuest.apply(this, arguments);
       }
       return getCapabilitiesByGuest;

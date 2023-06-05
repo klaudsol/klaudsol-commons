@@ -86,11 +86,11 @@ function _assert() {
   return _assert.apply(this, arguments);
 }
 ;
-function assertUserCan(_x3, _x4) {
+function assertUserCan(_x3, _x4, _x5, _x6, _x7) {
   return _assertUserCan.apply(this, arguments);
 }
 function _assertUserCan() {
-  _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req) {
+  _assertUserCan = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(capabilities, req, params1, params2, params3) {
     var _ref, _bearerSession, _req$user, _req$session3;
     var currentCapabilities, bearerSession, authorization, bearerToken, decodedToken, session_token, isNotCapable;
     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -112,14 +112,14 @@ function _assertUserCan() {
             break;
           }
           _context2.next = 5;
-          return _Capability["default"].getCapabilitiesByLoggedInUser(session_token);
+          return _Capability["default"].getCapabilitiesByLoggedInUser(session_token, params1, params2, params3);
         case 5:
           currentCapabilities = _context2.sent;
           _context2.next = 11;
           break;
         case 8:
           _context2.next = 10;
-          return _Capability["default"].getCapabilitiesByGuest();
+          return _Capability["default"].getCapabilitiesByGuest(params1, params2, params3);
         case 10:
           currentCapabilities = _context2.sent;
         case 11:
@@ -131,6 +131,8 @@ function _assertUserCan() {
             break;
           }
           throw new _InsufficientPermissionsError["default"]();
+        case 13:
+          return _context2.abrupt("return", true);
         case 14:
         case "end":
           return _context2.stop();
