@@ -108,7 +108,11 @@ export async function assertUserCan(capabilities, req, params1, params2, params3
         currentCapabilities =  await Capability.getCapabilitiesByGuest(params1, params2, params3);
     }
 
-    if (!currentCapabilities.includes(capabilities)) {
+    const isNotCapable = capabilities instanceof Array 
+        ? !currentCapabilities.some((capability) => capabilities.includes(capability))
+        : !currentCapabilities.includes(capabilities)
+
+    if (isNotCapable) {
       throw new InsufficientPermissionsError();
     }
 

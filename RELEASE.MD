@@ -1,3 +1,6 @@
+# v1.8.0
+* Supports OR queries in assertUserCan (e.g. assertUserCan(['can_do_admin_stuff', 'write_contents'], req); 
+
 # v1.7.1
 * Fixed build issues involving DB#sha256
 * Removed `write_content_types` capability from Administrator and Editor

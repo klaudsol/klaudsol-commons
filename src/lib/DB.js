@@ -15,10 +15,10 @@ const AURORA_AWS_REGION = process.env.AURORA_AWS_REGION ?? process.env.KS_AURORA
 
 class DB {
   
-  constructor() {
+  constructor({ database, secretArn, resourceArn, region } = {}) {
     
     const rdsConfig =  {
-      region: AURORA_AWS_REGION,
+      region: region ?? AURORA_AWS_REGION,
       credentials: new AWS.Credentials({
         accessKeyId: AURORA_AWS_ACCESS_KEY_ID,
         secretAccessKey: AURORA_AWS_SECRET_ACCESS_KEY,
@@ -28,9 +28,9 @@ class DB {
     const RDS = new AWS.RDSDataService(rdsConfig);
     
     const statementConfig = {
-      resourceArn: AURORA_RESOURCE_ARN,
-      secretArn: AURORA_SECRET_ARN,
-      database: AURORA_DATABASE
+      resourceArn: resourceArn ?? AURORA_RESOURCE_ARN,
+      secretArn: secretArn ?? AURORA_SECRET_ARN,
+      database: database ?? AURORA_DATABASE
     } ;   
     
     this.executeStatement = async (sql, parameters=[]) => {  
