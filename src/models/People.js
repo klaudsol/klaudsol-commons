@@ -87,8 +87,8 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
         return [...acc, 
                 ...((!params1 && !params2 && !params3) ? [capability] : []),
                 ...(params1 ? [`${capability}(${params1})`] : []), 
-                ...(params2 ? [`${capability}(${params2})`] : []), 
-                ...(params3 ? [`${capability}(${params3})`] : [])]
+                ...(params2 ? [`${capability}(${params1 ?? 'NULL'},${params2})`] : []), 
+                ...(params3 ? [`${capability}(${params1 ?? 'NULL'},${params2 ?? 'NULL'},${params3})`] : [])]
       }, []);
 
       const groups = rawGroups.records.map(([{ stringValue: role }])=> role);
