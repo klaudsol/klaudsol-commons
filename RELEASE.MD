@@ -1,5 +1,6 @@
 # v1.8.0
-* Supports OR queries in assertUserCan (e.g. assertUserCan(['can_do_admin_stuff', 'write_contents'], req); 
+* Supports OR queries in assertUserCan (e.g. assertUserCan(['can_do_admin_stuff', 'write_contents'], req);
+* Provides a Download to CSV mechanism for frontend and backend. 
 
 # v1.7.1
 * Fixed build issues involving DB#sha256
