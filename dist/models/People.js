@@ -189,7 +189,8 @@ var People = /*#__PURE__*/function () {
                   groups: groups,
                   capabilities: capabilities,
                   defaultEntityType: defaultEntityType,
-                  forcePasswordChange: forcePasswordChange
+                  forcePasswordChange: forcePasswordChange,
+                  userId: userId
                 }
               });
             case 30:
