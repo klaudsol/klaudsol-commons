@@ -1,3 +1,6 @@
+# v1.8.1
+* Added `userId` to People model.
+
 # v1.8.0
 * Supports OR queries in assertUserCan (e.g. `assertUserCan(['can_do_admin_stuff', 'write_contents'], req`)
 * Supports parameterized capabilities (e.g. `assertUserCan('write_contents', req, 'blog')`)
