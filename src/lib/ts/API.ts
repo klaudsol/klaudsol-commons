@@ -23,6 +23,7 @@ class APIHandler {
         'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, DELETE, PUT',
         'Access-Control-Allow-Credentials': 'true'
     };
+
     constructor(methods: HandlerMethods) {
         this.methods = methods;
     }
