@@ -5,8 +5,8 @@ import {
     COMMUNICATION_LINKS_FAILURE,
     INTERNAL_SERVER_ERROR,
     NOT_FOUND
-} from '@/lib/HttpStatues';
-import RecordNotFound from '@/lib/Errors/RecordNotFound';
+} from '../HttpStatuses';
+import RecordNotFound from '../../errors/ts/RecordNotFound';
 
 const FRONTEND_URL = process.env.KS_FRONTEND_URL ?? '';
 
