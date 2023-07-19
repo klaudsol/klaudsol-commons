@@ -125,7 +125,7 @@ class APIHandler {
         };
     }
 
-    // TODO: Add dynamic callback params just line in Express
+    // TODO: Add dynamic callback params just like in Express
     public middleware(
         route: string | HandleRoutes,
         callback?: HandleRoutes
