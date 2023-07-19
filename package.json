@@ -40,12 +40,15 @@
     "@babel/preset-env": "^7.1.6"
   },
   "dependencies": {
+    "@aws-sdk/client-rds-data": "^3.370.0",
     "@aws-sdk/client-sesv2": "3.288.0",
     "aws-sdk": "^2.1333.0",
     "cookies-next": "^2.1.1",
     "es6-promisify": "^7.0.0",
     "iron-session": "^6.3.1",
     "jsonwebtoken": "^9.0.0",
+    "kysely": "^0.26.1",
+    "kysely-data-api": "^0.2.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.3"
   }
