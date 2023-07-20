@@ -40,6 +40,7 @@
     "@babel/preset-env": "^7.1.6"
   },
   "dependencies": {
+    "@aws-sdk/client-rds-data": "^3.370.0",
     "@aws-sdk/client-sesv2": "3.288.0",
     "aws-sdk": "^2.1333.0",
     "cookies-next": "^2.1.1",
