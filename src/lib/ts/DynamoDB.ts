@@ -5,6 +5,9 @@ import {
     CreateTableCommand, 
     CreateTableCommandInput, 
     CreateTableCommandOutput, 
+    DeleteTableCommand, 
+    DeleteTableCommandInput, 
+    DeleteTableCommandOutput, 
     DynamoDBClient, 
     DynamoDBClientConfig, 
     GetItemCommand, 
@@ -15,7 +18,10 @@ import {
     QueryCommandOutput, 
     ScanCommand, 
     ScanCommandInput, 
-    ScanCommandOutput
+    ScanCommandOutput,
+    UpdateTableCommand,
+    UpdateTableCommandInput,
+    UpdateTableCommandOutput
   } from "@aws-sdk/client-dynamodb";
   import { 
     DeleteCommand, 
@@ -89,6 +95,18 @@ import {
     // Create a table
     public async createTable(parameters: CreateTableCommandInput): Promise<CreateTableCommandOutput> {
       const command = new CreateTableCommand(parameters);
+      return await this.ddbDocClient.send(command);
+    }
+
+    // Update a table
+    public async updateTable(parameters: UpdateTableCommandInput): Promise<UpdateTableCommandOutput> {
+      const command = new UpdateTableCommand(parameters);
+      return await this.ddbDocClient.send(command);
+    }
+
+    // Delete a table
+    public async deleteTable(parameters: DeleteTableCommandInput): Promise<DeleteTableCommandOutput> {
+      const command = new DeleteTableCommand(parameters);
       return await this.ddbDocClient.send(command);
     }
   
