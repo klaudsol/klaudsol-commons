@@ -109,7 +109,7 @@ static async displayPeopleProfessional() { // returns array of Timesheet Table
       defaultEntityTypeData = await db.executeStatement(defaultEntityTypeSQL, []);
       [{stringValue: defaultEntityType}] = defaultEntityTypeData.records[0];
  
-      return { session_token, user: {firstName, lastName, groups, capabilities, defaultEntityType, forcePasswordChange} };
+      return { session_token, user: {firstName, lastName, groups, capabilities, defaultEntityType, forcePasswordChange, userId} };
   }
 
   static async createUser({ firstName, lastName, loginEnabled, approved, email, password, forcePasswordChange }) {
