@@ -13,6 +13,9 @@ import {
     GetItemCommand, 
     GetItemCommandInput, 
     GetItemCommandOutput, 
+    ListTablesCommand, 
+    ListTablesCommandInput, 
+    ListTablesCommandOutput, 
     QueryCommand, 
     QueryCommandInput, 
     QueryCommandOutput, 
@@ -107,6 +110,12 @@ import {
     // Delete a table
     public async deleteTable(parameters: DeleteTableCommandInput): Promise<DeleteTableCommandOutput> {
       const command = new DeleteTableCommand(parameters);
+      return await this.ddbDocClient.send(command);
+    }
+    
+    // List all tables 
+    public async listTables(parameters: ListTablesCommandInput): Promise<ListTablesCommandOutput> {
+      const command = new ListTablesCommand(parameters);
       return await this.ddbDocClient.send(command);
     }
   
