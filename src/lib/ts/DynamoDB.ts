@@ -8,6 +8,9 @@ import {
     DeleteTableCommand, 
     DeleteTableCommandInput, 
     DeleteTableCommandOutput, 
+    DescribeTableCommand, 
+    DescribeTableCommandInput, 
+    DescribeTableCommandOutput, 
     DynamoDBClient, 
     DynamoDBClientConfig, 
     GetItemCommand, 
@@ -116,6 +119,12 @@ import {
     // List all tables 
     public async listTables(parameters: ListTablesCommandInput): Promise<ListTablesCommandOutput> {
       const command = new ListTablesCommand(parameters);
+      return await this.ddbDocClient.send(command);
+    }
+
+    // Describe tables 
+    public async describeTables(parameters: DescribeTableCommandInput): Promise<DescribeTableCommandOutput> {
+      const command = new DescribeTableCommand(parameters);
       return await this.ddbDocClient.send(command);
     }
   
