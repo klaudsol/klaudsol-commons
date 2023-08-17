@@ -51,8 +51,8 @@ class DynamoDB {
       }
     
       const DDBDocConfig = {
-        marshallOptions: marshallOptions ?? defaultMarshallOptions,
-        unmarshallOptions: unmarshallOptions ?? defaultUnmarshallOptions,
+        marshallOptions: {...defaultMarshallOptions, ...marshallOptions},
+        unmarshallOptions: {...defaultUnmarshallOptions, ...unmarshallOptions},
       }
     
       this.ddbClient = new DynamoDBClient(DDBConfig);
