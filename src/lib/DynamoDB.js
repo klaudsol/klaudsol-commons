@@ -30,18 +30,18 @@ const DYNAMO_DB_AWS_REGION =
     process.env.KS_AWS_REGION ??
     'us-east-1';
   
-const marshallOptions = {
+const defaultMarshallOptions = {
     convertEmptyValues: false, // Whether to automatically convert empty strings, blobs, and sets to `null`. false, by default. 
     removeUndefinedValues: true, // Whether to remove undefined values while marshalling. false, by default.
     convertClassInstanceToMap: false, // Whether to convert typeof object to map attribute. false, by default.
 };
       
-const unmarshallOptions = {
+const defaultUnmarshallOptions = {
     wrapNumbers: false, // Whether to return numbers as a string instead of converting them to native JavaScript numbers. false, by default.
 };
   
-class DB {
-    constructor() {
+class DynamoDB {
+    constructor({ marshallOptions, unmarshallOptions } = {}) {
       const DDBConfig = {
         region: DYNAMO_DB_AWS_REGION,
         credentials: {
@@ -51,8 +51,8 @@ class DB {
       }
     
       const DDBDocConfig = {
-        marshallOptions,
-        unmarshallOptions,
+        marshallOptions: marshallOptions ?? defaultMarshallOptions,
+        unmarshallOptions: unmarshallOptions ?? defaultUnmarshallOptions,
       }
     
       this.ddbClient = new DynamoDBClient(DDBConfig);
@@ -134,4 +134,4 @@ class DB {
     }
   }
   
-  export default DB;
+  export default DynamoDB;

@@ -19,7 +19,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 var DYNAMO_DB_AWS_ACCESS_KEY = (_ref = (_process$env$KS_DYNAM = process.env.KS_DYNAMO_DB_AWS_ACCESS_KEY_ID) !== null && _process$env$KS_DYNAM !== void 0 ? _process$env$KS_DYNAM : process.env.KS_AWS_ACCESS_KEY_ID) !== null && _ref !== void 0 ? _ref : '';
 var DYNAMO_DB_AWS_SECRET_ACCESS_KEY = (_ref2 = (_process$env$KS_DYNAM2 = process.env.KS_DYNAMO_DB_AWS_SECRET_ACCESS_KEY) !== null && _process$env$KS_DYNAM2 !== void 0 ? _process$env$KS_DYNAM2 : process.env.KS_AWS_SECRET_ACCESS_KEY) !== null && _ref2 !== void 0 ? _ref2 : '';
 var DYNAMO_DB_AWS_REGION = (_ref3 = (_process$env$KS_DYNAM3 = process.env.KS_DYNAMO_DB_AWS_REGION) !== null && _process$env$KS_DYNAM3 !== void 0 ? _process$env$KS_DYNAM3 : process.env.KS_AWS_REGION) !== null && _ref3 !== void 0 ? _ref3 : 'us-east-1';
-var marshallOptions = {
+var defaultMarshallOptions = {
   convertEmptyValues: false,
   // Whether to automatically convert empty strings, blobs, and sets to `null`. false, by default. 
   removeUndefinedValues: true,
@@ -27,12 +27,15 @@ var marshallOptions = {
   convertClassInstanceToMap: false // Whether to convert typeof object to map attribute. false, by default.
 };
 
-var unmarshallOptions = {
+var defaultUnmarshallOptions = {
   wrapNumbers: false // Whether to return numbers as a string instead of converting them to native JavaScript numbers. false, by default.
 };
-var DB = /*#__PURE__*/function () {
-  function DB() {
-    _classCallCheck(this, DB);
+var DynamoDB = /*#__PURE__*/function () {
+  function DynamoDB() {
+    var _ref4 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      marshallOptions = _ref4.marshallOptions,
+      unmarshallOptions = _ref4.unmarshallOptions;
+    _classCallCheck(this, DynamoDB);
     var DDBConfig = {
       region: DYNAMO_DB_AWS_REGION,
       credentials: {
@@ -41,15 +44,15 @@ var DB = /*#__PURE__*/function () {
       }
     };
     var DDBDocConfig = {
-      marshallOptions: marshallOptions,
-      unmarshallOptions: unmarshallOptions
+      marshallOptions: marshallOptions !== null && marshallOptions !== void 0 ? marshallOptions : defaultMarshallOptions,
+      unmarshallOptions: unmarshallOptions !== null && unmarshallOptions !== void 0 ? unmarshallOptions : defaultUnmarshallOptions
     };
     this.ddbClient = new _clientDynamodb.DynamoDBClient(DDBConfig);
     this.ddbDocClient = _libDynamodb.DynamoDBDocumentClient.from(this.ddbClient, DDBDocConfig);
   }
 
   // Create a table
-  _createClass(DB, [{
+  _createClass(DynamoDB, [{
     key: "createTable",
     value: function () {
       var _createTable = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(parameters) {
@@ -340,7 +343,7 @@ var DB = /*#__PURE__*/function () {
       return query;
     }()
   }]);
-  return DB;
+  return DynamoDB;
 }();
-var _default = DB;
+var _default = DynamoDB;
 exports["default"] = _default;
