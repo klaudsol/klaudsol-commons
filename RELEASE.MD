@@ -1,3 +1,6 @@
+# v1.9.1
+* Added DynamoDB.js file
+
 # v1.9.0
 * Added DynamoDB
 
