@@ -1,3 +1,6 @@
+# v1.9.0
+* Added DynamoDB
+
 # v1.8.1
 * Added `userId` to People model.
 
